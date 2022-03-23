@@ -1,0 +1,15 @@
+using System;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        int gemPrice = 5;
+        Console.WriteLine($"Вы можете купить 1 кристалл за {gemPrice} золота.");
+
+        Console.WriteLine("Какое количество золота вы имеете на счету?"); int goldQuantity = int.Parse(Console.ReadLine());
+        Console.WriteLine("Какое количество кристаллов вы хотите приобрести?"); int gemQuantity = int.Parse(Console.ReadLine());
+        goldQuantity -= gemQuantity * gemPrice;
+        Console.WriteLine($"Вы купили {gemQuantity} кристаллов!\nВаш счёт: золото - {goldQuantity}, кристаллы - {gemQuantity}.");
+    }
+}
