@@ -1,0 +1,17 @@
+using System;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        string firstName = "Фамилия";
+        string lastName = "Имя";
+        string temporalData = "";
+
+        Console.WriteLine($"До исправления: Имя - {firstName}, Фамилия - {lastName}");
+        temporalData = firstName;
+        firstName = lastName;
+        lastName = temporalData;
+        Console.WriteLine($"После исправления: Имя - {firstName}, Фамилия - {lastName}");
+    }
+}
