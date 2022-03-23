@@ -1,0 +1,14 @@
+using System;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        int numberOfPics = 52;
+        int numberOfPicsInRow = 3;
+
+        int numberOfFilledRows = numberOfPics / numberOfPicsInRow;
+        int numberOfPicsBeyondMeasure = numberOfPics % numberOfPicsInRow;
+        Console.WriteLine($"Полностью заполненных рядов {numberOfFilledRows}, картинок сверх меры {numberOfPicsBeyondMeasure}");
+    }
+}
