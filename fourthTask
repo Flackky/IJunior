@@ -1,0 +1,18 @@
+using System;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        string name = "";
+        int age = 0;
+        string zodiacSign = "";
+        string job = "";
+
+        Console.WriteLine("Пожалуйста, введите своё имя: "); name = Console.ReadLine();
+        Console.WriteLine("Введите ваш возраст: "); age = int.Parse(Console.ReadLine());
+        Console.WriteLine("Введите ваш знак зодиака: "); zodiacSign = Console.ReadLine();
+        Console.WriteLine("Введите ваше место работы: "); job = Console.ReadLine();
+        Console.WriteLine($"Вас зовут {name}, вам {age} год(а), вы {zodiacSign} и работаете на/в {job}.");
+    }
+}
