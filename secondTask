@@ -1,0 +1,18 @@
+using System;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        string name = "Lyn";
+        int age = 25;
+        bool isMale = false;
+        uint healPoints = 130;
+        ushort manaPoints = 10000;
+        char sign = 'H';
+        long volume = 150;
+        float scale = 89.5f;
+        double acceleration = 14.7;
+        short time = 60;
+    }
+}
