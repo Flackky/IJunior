@@ -7,7 +7,7 @@ class Program
         string name = "Lyn";
         int age = 25;
         bool isMale = false;
-        uint healPoints = 130;
+        uint healthPoints = 130;
         ushort manaPoints = 10000;
         char sign = 'H';
         long volume = 150;
