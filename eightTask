@@ -4,7 +4,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        int appointmentTime = 10;
+        int appointmentTimeInMinutes = 10;
         int minutesInHour = 60;
 
         Console.WriteLine("Введите количество старушек: "); int numberOfPatients = int.Parse(Console.ReadLine());
