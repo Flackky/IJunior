@@ -6,16 +6,18 @@ namespace Second_part
     {
         static void Main(string[] args)
         {
+            int startCycle = 5;
             int endCycle = 97;
+            int iterationStep = 7;
 
             //Используется цикл "for" из-за того, что мы знаем заранее границы цикла, а именно: [5;96] с шагом 7.
 
-            for (int i = 5; i < endCycle; i+= 7)
+            for (int i = startCycle; i < endCycle; i+= iterationStep)
             {
                 Console.WriteLine(i);
             }
 
-            Console.ReadKey();
+            Console.ReadKey();            
         }
     }
 }
