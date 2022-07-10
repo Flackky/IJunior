@@ -6,15 +6,17 @@ namespace Second_part
     {
         static void Main(string[] args)
         {
+            int modFive = 5;
+            int modThree = 3;
             int sumOfPositive = 0;
             Random random = new Random();
-            int number = random.Next(1,101);
+            int number = random.Next(1, 101);
             Console.WriteLine("Выпало число: " + number);
             Console.Write("Числа кратные 3 или 5 -> ");
 
             for (int i = 1; i <= number; i++)
             {
-                if (i % 3 == 0 || i % 5 == 0)
+                if (i % modThree == 0 || i % modFive == 0)
                 {
                     sumOfPositive += i;
                     Console.Write(i + " ");
