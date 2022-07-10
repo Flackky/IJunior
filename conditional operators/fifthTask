@@ -59,7 +59,7 @@ namespace Second_part
                         if (tryCurrency >= currencyCount)
                         {
                             tryCurrency -= currencyCount;
-                            rubCurrency += currencyCount * rubInTry;
+                            rubCurrency += currencyCount / rubInTry;
                             Console.WriteLine();
                         }
                         else Console.WriteLine("Недопустимое количество TRY\r\n");
@@ -85,7 +85,7 @@ namespace Second_part
                         if (usdCurrency >= currencyCount)
                         {
                             usdCurrency -= currencyCount;
-                            rubCurrency += currencyCount * rubInUsd;
+                            rubCurrency += currencyCount / rubInUsd;
                             Console.WriteLine();
                         }
                         else Console.WriteLine("Недопустимое количество USD\r\n");
@@ -98,7 +98,7 @@ namespace Second_part
                         if (usdCurrency >= currencyCount)
                         {
                             usdCurrency -= currencyCount;
-                            tryCurrency += currencyCount * tryInUsd;
+                            tryCurrency += currencyCount / tryInUsd;
                             Console.WriteLine();
                         }
                         else Console.WriteLine("Недопустимое количество USD\r\n");
