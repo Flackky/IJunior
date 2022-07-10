@@ -6,8 +6,8 @@ namespace Second_part
     {
         static void Main(string[] args)
         {
-            int modFive = 5;
-            int modThree = 3;
+            int divider1 = 5;
+            int divider2 = 3;
             int sumOfPositive = 0;
             Random random = new Random();
             int number = random.Next(1, 101);
@@ -16,7 +16,7 @@ namespace Second_part
 
             for (int i = 1; i <= number; i++)
             {
-                if (i % modThree == 0 || i % modFive == 0)
+                if (i % divider1 == 0 || i % divider2 == 0)
                 {
                     sumOfPositive += i;
                     Console.Write(i + " ");
