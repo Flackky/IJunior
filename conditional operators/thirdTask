@@ -1,0 +1,21 @@
+using System;
+
+namespace Second_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            int endCycle = 97;
+
+            //Используется цикл "for" из-за того, что мы знаем заранее границы цикла, а именно: [5;96] с шагом 7.
+
+            for (int i = 5; i < endCycle; i+= 7)
+            {
+                Console.WriteLine(i);
+            }
+
+            Console.ReadKey();
+        }
+    }
+}
