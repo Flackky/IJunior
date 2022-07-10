@@ -1,0 +1,29 @@
+using System;
+
+namespace Second_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            int sumOfPositive = 0;
+            Random random = new Random();
+            int number = random.Next(1,101);
+            Console.WriteLine("Выпало число: " + number);
+            Console.Write("Числа кратные 3 или 5 -> ");
+
+            for (int i = 1; i <= number; i++)
+            {
+                if (i % 3 == 0 || i % 5 == 0)
+                {
+                    sumOfPositive += i;
+                    Console.Write(i + " ");
+                }
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Сумма всех положительных чисел меньше number: " + sumOfPositive);
+            Console.ReadKey();
+        }
+    }
+}
