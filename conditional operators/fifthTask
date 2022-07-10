@@ -29,6 +29,7 @@ namespace Second_part
                     case "1":
                         Console.WriteLine("RUB->USD\r\nСколько RUB вы хотите обменять: ");
                         currencyCount = Convert.ToSingle(Console.ReadLine());
+                        
                         if (rubCurrency >= currencyCount)
                         {
                             rubCurrency -= currencyCount;
@@ -36,10 +37,12 @@ namespace Second_part
                             Console.WriteLine();
                         }
                         else Console.WriteLine("Недопустимое количество RUB\r\n");
+                        
                         break;
                     case "2":
                         Console.WriteLine("RUB->TRY\r\nСколько RUB вы хотите обменять: ");
                         currencyCount = Convert.ToSingle(Console.ReadLine());
+                        
                         if (rubCurrency >= currencyCount)
                         {
                             rubCurrency -= currencyCount;
@@ -47,10 +50,12 @@ namespace Second_part
                             Console.WriteLine();
                         }
                         else Console.WriteLine("Недопустимое количество RUB\r\n");
+                        
                         break;
                     case "3":
                         Console.WriteLine("TRY->RUB\r\nСколько TRY вы хотите обменять: ");
                         currencyCount = Convert.ToSingle(Console.ReadLine());
+                        
                         if (tryCurrency >= currencyCount)
                         {
                             tryCurrency -= currencyCount;
@@ -58,10 +63,12 @@ namespace Second_part
                             Console.WriteLine();
                         }
                         else Console.WriteLine("Недопустимое количество TRY\r\n");
+                        
                         break;
                     case "4":
                         Console.WriteLine("TRY->USD\r\nСколько TRY вы хотите обменять: ");
                         currencyCount = Convert.ToSingle(Console.ReadLine());
+                        
                         if (tryCurrency >= currencyCount)
                         {
                             tryCurrency -= currencyCount;
@@ -69,10 +76,12 @@ namespace Second_part
                             Console.WriteLine();
                         }
                         else Console.WriteLine("Недопустимое количество TRY\r\n");
+                        
                         break;
                     case "5":
                         Console.WriteLine("USD->RUB\r\nСколько USD вы хотите обменять: ");
                         currencyCount = Convert.ToSingle(Console.ReadLine());
+                        
                         if (usdCurrency >= currencyCount)
                         {
                             usdCurrency -= currencyCount;
@@ -80,10 +89,12 @@ namespace Second_part
                             Console.WriteLine();
                         }
                         else Console.WriteLine("Недопустимое количество USD\r\n");
+                        
                         break;
                     case "6":
                         Console.WriteLine("USD->TRY\r\nСколько USD вы хотите обменять: ");
                         currencyCount = Convert.ToSingle(Console.ReadLine());
+                        
                         if (usdCurrency >= currencyCount)
                         {
                             usdCurrency -= currencyCount;
@@ -91,6 +102,7 @@ namespace Second_part
                             Console.WriteLine();
                         }
                         else Console.WriteLine("Недопустимое количество USD\r\n");
+                        
                         break;
                     case "exit":
                         canEnter = false;
