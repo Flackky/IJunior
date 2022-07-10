@@ -1,0 +1,28 @@
+using System;
+
+namespace Second_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            int counter = 0;
+            string userKey;
+            bool canEnter = true;
+
+            while (canEnter)
+            {
+                counter++;
+                Console.WriteLine($"Вы в цикле. Итерация № {counter}. Чтобы выйти из него напишите \"exit\".");
+                userKey = Console.ReadLine();
+                if (userKey == "exit")
+                {
+                    canEnter = false;
+                }
+            }
+
+            Console.WriteLine("Вы вышли из цикла.");
+            Console.ReadKey();
+        }
+    }
+}
