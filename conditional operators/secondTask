@@ -15,6 +15,7 @@ namespace Second_part
                 counter++;
                 Console.WriteLine($"Вы в цикле. Итерация № {counter}. Чтобы выйти из него напишите \"exit\".");
                 userKey = Console.ReadLine();
+                
                 if (userKey == "exit")
                 {
                     canEnter = false;
