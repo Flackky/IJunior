@@ -6,13 +6,15 @@ namespace Second_part
     {
         static void Main(string[] args)
         {
+            int firstOfRandom = 1;
+            int lastOfRandom = 101;
             int divider1 = 5;
             int divider2 = 3;
             int sumOfPositive = 0;
             Random random = new Random();
-            int number = random.Next(1, 101);
+            int number = random.Next(firstOfRandom, lastOfRandom);
             Console.WriteLine("Выпало число: " + number);
-            Console.Write("Числа кратные 3 или 5 -> ");
+            Console.Write($"Числа кратные {divider1} или {divider2} -> ");
 
             for (int i = 1; i <= number; i++)
             {
