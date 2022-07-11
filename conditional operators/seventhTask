@@ -6,13 +6,14 @@ namespace Second_part
     {
         static void Main(string[] args)
         {
+            string frameLine = "";
             int sideFrame = 2;
             string userInputFrame;
             string userInputName;
             int userNameLength;
 
             Console.Write("Введите своё имя: ");
-            userInputName =  Console.ReadLine();
+            userInputName = Console.ReadLine();
             userNameLength = userInputName.Length;
             Console.Write("Введите один символ, который будет использован в качестве рамки: ");
             userInputFrame = Console.ReadLine();
@@ -20,16 +21,12 @@ namespace Second_part
 
             for (int i = 0; i < userNameLength + sideFrame; i++)
             {
-                Console.Write(userInputFrame);
+                frameLine += userInputFrame;
             }
-
-            Console.WriteLine($"\n{userInputFrame}{userInputName}{userInputFrame}");
-
-            for (int i = 0; i < userNameLength + sideFrame; i++)
-            {
-                Console.Write(userInputFrame);
-            }
-
+            
+            Console.WriteLine(frameLine);
+            Console.WriteLine(userInputFrame + userInputName + userInputFrame);
+            Console.WriteLine(frameLine);
             Console.ReadKey();
         }
     }
