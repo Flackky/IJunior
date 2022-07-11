@@ -6,6 +6,7 @@ namespace Second_part
     {
         static void Main(string[] args)
         {
+            int sideFrame = 2;
             string userInputFrame;
             string userInputName;
             int userNameLength;
@@ -17,14 +18,14 @@ namespace Second_part
             userInputFrame = Console.ReadLine();
             Console.Clear();
 
-            for (int i = 0; i < userNameLength + 2; i++)
+            for (int i = 0; i < userNameLength + sideFrame; i++)
             {
                 Console.Write(userInputFrame);
             }
 
             Console.WriteLine($"\n{userInputFrame}{userInputName}{userInputFrame}");
 
-            for (int i = 0; i < userNameLength + 2; i++)
+            for (int i = 0; i < userNameLength + sideFrame; i++)
             {
                 Console.Write(userInputFrame);
             }
