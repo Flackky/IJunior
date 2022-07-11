@@ -1,0 +1,62 @@
+using System;
+
+namespace Second_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            string userInput;
+            string secretMessage = "Ето сикрет!";
+            int tryCount = 3;
+            string userLoginInput;
+            string userPasswordInput;
+            string login = "Default";
+            string password = "Default";
+            bool canEnter = true;
+
+            while (tryCount-- > 0)
+            {
+                Console.Write("Введите логин: ");
+                userLoginInput = Console.ReadLine();
+                Console.Write("Введите пароль: ");
+                userPasswordInput = Console.ReadLine();
+
+                if (tryCount <= 0)
+                {
+                    Console.WriteLine("Неправильный логин или пароль.\nУ вас закончились попытки. Попробуйте ещё раз через некоторое время.");
+                    break;
+                }                 
+                else if (userLoginInput != login || userPasswordInput != password)
+                {
+                    Console.WriteLine($"Неправильный логин или пароль.\nУ вас осталось попыток: {tryCount}\n");
+                }
+                else
+                {
+                    Console.WriteLine("Вы в системе!\n");
+                    canEnter = true;
+                    break;
+                }
+            }
+
+            while (canEnter)
+            {
+                Console.WriteLine("Функции:\n1 - Вывести секретное сообщение.\n2 - Выйти из системы.\n");
+                userInput = Console.ReadLine();
+
+                switch (userInput)
+                {
+                    case "1":
+                        Console.WriteLine($"Секретное сообщение: {secretMessage}\n");
+                        break;
+                    case "2":
+                        canEnter = false;
+                        break;
+                }
+            }
+            
+            Console.WriteLine("Вы вышли из системы.");
+            Console.ReadKey();
+        }
+    }
+}
