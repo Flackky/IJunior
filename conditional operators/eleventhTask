@@ -47,12 +47,12 @@ namespace Second_part
 
                 for (int i = 0; i < textLength; i++)
                 {
-                    if (i <= midValue)
+                    if (i < midValue)
                         isLeftSideOfText = true;
                     else
                         isLeftSideOfText = false;
 
-                    if (i == midValue + 1)
+                    if (i == midValue)
                     {
                         leftCount = 0;
                         rightCount = 0;
@@ -79,7 +79,7 @@ namespace Second_part
 
                     if (isLeftSideOfText)
                     {
-                        if (leftCount < rightCount)
+                        if (leftCount < rightCount && i == midValue - 1)
                         {
                             Console.WriteLine("Неверное выражение! - Неправильное расположение скобок.");
                             isAbandoned = true;
@@ -88,7 +88,7 @@ namespace Second_part
                     }
                     else
                     {
-                        if (leftCount > rightCount)
+                        if (leftCount > rightCount && i == textLength - 1)
                         {
                             Console.WriteLine("Неверное выражение! - Неправильное расположение скобок.");
                             isAbandoned = true;
@@ -102,7 +102,7 @@ namespace Second_part
                     if (firstChar == ')' || lastChar == '(')
                         Console.WriteLine("Неверное выражение! - Неправильное расположение скобок \")(\".");
                     else if (bracketsEquivalence == 0)
-                        Console.WriteLine(nestingDepth);
+                        Console.WriteLine($"Максимальная глубина вложенности скобок: {nestingDepth}");
                     else
                         Console.WriteLine("Неверное выражение! - Кол-во \"(\" не совпадает с \")\"");
                 }
