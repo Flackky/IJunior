@@ -1,0 +1,112 @@
+using System;
+
+namespace Second_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            bool canEnter = true;
+            bool isAbandoned = false;
+            bool isLeftSideOfText = false;
+            int midValue;
+            int leftCount = 0;
+            int rightCount = 0;
+            char firstChar = '0';
+            char lastChar = '0';
+            string userText = "";
+            int textLength;
+            int bracketsEquivalence = 0;
+            int nestingDepth = 1;
+            int divider1 = 2;
+
+            while (canEnter)
+            {
+                leftCount = 0;
+                rightCount = 0;
+                isAbandoned = false;
+                bracketsEquivalence = 0;
+                nestingDepth = 1;
+                Console.Write("\nВведите \"exit\" для выхода или введите скобочное выражение: ");
+                userText = Console.ReadLine();
+                textLength = userText.Length;
+
+                if (userText == "exit")
+                {
+                    canEnter = false;
+                    break;
+                }
+
+                if (textLength % divider1 != 0)
+                {
+                    Console.WriteLine("Неверное выражение! - Кол-во символов нечётное.");
+                    continue;
+                }
+                else
+                    midValue = textLength / divider1;
+
+                for (int i = 0; i < textLength; i++)
+                {
+                    if (i <= midValue)
+                        isLeftSideOfText = true;
+                    else
+                        isLeftSideOfText = false;
+
+                    if (i == midValue + 1)
+                    {
+                        leftCount = 0;
+                        rightCount = 0;
+                    }
+
+                    if (i == 0)
+                        firstChar = userText[i];
+                    else if (i == textLength - 1)
+                        lastChar = userText[i];
+
+                    if (userText[i] == '(')
+                    {
+                        bracketsEquivalence++;
+                        leftCount++;
+                    }
+                    else if (userText[i] == ')')
+                    {
+                        if (i != textLength - 1 && userText[i + 1] != '(')
+                            nestingDepth++;
+
+                        bracketsEquivalence--;
+                        rightCount++;
+                    }
+
+                    if (isLeftSideOfText)
+                    {
+                        if (leftCount < rightCount)
+                        {
+                            Console.WriteLine("Неверное выражение! - Неправильное расположение скобок.");
+                            isAbandoned = true;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (leftCount > rightCount)
+                        {
+                            Console.WriteLine("Неверное выражение! - Неправильное расположение скобок.");
+                            isAbandoned = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (isAbandoned == false)
+                {
+                    if (firstChar == ')' || lastChar == '(')
+                        Console.WriteLine("Неверное выражение! - Неправильное расположение скобок \")(\".");
+                    else if (bracketsEquivalence == 0)
+                        Console.WriteLine(nestingDepth);
+                    else
+                        Console.WriteLine("Неверное выражение! - Кол-во \"(\" не совпадает с \")\"");
+                }
+            }
+        }
+    }
+}
