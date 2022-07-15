@@ -1,0 +1,41 @@
+using System;
+
+namespace Second_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            int iStart = 100;
+            int iEnd = 1000;
+            int correctCount = 0;
+            int verifiableIterator;
+            int firstOfRandom = 1;
+            int lastOfRandom = 28;
+            Random random = new Random();
+            int randomDivider = random.Next(firstOfRandom, lastOfRandom);
+
+            for (int i = iStart; i < iEnd; i++)
+            {
+                verifiableIterator = i;
+                while (verifiableIterator > 0)
+                {
+                    verifiableIterator -= randomDivider;
+
+                    if (verifiableIterator > 0)
+                        continue;
+                    else if (verifiableIterator == 0)
+                    {
+                        correctCount++;
+                        Console.WriteLine($"Число {i} делится нацело на {randomDivider}");
+                    }
+                    else
+                        break;
+                }
+            }
+
+            Console.WriteLine($"Количество трехзначных чисел, которые делятся на {randomDivider}: {correctCount}");
+            Console.ReadKey();
+        }
+    }
+}
