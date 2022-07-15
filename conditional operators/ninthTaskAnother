@@ -6,21 +6,18 @@ namespace Second_part
     {
         static void Main(string[] args)
         {
-            int iStart = 0;
-            int iEnd = 1000;
+            int firstThreeDigit = 100;
+            int firstIteration = 0;
+            int limitOfIterations = 1000;
             int correctCount = 0;
             int firstOfRandom = 1;
             int lastOfRandom = 28;
             Random random = new Random();
             int randomDivider = random.Next(firstOfRandom, lastOfRandom);
 
-            for (int i = iStart; i < iEnd; i += randomDivider)
+            for (int i = firstIteration; i < limitOfIterations; i += randomDivider)
             {
-                if (i < 100)
-                {
-                    continue;
-                }
-                else
+                if (i >= firstThreeDigit)
                 {
                     correctCount++;
                     Console.WriteLine($"Число {i} делится нацело на {randomDivider}");
