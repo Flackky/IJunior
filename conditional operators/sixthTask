@@ -1,0 +1,111 @@
+using System;
+
+namespace Second_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            string userInput;           
+            int tryCount = 3;
+            string userLoginInput;
+            string userPasswordInput;
+            string login = "Default";
+            string password = "Default";
+            bool canEnter = true;
+
+            while (canEnter)
+            {
+                Console.Write("Главное меню:\nДоступные функции:\n1 - Вывести информацию о пользователе.\n2 - Изменить логин.\n3 - Изменить пароль.\n4 - Изменить цвет текста в консоли.\n5 - Очистить консоль.\n6 - Выйти из системы.\n-> ");
+                userInput = Console.ReadLine();
+                Console.WriteLine();
+
+                switch (userInput)
+                {
+                    case "1":
+                    case "2":
+                    case "3":
+                        tryCount = 3;
+
+                        while (tryCount-- > 0)
+                        {
+                            Console.Write("Введите логин: ");
+                            userLoginInput = Console.ReadLine();
+                            Console.Write("Введите пароль: ");
+                            userPasswordInput = Console.ReadLine();
+                            Console.WriteLine();
+
+                            if (tryCount <= 0)
+                            {
+                                Console.WriteLine("Неправильный логин или пароль.\nУ вас закончились попытки. Попробуйте ещё раз через некоторое время.\n");
+                                break;
+                            }
+                            else if (userLoginInput != login || userPasswordInput != password)
+                            {
+                                Console.WriteLine($"Неправильный логин или пароль.\nУ вас осталось попыток: {tryCount}\n");
+                            }
+                            else
+                            {
+                                if (userInput == "1")
+                                {
+                                    Console.WriteLine($"Информация о пользователе:\nВаш логин: {login}\nВаш пароль: {password}\n");
+                                    break;
+                                }
+                                else if (userInput == "2")
+                                {
+                                    Console.Write($"Введите новый логин: ");
+                                    userLoginInput = Console.ReadLine();
+                                    login = userLoginInput;
+                                    Console.WriteLine($"Логин изменён!\n");
+                                    break;
+                                }
+                                else if (userInput == "3")
+                                {
+                                    Console.Write($"Введите новый пароль: ");
+                                    userPasswordInput = Console.ReadLine();
+                                    password = userPasswordInput;
+                                    Console.WriteLine($"Пароль изменён!\n");
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    case "4":
+                        Console.Write($"Выберите цвет и введите его название:\nЧёрный\nБелый\nСиний\nЗелёный\nЖелтый\nКрасный\n-> ");
+                        userInput = Console.ReadLine();
+                        Console.WriteLine();
+
+                        switch (userInput)
+                        {
+                            case "Чёрный":
+                                Console.ForegroundColor = ConsoleColor.Black;
+                                break;
+                            case "Белый":
+                                Console.ForegroundColor = ConsoleColor.White;
+                                break;
+                            case "Синий":
+                                Console.ForegroundColor = ConsoleColor.Blue;
+                                break;
+                            case "Зелёный":
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                break;
+                            case "Жёлтый":
+                                Console.ForegroundColor = ConsoleColor.Yellow;
+                                break;
+                            case "Красный":
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                break;
+                        }                            
+                        break;
+                    case "5":
+                        Console.Clear();
+                        Console.WriteLine("Консоль очищена!");
+                        break;
+                    case "6":
+                        canEnter = false;
+                        break;
+                }
+            }
+        }
+    }
+}
