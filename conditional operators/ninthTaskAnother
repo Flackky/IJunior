@@ -6,7 +6,7 @@ namespace Second_part
     {
         static void Main(string[] args)
         {
-            int firstThreeDigit = 100;
+            int Digit1 = 100;
             int firstIteration = 0;
             int limitOfIterations = 1000;
             int correctCount = 0;
@@ -17,7 +17,7 @@ namespace Second_part
 
             for (int i = firstIteration; i < limitOfIterations; i += randomDivider)
             {
-                if (i >= firstThreeDigit)
+                if (i >= Digit1)
                 {
                     correctCount++;
                     Console.WriteLine($"Число {i} делится нацело на {randomDivider}");
