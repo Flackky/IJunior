@@ -1,0 +1,340 @@
+using System;
+
+namespace Second_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Random random = new Random();
+            string userInput = "";
+            bool isInputCorrect = false;
+
+            int playerHealth = 90000;
+            int playerMana = 10000;
+            int maxMana = 10000;
+            float enemyHealth = 1000000;
+            bool isPlayerAlive = true;
+            bool isEnemyAlive = true;
+            int finalPlayerDamage = 0;
+            int finalEnemyDamage = 0;
+
+            //Атака игрока от 0 до 10.
+
+            int playerAttackMinimum = 1;
+            int playerAttackMaximum = 10;
+            int playerAttack;
+
+            //Потенциальный урон заклинаний в процентах. Минимально 1000, максимально 8000. Можно использовать только в комбо: 1 -> 2 -> 3.
+            //Если действует усиление, тогда можно использовать 
+
+            int potencyOfIce1 = 1000;
+            int potencyOfIce2 = 2000;
+            int potencyOfIce3 = 3300;
+            int potencyOfFlare = 6000;
+            int potencyOfFire1 = 1600;
+            int potencyOfFire2 = 2600;
+            int potencyOfFire3 = 4200;
+            int potencyOfDespair = 8000;
+
+            bool isUsingDreaming = false;
+            int dreaming = 4000;
+            int dreamingCount = 3;
+            int dreamingCountDown = 1;
+
+            bool isUsingManaward = false;
+            int manaward = 2;           
+            int manawardCount = 3;
+            int manawardCountDown = 3;
+
+            //Усиление действующее при использовании заклинания одного типа: огонь/лёд. Эффект усиления увеличивается при использовании одного типа в комбо.
+            //Если комбо прерывается, то усиление исчезает. Минимально 10, максимально 35.
+
+            bool isIceEffectActive = false;
+            int iceMinimum = 1;
+            int iceMaximum = 4;
+            int iceEffect = random.Next(iceMinimum,iceMaximum);
+
+            bool isFireEffectActive = false;
+            int fireMinimum = 2;
+            int fireMaximum = 5;
+            int fireEffect = random.Next(fireMinimum,fireMaximum);
+
+            //Предметы: Зелье (+Здоровье) и эфир (+Мана)
+
+            int potionRecover = 12000;
+            int etherRecover = 3000;
+            int amountOfPotions = 15;
+            int amountOfethers = 10;
+              
+            while (isPlayerAlive && isEnemyAlive)
+            {               
+                isInputCorrect = false;
+
+                if (isUsingDreaming)
+                {
+                    if (dreamingCount > 0)
+                    {
+                        if (playerMana + dreaming > 10000)
+                        {
+                            playerMana = maxMana;
+                            dreamingCount--;
+                        }
+                        else
+                        {
+                            playerMana += dreaming;
+                            dreamingCount--;
+                        }
+                    }
+                    else if (dreamingCountDown > 1)
+                    {
+                        dreamingCountDown--;
+                    }
+                    else
+                    {
+                        isUsingDreaming = false;
+                        dreamingCount = 3;
+                        dreamingCountDown = 1;                        
+                    }
+                }
+
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write("Чёрный маг (Игрок) ");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write($"HP: {playerHealth}, ");
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.Write($"MP: {playerMana}");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write(" |> > > >| ");
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("Страж (Враг) ");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"HP: {enemyHealth}\n");
+
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("ИНФОРМАЦИЯ О БОЕ:");
+                Console.WriteLine($"ИГРОК >>>> {finalPlayerDamage} >>>> ВРАГ\n");
+
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("ТАКТИЧЕСКОЕ МЕНЮ:");
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine($"    АТАКА:\n1 - Лёд I: {potencyOfIce1} MP (+Ледяной эффект I)\n2 - Лёд II: {potencyOfIce2} MP (!Комбо: Пред. Лёд I)\n3 - Лёд III: {potencyOfIce3} MP (!Комбо: Пред. Лёд II)\nice - Вспышка: {potencyOfFlare} MP (!Необходим Ледяной эффект)\n4 - Огонь I: {potencyOfFire1} MP (+Огненный эффект I)\n5 - Огонь II: {potencyOfFire2} MP (!Комбо: Пред. Огонь I)\n6 - Огонь III: {potencyOfFire3} MP (!Комбо: Пред. Огонь II)\nfire - Отчаяние: {potencyOfDespair} MP (!Необходим Огненный эффект)\n");
+
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.WriteLine($"    ПРЕДМЕТЫ:\npn - Зелье (Восстанавливает {potionRecover} здоровья)\ner - Эфир (Восстанавливает {etherRecover} маны)\n");
+
+                Console.ForegroundColor = ConsoleColor.DarkBlue;
+                Console.WriteLine($"    ЗАЩИТА/ВОССТАНОВЛЕНИЕ:\ndg - Сновидения (Восстанавливает {dreaming} маны/ход. Действует {dreamingCount} хода. КД {dreamingCountDown} ход.)\nmd - Защита (Уменьшает входящий урон в {manaward} раза. Действует {manawardCount} хода. КД {manawardCountDown} хода.)\n");
+
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.WriteLine("НАЛОЖЕННЫЕ ЭФФЕКТЫ:");
+
+                if (isIceEffectActive)
+                {
+                    Console.WriteLine("+Ледяной эффект");
+                }
+
+                if (isFireEffectActive)
+                {
+                    Console.WriteLine("+Огненный эффект");
+                }
+
+                if (isUsingDreaming && dreamingCount > 0)
+                {
+                    Console.WriteLine($"+Сновидения. Осталось {dreamingCount} ход(а).");
+                }
+                else if (isUsingDreaming && dreamingCount <= 0)
+                {
+                    Console.WriteLine($"-Сновидения. КД: осталось {dreamingCountDown} ход(а).");
+                }
+
+                if (isUsingManaward)
+                {
+                    Console.WriteLine($"+Защита. Осталось {manawardCount} ход(а).");
+                }
+
+                while (isInputCorrect == false)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write("\n>>>> ");
+                    userInput = Console.ReadLine();
+                    playerAttack = random.Next(playerAttackMinimum, playerAttackMaximum);
+
+                    switch (userInput)
+                    {
+                        case "md":
+                            if (isUsingManaward)
+                            {
+                                Console.WriteLine($"Способность Защита используется или КД ещё не прошло");
+                            }
+                            else
+                            {
+                                isUsingManaward = true;
+                            }
+                            break;
+                        case "dg":
+                            if (isUsingDreaming)
+                            {
+                                Console.WriteLine($"Способность Защита используется или КД ещё не прошло");
+                            }
+                            else
+                            {
+                                isUsingDreaming = true;
+                            }
+                                break;
+                        case "1":
+                            if (isFireEffectActive)
+                                isFireEffectActive = false;
+
+                            if (isIceEffectActive)
+                            {
+                                finalPlayerDamage = playerAttack * potencyOfIce1 * iceEffect;
+                                enemyHealth -= finalPlayerDamage;
+                            }
+                            else
+                            {
+                                finalPlayerDamage = playerAttack * potencyOfIce1;
+                                enemyHealth -= finalPlayerDamage;
+                                isIceEffectActive = true;
+                            }
+
+                            isInputCorrect = true;
+                            playerMana -= potencyOfIce1;
+                            break;
+                        case "2":
+                            if (isFireEffectActive)
+                                isFireEffectActive = false;
+
+                            if (isIceEffectActive)
+                            {
+                                finalPlayerDamage = playerAttack * potencyOfIce2 * iceEffect;
+                                enemyHealth -= finalPlayerDamage;
+                            }
+                            else
+                            {
+                                finalPlayerDamage = playerAttack * potencyOfIce2;
+                                enemyHealth -= finalPlayerDamage;
+                            }
+
+                            isInputCorrect = true;
+                            playerMana -= potencyOfIce2;
+                            break;
+                        case "3":
+                            if (isFireEffectActive)
+                                isFireEffectActive = false;
+
+                            if (isIceEffectActive)
+                            {
+                                finalPlayerDamage = playerAttack * potencyOfIce3 * iceEffect;
+                                enemyHealth -= finalPlayerDamage;
+                            }
+                            else
+                            {
+                                finalPlayerDamage = playerAttack * potencyOfIce3;
+                                enemyHealth -= finalPlayerDamage;
+                            }
+
+                            isInputCorrect = true;
+                            playerMana -= potencyOfIce3;
+                            break;
+                        case "ice":
+                            if (isIceEffectActive)
+                            {
+                                finalPlayerDamage = playerAttack * potencyOfFlare * iceEffect;
+                                enemyHealth -= finalPlayerDamage;
+                                isIceEffectActive = false;
+                                isInputCorrect = true;
+                            }
+                            else
+                            {
+                                //Тут должна быть ошибка.
+                            }
+
+                            playerMana -= potencyOfFlare;
+                            break;
+                        case "4":
+                            if (isIceEffectActive)
+                                isIceEffectActive = false;
+
+                            if (isFireEffectActive)
+                            {
+                                finalPlayerDamage = playerAttack * potencyOfFire1 * fireEffect;
+                                enemyHealth -= finalPlayerDamage;
+                            }
+                            else
+                            {
+                                finalPlayerDamage = playerAttack * potencyOfFire1;
+                                enemyHealth -= finalPlayerDamage;
+                                isFireEffectActive = true;
+                            }
+
+                            isInputCorrect = true;
+                            playerMana -= potencyOfFire1;
+                            break;
+                        case "5":
+                            if (isIceEffectActive)
+                                isIceEffectActive = false;
+
+                            if (isFireEffectActive)
+                            {
+                                finalPlayerDamage = playerAttack* potencyOfFire2 *fireEffect;
+                                enemyHealth -= finalPlayerDamage;
+                            }
+                            else
+                            {
+                                finalPlayerDamage = playerAttack * potencyOfFire2;
+                                enemyHealth -= finalPlayerDamage;
+                            }
+
+                            isInputCorrect = true;
+                            playerMana -= potencyOfFire2;
+                            break;
+                        case "6":
+                            if (isIceEffectActive)
+                                isIceEffectActive = false;
+
+                            if (isFireEffectActive)
+                            {
+                                finalPlayerDamage = playerAttack* potencyOfFire3 *fireEffect;
+                                enemyHealth -= finalPlayerDamage;
+                            }
+                            else
+                            {
+                                finalPlayerDamage = playerAttack *potencyOfFire3;
+                                enemyHealth -= finalPlayerDamage;
+                            }
+
+                            isInputCorrect = true;
+                            playerMana -= potencyOfFire3;
+                            break;
+                        case "fire":
+                            if (isFireEffectActive)
+                            {
+                                finalPlayerDamage = playerAttack * potencyOfDespair * fireEffect;
+                                enemyHealth -= finalPlayerDamage;
+                                isFireEffectActive = false;
+                                isInputCorrect = true;
+                            }
+                            else
+                            {
+                                //Тут должна быть ошибка.
+                            }
+
+                            playerMana -= potencyOfDespair;
+                            break;
+
+                    }
+                }
+
+                if (playerHealth <= 0)
+                    isPlayerAlive = false;
+                if (enemyHealth <= 0)
+                    isEnemyAlive = false;
+
+                //Console.ReadKey();
+                Console.Clear();
+            }
+        }
+    }
+}
