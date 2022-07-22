@@ -17,6 +17,7 @@ namespace Second_part
             bool isManaEnough = true;
             int enemyHealth = 1000000;
             int maxEnemyHealth = 1000000;
+            int healthDivider = 2;
             bool isPlayerAlive = true;
             bool isEnemyAlive = true;
             int finalPlayerDamage = 0;
@@ -43,12 +44,16 @@ namespace Second_part
             bool isUsingDreaming = false;
             int dreaming = 4000;
             int dreamingCount = 3;
+            int dreamingCountStart = 3;
             int dreamingCountDown = 1;
+            int dreamingCountDownStart = 1;
 
             bool isUsingManaward = false;
             int manaward = 2;
             int manawardCount = 3;
+            int manawardCountStart = 3;
             int manawardCountDown = 3;
+            int manawardCountDownStart = 3;
 
             //Усиление действующее при использовании заклинания одного типа: огонь/лёд.
             //Если комбо прерывается, то усиление исчезает. Минимально 10, максимально 35.
@@ -90,7 +95,7 @@ namespace Second_part
                 {
                     if (dreamingCount > 0)
                     {
-                        if (playerMana + dreaming > 10000)
+                        if (playerMana + dreaming > maxMana)
                         {
                             playerMana = maxMana;
                             dreamingCount--;
@@ -108,8 +113,8 @@ namespace Second_part
                     else
                     {
                         isUsingDreaming = false;
-                        dreamingCount = 3;
-                        dreamingCountDown = 1;
+                        dreamingCount = dreamingCountStart;
+                        dreamingCountDown = dreamingCountDownStart;
                     }
                 }
 
@@ -132,7 +137,7 @@ namespace Second_part
                 Console.WriteLine($"ИГРОК >>>> {finalPlayerDamage} >>>> ВРАГ");
                 Console.Write($"ИГРОК <<<< {finalEnemyDamage} <<<< ВРАГ");
 
-                if (enemyHealth <= maxEnemyHealth / 2)
+                if (enemyHealth <= maxEnemyHealth / healthDivider)
                 {
                     Console.WriteLine(" (УРОН x2)\n");
                 }
@@ -150,7 +155,7 @@ namespace Second_part
                 Console.WriteLine($"    ПРЕДМЕТЫ:\npn - Зелье (Восстанавливает {potionRecover} здоровья). Осталось: {amountOfPotions}\ner - Эфир (Восстанавливает {etherRecover} маны). Осталось: {amountOfEthers}\n");
 
                 Console.ForegroundColor = ConsoleColor.DarkBlue;
-                Console.WriteLine($"    ЗАЩИТА/ВОССТАНОВЛЕНИЕ (При использовании ход не будет завершён.):\ndg - Сновидения (Восстанавливает {dreaming} маны/ход. Действует {dreamingCount} хода. КД {dreamingCountDown} ход.)\nmd - Защита (Уменьшает входящий урон в {manaward} раза. Действует {manawardCount} хода. КД {manawardCountDown} хода.)\n");
+                Console.WriteLine($"    ЗАЩИТА/ВОССТАНОВЛЕНИЕ (При использовании ход не будет завершён.):\ndg - Сновидения (Восстанавливает {dreaming} маны/ход. Действует {dreamingCountStart} хода. КД {dreamingCountDownStart} ход.)\nmd - Защита (Уменьшает входящий урон в {manaward} раза. Действует {manawardCountStart} хода. КД {manawardCountDownStart} хода.)\n");
 
                 Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.WriteLine("НАЛОЖЕННЫЕ ЭФФЕКТЫ:");
@@ -512,7 +517,7 @@ namespace Second_part
 
                 enemyAttack = random.Next(enemyAttackMinimum, enemyAttackMaximum);
 
-                if (enemyHealth >= maxEnemyHealth / 2)
+                if (enemyHealth >= maxEnemyHealth / healthDivider)
                 {
                     finalEnemyDamage = enemyAttack * enemyAttackPotency;
                 }
@@ -525,7 +530,7 @@ namespace Second_part
                 {
                     if (manawardCount > 0)
                     {
-                        finalEnemyDamage /= 2;
+                        finalEnemyDamage /= damageMultiplier;
                         manawardCount--;
                     }
                     else if (manawardCountDown > 1)
@@ -535,8 +540,8 @@ namespace Second_part
                     else
                     {
                         isUsingManaward = false;
-                        manawardCount = 3;
-                        manawardCountDown = 3;
+                        manawardCount = manawardCountStart;
+                        manawardCountDown = manawardCountDownStart;
                     }
                 }
 
@@ -554,11 +559,11 @@ namespace Second_part
                 Console.Clear();
             }
 
-            if (!isPlayerAlive && !isEnemyAlive)
+            if (isPlayerAlive == false && isEnemyAlive == false)
             {
                 Console.WriteLine("Вы и враг погибли.");
             }
-            else if (!isPlayerAlive)
+            else if (isPlayerAlive == false)
             {
                 Console.WriteLine("Вы пали в бою.");
             }
