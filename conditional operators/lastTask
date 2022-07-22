@@ -80,6 +80,8 @@ namespace Second_part
 
             //Основная часть программы.
 
+            Console.WriteLine($"Вам нужно победить стража. Как только его здоровье уменьшится до половины, он будет атаковать в {damageMultiplier} раз(а) сильнее. Удачи!\n");
+
             while (isPlayerAlive && isEnemyAlive)
             {
                 isInputCorrect = false;
