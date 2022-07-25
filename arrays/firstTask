@@ -1,0 +1,45 @@
+using System;
+
+namespace Second_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            int lineNumber = 1;
+            int columnNumber = 0;
+            int xSummation = 0;
+            int yMultiplication = 1;
+            Random random = new Random();
+            int randomMin = 0;
+            int randomMax = 9;
+            int xDimensionSize = 3;
+            int yDimensionSize = 3;
+            int[,] matrix = new int[xDimensionSize, yDimensionSize];
+
+            for (int i = 0; i < matrix.GetLength(0); i++)
+            {               
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                {
+                    matrix[i, j] = random.Next(randomMin, randomMax);
+                    Console.Write(matrix[i, j]);
+
+                    if (i == lineNumber)
+                    {
+                        xSummation += matrix[i, j];
+                    }
+
+                    if (j == columnNumber)
+                    {
+                        yMultiplication *= matrix[i, j];
+                    }
+                }
+
+                Console.WriteLine();
+            }
+
+            Console.WriteLine($"\nСумма второй строки: {xSummation}\nПроизведение первого столбца: {yMultiplication}");
+            Console.ReadKey();
+        }
+    }
+}
