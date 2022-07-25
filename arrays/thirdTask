@@ -1,0 +1,67 @@
+using System;
+
+namespace Second_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            int startPointOfIteration = 0;
+            bool canEnter = true;
+            string userInput;
+            int vectorSummation = 0;
+            int DimensionSize = 1;
+            int[] vector = new int[DimensionSize];           
+
+            while (canEnter)
+            {
+                Console.Write("Массив: ");
+
+                for (int i = 0; i < vector.Length - 1; i++)
+                {
+                    Console.Write($"{vector[i]} ");
+                }
+
+                Console.WriteLine($"\nРазмер массива: {vector.Length - 1}");
+                Console.WriteLine($"\nВведите любое число, чтобы его запомнить, или введите команду:\nsum - Сумма всех веденных чисел\nexit - Выйти из программы.\n");
+                userInput = Console.ReadLine();
+
+                switch (userInput)
+                {
+                    case "sum":
+                        vectorSummation = 0;
+
+                        for (int i = 0; i < vector.Length; i++)
+                        {
+                            vectorSummation += vector[i];
+                        }
+
+                        Console.WriteLine($"Cумма всех веденных чисел {vectorSummation}");
+                        Console.ReadKey();
+                        break;
+                    case "exit":
+                        canEnter = false;
+                        break;
+                    default:
+                        for (int i = startPointOfIteration; i < vector.Length; i++)
+                        {
+                            vector[i] = Convert.ToInt32(userInput);
+                        }
+
+                        int[] tempVector = new int[vector.Length + 1];
+
+                        for (int i = 0; i < vector.Length; i++)
+                        {                                                
+                            tempVector[i] = vector[i];
+                        }
+
+                        vector = tempVector;
+                        startPointOfIteration++;
+                        break;
+                }
+             
+                Console.Clear();
+            }          
+        }
+    }
+}
