@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using System.Threading;
 
 namespace Second_part
 {
@@ -18,20 +20,23 @@ namespace Second_part
             int[,] matrix = new int[xDimensionSize, yDimensionSize];
 
             for (int i = 0; i < matrix.GetLength(0); i++)
-            {               
+            {
                 for (int j = 0; j < matrix.GetLength(1); j++)
                 {
                     matrix[i, j] = random.Next(randomMin, randomMax);
                     Console.Write(matrix[i, j]);
 
-                    if (i == lineNumber)
-                    {
-                        xSummation += matrix[i, j];
-                    }
-
                     if (j == columnNumber)
                     {
                         yMultiplication *= matrix[i, j];
+                    }
+                }
+
+                if (i == lineNumber)
+                {
+                    for (int j = 0; j < matrix.GetLength(1); j++)
+                    {
+                        xSummation += matrix[i, j];
                     }
                 }
 
