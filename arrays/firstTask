@@ -1,6 +1,4 @@
 using System;
-using System.Diagnostics;
-using System.Threading;
 
 namespace Second_part
 {
@@ -25,13 +23,12 @@ namespace Second_part
                 {
                     matrix[i, j] = random.Next(randomMin, randomMax);
                     Console.Write(matrix[i, j]);
-
-                    if (j == columnNumber)
-                    {
-                        yMultiplication *= matrix[i, j];
-                    }
                 }
+                Console.WriteLine();
+            }
 
+            for (int i = 0; i < matrix.GetLength(0); i++)
+            {
                 if (i == lineNumber)
                 {
                     for (int j = 0; j < matrix.GetLength(1); j++)
@@ -40,10 +37,16 @@ namespace Second_part
                     }
                 }
 
-                Console.WriteLine();
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                {
+                    if (j == columnNumber)
+                    {
+                        yMultiplication *= matrix[i, j];
+                    }
+                }              
             }
 
-            Console.WriteLine($"\nСумма второй строки: {xSummation}\nПроизведение первого столбца: {yMultiplication}");
+            Console.WriteLine($"\nСумма второй строки: {xSummation}\nПроизведение первого столбца: {yMultiplication}\n");
             Console.ReadKey();
         }
     }
