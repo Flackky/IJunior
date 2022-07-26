@@ -6,23 +6,23 @@ namespace Second_part
     {
         static void Main(string[] args)
         {
-            int startPointOfIteration = 0;
+            int arrayCount = 0;
             bool canEnter = true;
             string userInput;
-            int vectorSummation = 0;
-            int DimensionSize = 1;
-            int[] vector = new int[DimensionSize];           
+            int vectorSummation;
+            int dimensionSize = 0;
+            int[] vector = new int[dimensionSize];
 
             while (canEnter)
             {
                 Console.Write("Массив: ");
 
-                for (int i = 0; i < vector.Length - 1; i++)
+                for (int i = 0; i < vector.Length; i++)
                 {
                     Console.Write($"{vector[i]} ");
                 }
 
-                Console.WriteLine($"\nРазмер массива: {vector.Length - 1}");
+                Console.WriteLine($"\nРазмер массива: {vector.Length}");
                 Console.WriteLine($"\nВведите любое число, чтобы его запомнить, или введите команду:\nsum - Сумма всех веденных чисел\nexit - Выйти из программы.\n");
                 userInput = Console.ReadLine();
 
@@ -43,25 +43,21 @@ namespace Second_part
                         canEnter = false;
                         break;
                     default:
-                        for (int i = startPointOfIteration; i < vector.Length; i++)
-                        {
-                            vector[i] = Convert.ToInt32(userInput);
-                        }
-
                         int[] tempVector = new int[vector.Length + 1];
+                        tempVector[arrayCount] = Convert.ToInt32(userInput);
 
                         for (int i = 0; i < vector.Length; i++)
-                        {                                                
+                        {
                             tempVector[i] = vector[i];
                         }
 
                         vector = tempVector;
-                        startPointOfIteration++;
+                        arrayCount++;
                         break;
                 }
-             
+
                 Console.Clear();
-            }          
+            }
         }
     }
 }
