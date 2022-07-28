@@ -12,7 +12,7 @@ namespace Second_part
             int previousChar = 0;
             int nextChar = 0;
             int digitName = 0;
-            int dimensionSize = 30;
+            int dimensionSize = 1;
             int[] vector = new int [dimensionSize];
 
             Console.Write("Массив: ");
@@ -41,7 +41,12 @@ namespace Second_part
                     digitName = vector[i];                                   
                     previousChar = vector[i - 1];
                     nextChar = vector[i + 1];
-                    Console.Write($"{vector[i]} ");                  
+
+                    if (digitName > previousChar && digitName > nextChar)
+                    {
+                        Console.Write($"{vector[i]} ");
+                    }
+                    
                 }
 
                 if (vector[vector.Length - 1] > vector[vector.Length - 2])
