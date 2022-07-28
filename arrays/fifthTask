@@ -7,6 +7,7 @@ namespace Second_part
         static void Main(string[] args)
         {
             Random random = new Random();
+            int startCount = 1;
             int randomMin = 0;
             int randomMax = 9;
             int previousChar = 0;
@@ -44,11 +45,11 @@ namespace Second_part
                     {
                         maxLineCount = lineCount;
                         digitName = previousChar;
-                        lineCount = 1;
+                        lineCount = startCount;
                     }
                     else
                     {
-                        lineCount = 1;
+                        lineCount = startCount;
                     }
                 }
                 
