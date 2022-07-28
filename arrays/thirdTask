@@ -45,8 +45,7 @@ namespace Second_part
                     if (digitName > previousChar && digitName > nextChar)
                     {
                         Console.Write($"{vector[i]} ");
-                    }
-                    
+                    }                  
                 }
 
                 if (vector[vector.Length - 1] > vector[vector.Length - 2])
