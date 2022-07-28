@@ -31,38 +31,27 @@ namespace Second_part
             }
             else
             {
-                for (int i = 0; i < vector.Length; i++)
+                if (vector[0] > vector[1])
                 {
-                    digitName = vector[i];
+                    Console.Write($"{vector[0]} ");
+                }
 
-                    if (i == 0)
+                for (int i = 1; i < vector.Length - 1; i++)
+                {
+                    digitName = vector[i];                                   
+                    previousChar = vector[i - 1];
+                    nextChar = vector[i + 1];
+
+                    if (digitName > previousChar && digitName > nextChar)
                     {
-                        nextChar = vector[i + 1];
-
-                        if (digitName > nextChar)
-                        {
-                            Console.Write($"{vector[i]} ");
-                        }
+                        Console.Write($"{vector[i]} ");
                     }
-                    else if (i == vector.Length - 1)
-                    {
-                        previousChar = vector[i - 1];
+                    
+                }
 
-                        if (digitName > previousChar)
-                        {
-                            Console.Write($"{vector[i]} ");
-                        }
-                    }
-                    else
-                    {
-                        previousChar = vector[i - 1];
-                        nextChar = vector[i + 1];
-
-                        if (digitName > previousChar && digitName > nextChar)
-                        {
-                            Console.Write($"{vector[i]} ");
-                        }
-                    }
+                if (vector[vector.Length - 1] > vector[vector.Length - 2])
+                {
+                    Console.Write($"{vector[vector.Length - 1]} ");
                 }
             }
                        
