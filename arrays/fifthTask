@@ -39,8 +39,6 @@ namespace Second_part
                 
                 if (vector[i] != previousChar || i == vector.Length - 1)
                 {
-                    //lineCount++;
-
                     if (lineCount > maxLineCount)
                     {
                         maxLineCount = lineCount;
