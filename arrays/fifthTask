@@ -1,0 +1,63 @@
+using System;
+
+namespace Second_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Random random = new Random();
+            int randomMin = 0;
+            int randomMax = 9;
+            int previousChar = 0;
+            int lineCount = 0;
+            int maxLineCount = int.MinValue;
+            int digitName = 0;
+            int dimensionSize = 30;
+            int[] vector = new int [dimensionSize];
+
+            Console.Write("Массив: ");
+
+            for (int i = 0; i < vector.Length; i++)
+            {
+                vector[i] = random.Next(randomMin, randomMax);
+
+                if (i > 0)
+                {
+                    previousChar = vector[i - 1];
+                }
+                else
+                {
+                    previousChar = vector[i];
+                }
+
+                if (vector[i] == previousChar)
+                {
+                    lineCount++;
+                }
+                
+                if (vector[i] != previousChar || i == vector.Length - 1)
+                {
+                    //lineCount++;
+
+                    if (lineCount > maxLineCount)
+                    {
+                        maxLineCount = lineCount;
+                        digitName = previousChar;
+                        lineCount = 1;
+                    }
+                    else
+                    {
+                        lineCount = 1;
+                    }
+                }
+                
+                Console.Write($"{vector[i]} ");
+            }
+
+            Console.WriteLine($"\nРазмер массива: {dimensionSize}");
+            Console.WriteLine($"\nЧисло {digitName} повторяется большее число раз подряд - {maxLineCount}.");
+            Console.ReadKey();              
+        }
+    }
+}
