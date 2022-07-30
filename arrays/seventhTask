@@ -1,0 +1,22 @@
+using System;
+
+namespace Third_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            string text = "Это всего лишь текст";
+            string[] textArray = text.Split(' ');
+
+            Console.WriteLine("Массив слов:\n");
+
+            foreach (var word in textArray)
+            {
+                Console.WriteLine(word);
+            }
+
+            Console.ReadKey();              
+        }
+    }
+}
