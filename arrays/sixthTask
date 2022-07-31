@@ -22,6 +22,8 @@ namespace Third_part
                 Console.Write($"{vector[i]} ");
             }
             
+            //Сортировка вставками.
+            
             for (int i = 1; i < vector.Length; i++)
             {
                 currentValue = vector[i];
