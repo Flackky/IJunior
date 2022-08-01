@@ -10,16 +10,16 @@ namespace Third_part
             int randomMin = 0;
             int randomMax = 10;
             int dimensionSize = 6;
-            int[] vector = new int[dimensionSize];
+            int[] array = new int[dimensionSize];
             int temporaryData;
             int shiftCount;
 
             Console.Write("Изначальный массив: ");
 
-            for (int i = 0; i < vector.Length; i++)
+            for (int i = 0; i < array.Length; i++)
             {
-                vector[i] = random.Next(randomMin, randomMax);
-                Console.Write($"{vector[i]} ");
+                array[i] = random.Next(randomMin, randomMax);
+                Console.Write($"{array[i]} ");
             }
 
             Console.Write("\n\nНа сколько элементов нужно сдвинуть массив влево?\n-> ");
@@ -28,21 +28,21 @@ namespace Third_part
 
             for (int i = 0; i < shiftCount; i++)
             {
-                temporaryData = vector[0];
+                temporaryData = array[0];
 
-                for (int j = 0; j < vector.Length - 1; j++)
+                for (int j = 0; j < array.Length - 1; j++)
                 {
-                    vector[j] = vector[j + 1];
+                    array[j] = array[j + 1];
                 }
 
-                vector[vector.Length - 1] = temporaryData;
+                array[array.Length - 1] = temporaryData;
             }
 
             Console.Write($"\nМассив со сдвигом влево на {shiftCount} элементa(ов): ");
 
-            for (int i = 0; i < vector.Length; i++)
+            for (int i = 0; i < array.Length; i++)
             {
-                Console.Write($"{vector[i]} ");
+                Console.Write($"{array[i]} ");
             }
 
             Console.ReadKey();              
