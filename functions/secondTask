@@ -11,7 +11,7 @@ namespace Fourth_part
                 isAlive = true;
                 currentValue = maxValue;
             }
-            else if (currentValue + addValue < minValue)
+            else if (currentValue + addValue <= minValue)
             {
                 isAlive = false;
                 currentValue = minValue;
