@@ -1,0 +1,60 @@
+using System;
+
+namespace Fourth_part
+{
+    internal class Program
+    {
+        static void DrawBar(int value, int maxValue, ConsoleColor filledColor, ConsoleColor unfilledColor, int position)
+        {
+            ConsoleColor defaultColor = Console.ForegroundColor;
+            string bar = "";
+            string symbolFilled = "#";
+            string symbolUnfilled = "_";
+
+            for (int i = 0; i < value; i++)
+            {
+                bar += symbolFilled;
+            }
+
+            Console.SetCursorPosition(0, position);
+            Console.Write("[");
+            Console.ForegroundColor = filledColor;
+            Console.Write(bar);
+            Console.ForegroundColor = unfilledColor;
+
+            bar = "";
+
+            for (int i = value; i < maxValue; i++)
+            {
+                bar += symbolUnfilled;
+            }
+
+            Console.Write(bar);
+            Console.ForegroundColor = defaultColor;
+            Console.Write("]");
+        }
+
+        static void Main(string[] args)
+        {
+            int currentHealth = 10;
+            int maxHealth = 10;
+            int currentMana = 10;
+            int maxMana = 10;
+
+            while (true)
+            {
+                DrawBar(currentHealth, maxHealth, ConsoleColor.Green, ConsoleColor.DarkGreen, 0);
+                DrawBar(currentMana, maxMana, ConsoleColor.Magenta, ConsoleColor.DarkMagenta, 1);
+             
+                Console.Write("\n\nВведите положительное или отрицательное число, чтобы увеличить или отнять (Соответственно) очки здоровья: ");
+                currentHealth += Convert.ToInt32(Console.ReadLine());
+                Console.Write("Введите положительное или отрицательное число, чтобы увеличить или отнять (Соответственно) очки маны: ");
+                currentMana += Convert.ToInt32(Console.ReadLine());
+
+                Console.Clear();
+            }
+
+            Console.ReadKey();              
+        }
+    }
+}
