@@ -4,6 +4,18 @@ namespace Fourth_part
 {
     internal class Program
     {
+        static string FillDrawnBar(int iteration, int endIteration, string symbol)
+        {
+            string fillingBar = "";
+
+            for (int i = iteration; i < endIteration; i++)
+            {
+                fillingBar += symbol;
+            }
+
+            return fillingBar;
+        }
+
         static void DrawBar(int value, int maxValue, ConsoleColor filledColor, ConsoleColor unfilledColor, int position)
         {
             ConsoleColor defaultColor = Console.ForegroundColor;
@@ -11,10 +23,7 @@ namespace Fourth_part
             string symbolFilled = "#";
             string symbolUnfilled = "_";
 
-            for (int i = 0; i < value; i++)
-            {
-                bar += symbolFilled;
-            }
+            bar = FillDrawnBar(0, value, symbolFilled);
 
             Console.SetCursorPosition(0, position);
             Console.Write("[");
@@ -23,11 +32,7 @@ namespace Fourth_part
             Console.ForegroundColor = unfilledColor;
 
             bar = "";
-
-            for (int i = value; i < maxValue; i++)
-            {
-                bar += symbolUnfilled;
-            }
+            bar = FillDrawnBar(value, maxValue, symbolUnfilled);
 
             Console.Write(bar);
             Console.ForegroundColor = defaultColor;
@@ -36,23 +41,40 @@ namespace Fourth_part
 
         static void Main(string[] args)
         {
+            string userInput;
+            bool canEnter = true;
             int currentHealth = 10;
             int maxHealth = 10;
             int currentMana = 10;
             int maxMana = 10;
 
-            while (true)
+            while (canEnter)
             {
                 DrawBar(currentHealth, maxHealth, ConsoleColor.Green, ConsoleColor.DarkGreen, 0);
                 DrawBar(currentMana, maxMana, ConsoleColor.Magenta, ConsoleColor.DarkMagenta, 1);
-             
-                Console.Write("\n\nВведите положительное или отрицательное число, чтобы увеличить или отнять (Соответственно) очки здоровья: ");
-                currentHealth += Convert.ToInt32(Console.ReadLine());
-                Console.Write("Введите положительное или отрицательное число, чтобы увеличить или отнять (Соответственно) очки маны: ");
-                currentMana += Convert.ToInt32(Console.ReadLine());
 
-                Console.Clear();
-            }           
+                Console.Write("\n\nВведите номер команды:\n1 - изменить вид шкалы здоровья/маны.\n2 - выйти из программы.\n-> ");
+                userInput = Console.ReadLine();
+
+                switch (userInput)
+                {
+                    case "1":
+                        Console.Write("Введите положительное или отрицательное число, чтобы увеличить или отнять (Соответственно) очки здоровья: ");
+                        currentHealth += Convert.ToInt32(Console.ReadLine());
+                        Console.Write("Введите положительное или отрицательное число, чтобы увеличить или отнять (Соответственно) очки маны: ");
+                        currentMana += Convert.ToInt32(Console.ReadLine());
+                        Console.Clear();
+                        break;
+                    case "2":
+                        canEnter = false;
+                        break;
+                    default:
+                        Console.Write("Неизвестная команда");
+                        Console.ReadKey();
+                        Console.Clear();
+                        break;
+                }
+            }               
         }
     }
 }
