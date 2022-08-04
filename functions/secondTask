@@ -52,9 +52,7 @@ namespace Fourth_part
                 currentMana += Convert.ToInt32(Console.ReadLine());
 
                 Console.Clear();
-            }
-
-            Console.ReadKey();              
+            }           
         }
     }
 }
