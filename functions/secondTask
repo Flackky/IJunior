@@ -4,6 +4,27 @@ namespace Fourth_part
 {
     internal class Program
     {
+        static bool CheckLimits(ref int currentValue, int addValue, int minValue, int maxValue, bool isAlive = true)
+        {
+            if (currentValue + addValue > maxValue)
+            {
+                isAlive = true;
+                currentValue = maxValue;
+            }
+            else if (currentValue + addValue < minValue)
+            {
+                isAlive = false;
+                currentValue = minValue;
+            }
+            else
+            {
+                isAlive = true;
+                currentValue += addValue;
+            }
+
+            return isAlive;
+        }
+
         static string FillDrawnBar(int iteration, int endIteration, string symbol)
         {
             string fillingBar = "";
@@ -41,17 +62,37 @@ namespace Fourth_part
 
         static void Main(string[] args)
         {
+            int valueDifference;
             string userInput;
+            bool isAlive = true;
             bool canEnter = true;
+            int multiplier = 10;
             int currentHealth = 10;
+            int healthPercent = 1;
             int maxHealth = 10;
+            int minHealth = 0;
             int currentMana = 10;
+            int manaPercent = 1;
             int maxMana = 10;
+            int minMana = 0;
 
             while (canEnter)
             {
-                DrawBar(currentHealth, maxHealth, ConsoleColor.Green, ConsoleColor.DarkGreen, 0);
+                if (isAlive == false)
+                {
+                    DrawBar(currentHealth, maxHealth, ConsoleColor.Green, ConsoleColor.DarkGreen, 0);
+                    Console.Write(" - Вы погибли.");
+                }
+                else
+                {
+                    DrawBar(currentHealth, maxHealth, ConsoleColor.Green, ConsoleColor.DarkGreen, 0);
+                    healthPercent = currentHealth * multiplier;
+                    Console.Write($" - {healthPercent}%");
+                }
+                
                 DrawBar(currentMana, maxMana, ConsoleColor.Magenta, ConsoleColor.DarkMagenta, 1);
+                manaPercent = currentMana * multiplier;
+                Console.Write($" - {manaPercent}%");
 
                 Console.Write("\n\nВведите номер команды:\n1 - изменить вид шкалы здоровья/маны.\n2 - выйти из программы.\n-> ");
                 userInput = Console.ReadLine();
@@ -60,9 +101,15 @@ namespace Fourth_part
                 {
                     case "1":
                         Console.Write("Введите положительное или отрицательное число, чтобы увеличить или отнять (Соответственно) очки здоровья: ");
-                        currentHealth += Convert.ToInt32(Console.ReadLine());
+                        valueDifference = Convert.ToInt32(Console.ReadLine());
+
+                        isAlive = CheckLimits(ref currentHealth, valueDifference, minHealth, maxHealth, isAlive);
+
                         Console.Write("Введите положительное или отрицательное число, чтобы увеличить или отнять (Соответственно) очки маны: ");
-                        currentMana += Convert.ToInt32(Console.ReadLine());
+                        valueDifference = Convert.ToInt32(Console.ReadLine());
+
+                        CheckLimits(ref currentMana, valueDifference, minMana, maxMana);
+
                         Console.Clear();
                         break;
                     case "2":
