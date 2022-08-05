@@ -1,0 +1,165 @@
+using System;
+
+namespace Fourth_part
+{
+    internal class Program
+    {
+        static string [] IncreaseArray(string[] array, string value)
+        {
+            string[] tempArray = new string[array.Length + 1];
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                tempArray[i] = array[i];
+            }
+
+            tempArray[tempArray.Length - 1] = value;
+            array = tempArray;
+            return array;
+        }
+
+        static void AddRecord (ref string [] namesArray, ref string[] positionsArray)
+        {
+            Console.Write("Введите ФИО.\n-> ");
+            string name = Console.ReadLine();
+            Console.Write("Введите Должность.\n-> ");
+            string position = Console.ReadLine();
+            namesArray = IncreaseArray(namesArray, name);
+            positionsArray = IncreaseArray(positionsArray, position);
+            Console.WriteLine("Досье добавлено.");
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        static string ShowRecords(string[] namesArray, string[] positionsArray)
+        {
+            string output = "";
+
+            for (int i = 0; i <= namesArray.Length - 1; i++)
+            {
+                output += $"{i + 1}) {namesArray[i]} - {positionsArray[i]}.\n";
+            }
+
+            return output;
+        }
+
+        static string[] DecreaseArray(string[] array, int index)
+        {
+            string[] tempArray = new string[array.Length - 1];
+
+            for (int i = 0; i < index; i++)
+            {
+                tempArray[i] = array[i];
+            }
+
+            for (int i = index + 1; i < array.Length; i++)
+            {
+                tempArray[i - 1] = array[i];
+            }
+            
+            array = tempArray;
+            return array;
+        }
+
+        static void DeleteRecord(ref string[] namesArray, ref string[] positionsArray)
+        {
+            bool isCorrectIndex = false;
+            int index = 0;
+
+            Console.Write("Введите индекс досье, которое вы хотите удалить.\n-> ");
+            while (isCorrectIndex == false)
+            {
+                index = Convert.ToInt32(Console.ReadLine()) - 1;
+
+                if (index <= 0 || index > namesArray.Length - 1)
+                {
+                    Console.Write("Такого индекса досье не существует.\n-> ");
+                }
+                else
+                {
+                    isCorrectIndex = true;
+                }
+            }
+                       
+            namesArray = DecreaseArray(namesArray, index);
+            positionsArray = DecreaseArray(positionsArray, index);
+            Console.WriteLine("Досье удалено.");
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        static string SearchBySurname(string[] namesArray, string[] positionsArray)
+        {
+            string output = "";
+            string lowerName;
+            bool match = false;
+
+            Console.Write("Введите Фамилию человека, которого нужно найти.\n-> ");
+            string surname = Console.ReadLine();
+
+            for (int i = 0; i <= namesArray.Length - 1; i++)
+            {
+                lowerName = namesArray[i].ToLower();
+
+                if (lowerName.Contains($"{surname.ToLower()} "))
+                {
+                    output += $"{i + 1}) {namesArray[i]} - {positionsArray[i]}.\n";
+                    match = true;
+                }
+            }
+
+            if (match == false)
+            {
+                output = "Не было найдено ни одного совподения.";
+            }
+
+            return output;
+        }
+
+        static void Main(string[] args)
+        {
+            string output = "";
+            string userInput;
+            bool canEnter = true;
+            int numberOfElements = 0;
+            string[] namesArray = new string[numberOfElements];
+            string[] positionsArray = new string[numberOfElements];
+
+            while (canEnter)
+            {
+                Console.Write("Меню:\n1 - добавить досье\n2 - вывести все досье (в одну строку через “-” фио и должность с порядковым номером в начале)\n3 - удалить досье (Массивы уменьшаются на один элемент. Нужны дополнительные проверки, чтобы не возникало ошибок)\n4 - поиск по фамилии\n5 - выход\n-> ");
+                userInput = Console.ReadLine();
+
+                switch (userInput)
+                {
+                    case "1":
+                        AddRecord(ref namesArray, ref positionsArray);                    
+                        break;
+                    case "2":
+                        output = ShowRecords(namesArray, positionsArray);
+                        Console.WriteLine(output);
+                        Console.ReadKey();
+                        Console.Clear();
+                        break;
+                    case "3":
+                        DeleteRecord(ref namesArray, ref positionsArray);
+                        break;
+                    case "4":
+                        output = SearchBySurname(namesArray, positionsArray);
+                        Console.WriteLine(output);
+                        Console.ReadKey();
+                        Console.Clear();
+                        break;
+                    case "5":
+                        canEnter = false;
+                        break;
+                    default:
+                        Console.WriteLine("Неизвестная команда.");
+                        Console.ReadKey();
+                        Console.Clear();
+                        break;
+                }
+            }
+        }
+    }
+}
