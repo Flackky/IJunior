@@ -18,29 +18,28 @@ namespace Fourth_part
             return array;
         }
 
-        static void AddRecord (ref string [] namesArray, ref string[] positionsArray)
+        static void AddRecord (ref string [] fullNames, ref string[] positions)
         {
             Console.Write("Введите ФИО.\n-> ");
             string name = Console.ReadLine();
             Console.Write("Введите Должность.\n-> ");
             string position = Console.ReadLine();
-            namesArray = IncreaseArray(namesArray, name);
-            positionsArray = IncreaseArray(positionsArray, position);
+            fullNames = IncreaseArray(fullNames, name);
+            positions = IncreaseArray(positions, position);
             Console.WriteLine("Досье добавлено.");
             Console.ReadKey();
             Console.Clear();
         }
 
-        static string ShowRecords(string[] namesArray, string[] positionsArray)
+        static void ShowRecords(string[] fullNames, string[] positions)
         {
-            string output = "";
-
-            for (int i = 0; i <= namesArray.Length - 1; i++)
+            for (int i = 0; i <= fullNames.Length - 1; i++)
             {
-                output += $"{i + 1}) {namesArray[i]} - {positionsArray[i]}.\n";
+                Console.WriteLine($"{i + 1}) {fullNames[i]} - {positions[i]}.\n");
             }
 
-            return output;
+            Console.ReadKey();
+            Console.Clear();
         }
 
         static string[] DecreaseArray(string[] array, int index)
@@ -61,7 +60,7 @@ namespace Fourth_part
             return array;
         }
 
-        static void DeleteRecord(ref string[] namesArray, ref string[] positionsArray)
+        static void DeleteRecord(ref string[] fullNames, ref string[] positions)
         {
             bool isCorrectIndex = false;
             int index = 0;
@@ -71,7 +70,7 @@ namespace Fourth_part
             {
                 index = Convert.ToInt32(Console.ReadLine()) - 1;
 
-                if (index <= 0 || index > namesArray.Length - 1)
+                if (index <= 0 || index > fullNames.Length - 1)
                 {
                     Console.Write("Такого индекса досье не существует.\n-> ");
                 }
@@ -81,49 +80,48 @@ namespace Fourth_part
                 }
             }
                        
-            namesArray = DecreaseArray(namesArray, index);
-            positionsArray = DecreaseArray(positionsArray, index);
+            fullNames = DecreaseArray(fullNames, index);
+            positions = DecreaseArray(positions, index);
             Console.WriteLine("Досье удалено.");
             Console.ReadKey();
             Console.Clear();
         }
 
-        static string SearchBySurname(string[] namesArray, string[] positionsArray)
+        static void SearchBySurname(string[] fullNames, string[] positions)
         {
-            string output = "";
-            string lowerName;
-            bool match = false;
+            string lowerNames;
+            bool isMatch = false;
 
             Console.Write("Введите Фамилию человека, которого нужно найти.\n-> ");
             string surname = Console.ReadLine();
 
-            for (int i = 0; i <= namesArray.Length - 1; i++)
+            for (int i = 0; i <= fullNames.Length - 1; i++)
             {
-                lowerName = namesArray[i].ToLower();
+                lowerNames = fullNames[i].ToLower();
 
-                if (lowerName.Contains($"{surname.ToLower()} "))
+                if (lowerNames.Contains($"{surname.ToLower()} "))
                 {
-                    output += $"{i + 1}) {namesArray[i]} - {positionsArray[i]}.\n";
-                    match = true;
+                    Console.WriteLine($"{i + 1}) {fullNames[i]} - {positions[i]}.\n");
+                    isMatch = true;
                 }
             }
 
-            if (match == false)
+            if (isMatch == false)
             {
-                output = "Не было найдено ни одного совподения.";
+                Console.WriteLine("Не было найдено ни одного совподения.");
             }
 
-            return output;
+            Console.ReadKey();
+            Console.Clear();
         }
 
         static void Main(string[] args)
         {
-            string output = "";
             string userInput;
             bool canEnter = true;
             int numberOfElements = 0;
-            string[] namesArray = new string[numberOfElements];
-            string[] positionsArray = new string[numberOfElements];
+            string[] fullNames = new string[numberOfElements];
+            string[] positions = new string[numberOfElements];
 
             while (canEnter)
             {
@@ -133,22 +131,16 @@ namespace Fourth_part
                 switch (userInput)
                 {
                     case "1":
-                        AddRecord(ref namesArray, ref positionsArray);                    
+                        AddRecord(ref fullNames, ref positions);                    
                         break;
                     case "2":
-                        output = ShowRecords(namesArray, positionsArray);
-                        Console.WriteLine(output);
-                        Console.ReadKey();
-                        Console.Clear();
+                        ShowRecords(fullNames, positions);                   
                         break;
                     case "3":
-                        DeleteRecord(ref namesArray, ref positionsArray);
+                        DeleteRecord(ref fullNames, ref positions);
                         break;
                     case "4":
-                        output = SearchBySurname(namesArray, positionsArray);
-                        Console.WriteLine(output);
-                        Console.ReadKey();
-                        Console.Clear();
+                        SearchBySurname(fullNames, positions);                      
                         break;
                     case "5":
                         canEnter = false;
