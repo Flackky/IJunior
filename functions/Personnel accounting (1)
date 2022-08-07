@@ -108,7 +108,7 @@ namespace Fourth_part
 
             if (isMatch == false)
             {
-                Console.WriteLine("Не было найдено ни одного совподения.");
+                Console.WriteLine("Не было найдено ни одного совпадения.");
             }
 
             Console.ReadKey();
