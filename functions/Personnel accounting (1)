@@ -4,117 +4,6 @@ namespace Fourth_part
 {
     internal class Program
     {
-        static string [] IncreaseArray(string[] array, string value)
-        {
-            string[] tempArray = new string[array.Length + 1];
-
-            for (int i = 0; i < array.Length; i++)
-            {
-                tempArray[i] = array[i];
-            }
-
-            tempArray[tempArray.Length - 1] = value;
-            array = tempArray;
-            return array;
-        }
-
-        static void AddRecord (ref string [] fullNames, ref string[] positions)
-        {
-            Console.Write("Введите ФИО.\n-> ");
-            string name = Console.ReadLine();
-            Console.Write("Введите Должность.\n-> ");
-            string position = Console.ReadLine();
-            fullNames = IncreaseArray(fullNames, name);
-            positions = IncreaseArray(positions, position);
-            Console.WriteLine("Досье добавлено.");
-            Console.ReadKey();
-            Console.Clear();
-        }
-
-        static void ShowRecords(string[] fullNames, string[] positions)
-        {
-            for (int i = 0; i <= fullNames.Length - 1; i++)
-            {
-                Console.WriteLine($"{i + 1}) {fullNames[i]} - {positions[i]}.\n");
-            }
-
-            Console.ReadKey();
-            Console.Clear();
-        }
-
-        static string[] DecreaseArray(string[] array, int index)
-        {
-            string[] tempArray = new string[array.Length - 1];
-
-            for (int i = 0; i < index; i++)
-            {
-                tempArray[i] = array[i];
-            }
-
-            for (int i = index + 1; i < array.Length; i++)
-            {
-                tempArray[i - 1] = array[i];
-            }
-            
-            array = tempArray;
-            return array;
-        }
-
-        static void DeleteRecord(ref string[] fullNames, ref string[] positions)
-        {
-            bool isCorrectIndex = false;
-            int index = 0;
-
-            Console.Write("Введите индекс досье, которое вы хотите удалить.\n-> ");
-            while (isCorrectIndex == false)
-            {
-                index = Convert.ToInt32(Console.ReadLine()) - 1;
-
-                if (index <= 0 || index > fullNames.Length - 1)
-                {
-                    Console.Write("Такого индекса досье не существует.\n-> ");
-                }
-                else
-                {
-                    isCorrectIndex = true;
-                }
-            }
-                       
-            fullNames = DecreaseArray(fullNames, index);
-            positions = DecreaseArray(positions, index);
-            Console.WriteLine("Досье удалено.");
-            Console.ReadKey();
-            Console.Clear();
-        }
-
-        static void SearchBySurname(string[] fullNames, string[] positions)
-        {
-            string lowerNames;
-            bool isMatch = false;
-
-            Console.Write("Введите Фамилию человека, которого нужно найти.\n-> ");
-            string surname = Console.ReadLine();
-
-            for (int i = 0; i <= fullNames.Length - 1; i++)
-            {
-                lowerNames = fullNames[i].ToLower();
-
-                if (lowerNames.Contains($"{surname.ToLower()} "))
-                {
-                    Console.WriteLine($"{i + 1}) {fullNames[i]} - {positions[i]}.\n");
-                    isMatch = true;
-                }
-            }
-
-            if (isMatch == false)
-            {
-                Console.WriteLine("Не было найдено ни одного совпадения.");
-            }
-
-            Console.ReadKey();
-            Console.Clear();
-        }
-
         static void Main(string[] args)
         {
             string userInput;
@@ -152,6 +41,117 @@ namespace Fourth_part
                         break;
                 }
             }
+        }
+
+        static string[] IncreaseArray(string[] array, string value)
+        {
+            string[] tempArray = new string[array.Length + 1];
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                tempArray[i] = array[i];
+            }
+
+            tempArray[tempArray.Length - 1] = value;
+            array = tempArray;
+            return array;
+        }
+
+        static void AddRecord(ref string[] fullNames, ref string[] positions)
+        {
+            Console.Write("Введите ФИО.\n-> ");
+            string name = Console.ReadLine();
+            Console.Write("Введите Должность.\n-> ");
+            string position = Console.ReadLine();
+            fullNames = IncreaseArray(fullNames, name);
+            positions = IncreaseArray(positions, position);
+            Console.WriteLine("Досье добавлено.");
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        static void ShowRecords(string[] fullNames, string[] positions)
+        {
+            for (int i = 0; i <= fullNames.Length - 1; i++)
+            {
+                Console.WriteLine($"{i + 1}) {fullNames[i]} - {positions[i]}.\n");
+            }
+
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        static string[] DecreaseArray(string[] array, int index)
+        {
+            string[] tempArray = new string[array.Length - 1];
+
+            for (int i = 0; i < index; i++)
+            {
+                tempArray[i] = array[i];
+            }
+
+            for (int i = index + 1; i < array.Length; i++)
+            {
+                tempArray[i - 1] = array[i];
+            }
+
+            array = tempArray;
+            return array;
+        }
+
+        static void DeleteRecord(ref string[] fullNames, ref string[] positions)
+        {
+            bool isCorrectIndex = false;
+            int index = 0;
+
+            Console.Write("Введите индекс досье, которое вы хотите удалить.\n-> ");
+            while (isCorrectIndex == false)
+            {
+                index = Convert.ToInt32(Console.ReadLine()) - 1;
+
+                if (index <= 0 || index > fullNames.Length - 1)
+                {
+                    Console.Write("Такого индекса досье не существует.\n-> ");
+                }
+                else
+                {
+                    isCorrectIndex = true;
+                }
+            }
+
+            fullNames = DecreaseArray(fullNames, index);
+            positions = DecreaseArray(positions, index);
+            Console.WriteLine("Досье удалено.");
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        static void SearchBySurname(string[] fullNames, string[] positions)
+        {
+            string lowerNames;
+            bool isMatch = false;
+
+            Console.Write("Введите Фамилию человека, которого нужно найти.\n-> ");
+            string surname = Console.ReadLine();
+
+            for (int i = 0; i <= fullNames.Length - 1; i++)
+            {
+                lowerNames = fullNames[i].ToLower();
+
+                if (lowerNames.Contains($"{surname.ToLower()} "))
+                {
+                    Console.WriteLine($"{i + 1}) {fullNames[i]} - {positions[i]}.\n");
+                    isMatch = true;
+                }
+            }
+
+            if (isMatch == false)
+            {
+                Console.WriteLine("Не было найдено ни одного совподения.");
+            }
+
+            Console.ReadKey();
+            Console.Clear();
         }
     }
 }
