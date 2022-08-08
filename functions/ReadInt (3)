@@ -1,0 +1,59 @@
+using System;
+
+namespace Fourth_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            bool canEnter = true;
+            string userInput;
+
+            while (canEnter)
+            {
+                Console.Write("Напишите номер команды, которую необходимо выполнить:\n1 - Преобразовать введённую информацию в int.\n2 - Выйти из программы.\n-> ");
+                userInput = Console.ReadLine();
+
+                switch (userInput)
+                {
+                    case "1":
+                        ConvertToInt();
+                        break;
+                    case "2":
+                        canEnter = false;
+                        break;
+                    default:
+                        Console.WriteLine("Неизвестная команда.");
+                        Console.ReadKey();
+                        Console.Clear();
+                        break;
+                }              
+            }         
+        }
+
+        static void ConvertToInt()
+        {
+            bool isCorrectInput = false;
+            string initialValue;
+            int convertedValue = 0;
+
+            while(isCorrectInput == false)
+            {
+                Console.Write("Введите число\n-> ");
+                initialValue = Console.ReadLine();
+
+                if (Int32.TryParse(initialValue, out convertedValue))
+                {
+                    Console.WriteLine("Конвертация удалась: " + convertedValue);
+                    isCorrectInput = true;
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+                else
+                {
+                    Console.WriteLine("Введённую вами информацию не удалось сконвертировать в int. Попробуйте ещё раз.");
+                }
+            }           
+        }
+    }
+}
