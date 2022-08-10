@@ -79,7 +79,7 @@ namespace Fourth_part
                 array[i] = temporaryData;
             }
 
-            Console.Write("\nПеремешаный массив: ");
+            Console.Write("\nПеремешанный массив: ");
             PrintArray(array);
             Console.ReadKey();
             Console.Clear();
