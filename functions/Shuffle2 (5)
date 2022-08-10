@@ -24,10 +24,10 @@ namespace Fourth_part
                 switch (userInput)
                 {
                     case "1":
-                        CreateArray(ref array);
+                        array = CreateArray(array);
                         break;
                     case "2":
-                        Shuffle(ref array);
+                        array = Shuffle(array);
                         break;
                     case "3":
                         canEnter = false;
@@ -41,7 +41,7 @@ namespace Fourth_part
             }
         }
 
-        static void CreateArray(ref int[] array)
+        static int[] CreateArray(int[] array)
         {
             Random random = new Random();
             int randomMin = 0;
@@ -53,13 +53,14 @@ namespace Fourth_part
 
             for (int i = 0; i < array.Length; i++)
             {
-                array[i] = random.Next(randomMin, randomMax);
+                array[i] = random.Next(randomMin, randomMax);                
             }
 
             Console.Clear();
+            return array;           
         }
 
-        static void Shuffle(ref int[] array)
+        static int[] Shuffle(int[] array)
         {
             Random random = new Random();
 
@@ -81,6 +82,7 @@ namespace Fourth_part
             }
 
             Console.Clear();
+            return array;           
         }
 
         static void PrintArray(int[] array)
