@@ -8,7 +8,7 @@ namespace Fourth_part
         {
             bool canEnter = true;
             string userInput;
-            int[] array = {};
+            int[] array = { };
 
             while (canEnter)
             {
@@ -30,7 +30,7 @@ namespace Fourth_part
                         else
                         {
                             ShuffleArray(ref array);
-                        }                     
+                        }
                         break;
                     case "3":
                         canEnter = false;
@@ -40,19 +40,18 @@ namespace Fourth_part
                         Console.ReadKey();
                         Console.Clear();
                         break;
-                }              
-            }         
+                }
+            }
         }
 
-        static void CreateArray(ref int [] array)
+        static void CreateArray(ref int[] array)
         {
             Random random = new Random();
             int randomMin = 0;
             int randomMax = 9;
-            int userInput = 0;
 
             Console.Write("Кол-во элементов в вашем массиве.\n-> ");
-            userInput = Convert.ToInt32(Console.ReadLine());
+            int userInput = Convert.ToInt32(Console.ReadLine());
             array = new int[userInput];
             Console.Write("Получившийся массив: ");
 
@@ -66,11 +65,11 @@ namespace Fourth_part
             Console.Clear();
         }
 
-        static void ShuffleArray(ref int [] array)
+        static void ShuffleArray(ref int[] array)
         {
             Random random = new Random();
             Console.Write("Изначальный массив: ");
-            PrintArray(array);          
+            PrintArray(array);
 
             for (int i = array.Length - 1; i >= 1; i--)
             {
