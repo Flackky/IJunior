@@ -1,0 +1,96 @@
+using System;
+
+namespace Fourth_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            bool canEnter = true;
+            string userInput;
+            int[] array = { };
+
+            while (canEnter)
+            {
+                if (array.Length != 0)
+                {
+                    Console.Write("Массив: ");
+                    PrintArray(array);
+                }
+
+                Console.Write("Напишите номер команды, которую необходимо выполнить:\n1 - Создать/пересоздать массив.\n2 - Перемешать массив.\n3 - Выйти из программы.\n-> ");
+                userInput = Console.ReadLine();
+
+                switch (userInput)
+                {
+                    case "1":
+                        CreateArray(ref array);
+                        break;
+                    case "2":
+                        Shuffle(ref array);
+                        break;
+                    case "3":
+                        canEnter = false;
+                        break;
+                    default:
+                        Console.WriteLine("Неизвестная команда.");
+                        Console.ReadKey();
+                        Console.Clear();
+                        break;
+                }
+            }
+        }
+
+        static void CreateArray(ref int[] array)
+        {
+            Random random = new Random();
+            int randomMin = 0;
+            int randomMax = 9;
+
+            Console.Write("Кол-во элементов в вашем массиве.\n-> ");
+            int userInput = Convert.ToInt32(Console.ReadLine());
+            array = new int[userInput];
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                array[i] = random.Next(randomMin, randomMax);
+            }
+
+            Console.Clear();
+        }
+
+        static void Shuffle(ref int[] array)
+        {
+            Random random = new Random();
+
+            if (array.Length == 0)
+            {
+                Console.WriteLine("Массив пуст.");
+                Console.ReadKey();
+                Console.Clear();
+            }
+            else
+            {
+                for (int i = array.Length - 1; i >= 1; i--)
+                {
+                    int randomInteger = random.Next(i + 1);
+                    int temporaryData = array[randomInteger];
+                    array[randomInteger] = array[i];
+                    array[i] = temporaryData;
+                }
+            }
+
+            Console.Clear();
+        }
+
+        static void PrintArray(int[] array)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                Console.Write(array[i] + " ");
+            }
+
+            Console.WriteLine();
+        }
+    }
+}
