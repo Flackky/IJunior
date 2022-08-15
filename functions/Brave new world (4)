@@ -1,0 +1,602 @@
+using System;
+using System.IO;
+
+namespace Second_part
+{
+    internal class Program
+    {            
+        static void Main(string[] args)
+        {
+            char[,] map =
+            {
+                {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
+                {'#',' ',' ','#',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ','#'},
+                {'#',' ',' ','B',' ',' ',' ',' ',' ',' ','B',' ',' ',' ',' ','^'},
+                {'#',' ',' ','#',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ','#'},
+                {'#',' ','#','#','#','#',' ','#','#','#','#','#','#','#','#','#'},
+                {'#',' ','E',' ','#',' ',' ',' ','#','C','#','#',' ',' ','C','#'},
+                {'#',' ','#','C','#',' ','#',' ','#',' ',' ','E',' ','#','#','#'},
+                {'#',' ','#','#','#',' ','#','E','#','E','#','#',' ','#','C','#'},
+                {'#',' ',' ',' ','#',' ','#',' ','#',' ',' ','E',' ',' ','C','#'},
+                {'#','C',' ',' ','#','C','#','C',' ',' ','#','#','#','#','#','#'},
+                {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
+            };
+
+            char symbol = ' ';
+            int playerHealth = 90000;
+            int maxPlayerHealth = 90000;
+            int playerMana = 10000;
+            int maxPlayerMana = 10000;
+            int amountOfPotions = 25;
+            int amountOfEthers = 5;
+            int chestPotions = 5;
+
+            int playerX = 1, playerY = 1;
+            int playerDirectionX = 0, playerDirectionY = 0;
+            bool isPlaying = true;
+
+            DrawMap(map);
+            Console.SetCursorPosition(0, 12);
+            ShowPlayerInfo(playerHealth, maxPlayerHealth, playerMana, maxPlayerMana);
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write($"\nЗелья: {amountOfPotions}, Эфир: {amountOfEthers}.");
+
+            
+
+            while (isPlaying)
+            {
+                Console.SetCursorPosition(playerY, playerX);
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine('P');
+
+                if (Console.KeyAvailable)
+                {
+                    ConsoleKeyInfo key = Console.ReadKey(true);
+                    ChangeDirection(key, ref playerDirectionX, ref playerDirectionY);
+
+                    if (map[playerX + playerDirectionX, playerY + playerDirectionY] == 'E' || map[playerX + playerDirectionX, playerY + playerDirectionY] == 'B')
+                    {
+                        symbol = map[playerX + playerDirectionX, playerY + playerDirectionY];
+                        Move(ref map, ref playerX, ref playerY, playerDirectionX, playerDirectionY);
+                        isPlaying = StartBattle(symbol, ref playerHealth, ref maxPlayerHealth, playerMana, maxPlayerMana, ref amountOfPotions, ref amountOfEthers);
+                        Console.ReadKey();
+                        Console.Clear();
+                        DrawMap(map);
+                        ShowPlayerInfo(playerHealth, maxPlayerHealth, playerMana, maxPlayerMana);
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.Write($"\nЗелья: {amountOfPotions}, Эфир: {amountOfEthers}.");
+                    }
+                    else if (map[playerX + playerDirectionX, playerY + playerDirectionY] == 'C')
+                    {
+                        symbol = map[playerX + playerDirectionX, playerY + playerDirectionY];
+                        Move(ref map, ref playerX, ref playerY, playerDirectionX, playerDirectionY);
+                        Console.Clear();
+                        Console.Write($"Вы нашли {chestPotions} зелий в сундуке.");
+                        amountOfPotions += chestPotions;
+                        Console.ReadKey();
+                        Console.Clear();                        
+                        DrawMap(map);
+                        ShowPlayerInfo(playerHealth, maxPlayerHealth, playerMana, maxPlayerMana);
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.Write($"\nЗелья: {amountOfPotions}, Эфир: {amountOfEthers}.");
+                    }
+                    else if (map[playerX + playerDirectionX, playerY + playerDirectionY] == '^')
+                    {
+                        Move(ref map, ref playerX, ref playerY, playerDirectionX, playerDirectionY);
+                        Console.Clear();
+                        Console.WriteLine("Поздравляем! Вы потеряли 10 минут своей жизни и прошли игру!");
+                        Console.ReadKey();
+                        isPlaying = false;
+                    }
+                    else if (map[playerX + playerDirectionX, playerY + playerDirectionY] != '#')
+                    {
+                        Move(ref map, ref playerX, ref playerY, playerDirectionX, playerDirectionY);
+                    }
+                }             
+            }
+
+            Console.ReadKey();
+        }
+
+        static void Move(ref char[,] map, ref int moveX, ref int moveY, int moveDirectionX, int moveDirectionY)
+        {
+            Console.SetCursorPosition(moveY, moveX);
+            Console.Write(' ');
+            map[moveX, moveY] = ' ';
+
+            moveX += moveDirectionX;
+            moveY += moveDirectionY;
+
+            Console.SetCursorPosition(moveY, moveX);
+            Console.Write('P');
+        }
+
+        static void ChangeDirection(ConsoleKeyInfo key, ref int moveDirectionX, ref int moveDirectionY)
+        {
+            switch (key.Key)
+            {
+                case ConsoleKey.UpArrow:
+                    moveDirectionX = -1;
+                    moveDirectionY = 0;
+                    break;
+                case ConsoleKey.DownArrow:
+                    moveDirectionX = 1;
+                    moveDirectionY = 0;
+                    break;
+                case ConsoleKey.LeftArrow:
+                    moveDirectionX = 0;
+                    moveDirectionY = -1;
+                    break;
+                case ConsoleKey.RightArrow:
+                    moveDirectionX = 0;
+                    moveDirectionY = 1;
+                    break;
+            }
+        }
+
+        static void DrawMap(char[,] map)
+        {
+            Console.CursorVisible = false;                      
+
+            for (int i = 0; i < map.GetLength(0); i++)
+            {
+                for (int j = 0; j < map.GetLength(1); j++)
+                {
+                    if (map[i, j] == 'B')
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                    }
+                    else if (map[i, j] == 'E')
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                    }
+                    else if (map[i, j] == 'C')
+                    {
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    Console.Write(map[i, j]);
+                }
+                Console.WriteLine();
+            }
+        }
+
+        static void DefineEnemy(char symbol, ref string enemyName, ref int enemyHealth, ref int maxEnemyHealth, ref int damageMultiplier)
+        {
+            if (symbol == 'B')
+            {
+                enemyHealth = 1000000;
+                maxEnemyHealth = 1000000;
+                enemyName = "Высший страж (Босс)";
+                damageMultiplier = 2;
+            }
+            else if (symbol == 'E')
+            {
+                enemyHealth = 500000;
+                maxEnemyHealth = 500000;
+                enemyName = "Страж (Враг)";
+                damageMultiplier = 1;
+            }
+        }
+
+        static void ShowBattleIntel(char symbol, string enemyName, int enemyHealth, int maxEnemyHealth, int finalPlayerDamage, int finalEnemyDamage, int healthDivider)
+        {           
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write(" |> > > >| ");
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(enemyName);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($" HP: {enemyHealth} / {maxEnemyHealth}\n");
+
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("ИНФОРМАЦИЯ О БОЕ:");
+            Console.WriteLine($"ИГРОК >>>> {finalPlayerDamage} >>>> ВРАГ");
+            Console.Write($"ИГРОК <<<< {finalEnemyDamage} <<<< ВРАГ");
+
+            if (enemyHealth <= maxEnemyHealth / healthDivider && symbol == 'B')
+            {
+                Console.WriteLine(" (УРОН x2!)\n");
+            }
+            else
+            {
+                Console.WriteLine("\n");
+            }
+        }
+
+        static void ShowPlayerInfo(int health, int maxHealth, int mana, int maxMana)
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("Чёрный маг (Игрок) ");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write($"HP: {health} / {maxHealth}, ");
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.Write($"MP: {mana} / {maxMana}");
+        }
+
+        static bool AttackEnemy(string userInput, ref int mana, int attackPotency, int effectPotency, bool isManaEnough, ref bool isAttackEffectActive, ref bool isAnotherAttackEffectActive, ref int finalPlayerDamage, int playerAttack, ref int enemyHealth, bool isInputCorrect)
+        {
+            bool isStarterAttack = false;
+            bool isUltimateAttack = false;
+
+            switch (userInput)
+            {
+                case "1":
+                case "3":
+                    isStarterAttack = true;
+                    break;
+                case "ice":
+                case "fire":
+                    isUltimateAttack = true;
+                    break;
+            }
+
+            if (mana - attackPotency < 0)
+            {
+                Console.WriteLine("Не хватает маны.");
+                isManaEnough = false;
+            }
+            else
+            {
+                mana -= attackPotency;
+            }
+           
+            if (isManaEnough)
+            {
+                if (isAnotherAttackEffectActive)
+                {
+                    isAnotherAttackEffectActive = false;
+                }
+
+                if (isAttackEffectActive)
+                {
+                    finalPlayerDamage = playerAttack * attackPotency * effectPotency;
+                    enemyHealth -= finalPlayerDamage;
+                }
+                else if (isAttackEffectActive == false && isStarterAttack == false)
+                {
+                    finalPlayerDamage = playerAttack * attackPotency;
+                    enemyHealth -= finalPlayerDamage;
+                }
+                else
+                {
+                    finalPlayerDamage = playerAttack * attackPotency;
+                    enemyHealth -= finalPlayerDamage;
+                    isAttackEffectActive = true;
+                }
+
+                if (isAttackEffectActive && isUltimateAttack)
+                {
+                    finalPlayerDamage = playerAttack * attackPotency * effectPotency;
+                    enemyHealth -= finalPlayerDamage;
+                    isAttackEffectActive = false;
+                    isInputCorrect = true;
+                }
+                else
+                {
+                    Console.WriteLine("Для атаки необходим огненный эффект.");
+                    mana += attackPotency;
+                }
+
+                isInputCorrect = true;       
+            }
+
+            return isInputCorrect;
+        }
+
+        static bool UseItem(ref int amountOfItems, ref int playerHealth, int maxPlayerHealth, int itemRecover, bool isInputCorrect)
+        {
+            if (amountOfItems > 0)
+            {
+                if (playerHealth + itemRecover >= maxPlayerHealth)
+                {
+                    playerHealth = maxPlayerHealth;
+                }
+                else
+                {
+                    playerHealth += itemRecover;
+                }
+
+                amountOfItems--;
+                isInputCorrect = true;
+            }
+            else
+            {
+                Console.WriteLine("Предмет закончился");
+            }
+
+            return isInputCorrect;
+        }
+
+        static bool UseAbility(bool isUsingAbility)
+        {
+            if (isUsingAbility)
+            {
+                Console.WriteLine($"Способность Защита используется или КД ещё не прошло");
+            }
+            else
+            {
+                isUsingAbility = true;
+            }
+
+            return isUsingAbility;
+        }
+
+        static bool StartBattle(char symbol, ref int playerHealth, ref int maxPlayerHealth, int playerMana, int maxPlayerMana, ref int amountOfPotions, ref int amountOfEthers)
+        {
+            Random random = new Random();
+            string userInput = "";
+            bool isInputCorrect = false;
+
+            bool isManaEnough = true;
+            string enemyName = "?";
+            int enemyHealth = 0;
+            int maxEnemyHealth = 0;
+            int healthDivider = 2;
+            bool isPlayerAlive = true;
+            bool isEnemyAlive = true;
+            int finalPlayerDamage = 0;
+            int finalEnemyDamage = 0;
+
+            //Атака игрока от 1 до 10.
+
+            int playerAttackMinimum = 5;
+            int playerAttackMaximum = 10;
+            int playerAttack;
+
+            //Потенциальный урон заклинаний в процентах. Минимально 1000, максимально 8000.
+            //Despair Можно использовать только при наличие огненного эффекта, а Flare при наличие ледяного эффекта.
+
+            int potencyOfIce1 = 1000;
+            int potencyOfIce2 = 3300;
+            int potencyOfFlare = 6000;
+            int potencyOfFire1 = 1600;
+            int potencyOfFire2 = 4200;
+            int potencyOfDespair = 8000;
+
+            bool isUsingDreaming = false;
+            int dreaming = 4000;
+            int dreamingCount = 3;
+            int dreamingCountStart = 3;
+            int dreamingCountDown = 1;
+            int dreamingCountDownStart = 1;
+
+            bool isUsingManaward = false;
+            int manaward = 2;
+            int manawardCount = 3;
+            int manawardCountStart = 3;
+            int manawardCountDown = 3;
+            int manawardCountDownStart = 3;
+
+            //Усиление действующее при использовании заклинания одного типа: огонь/лёд.
+            //Если комбо прерывается, то усиление исчезает. Минимально 10, максимально 35.
+
+            bool starterAttack = true;
+
+            bool isIceEffectActive = false;
+            int iceMinimum = 1;
+            int iceMaximum = 4;
+            int iceEffect = random.Next(iceMinimum, iceMaximum);
+
+            bool isFireEffectActive = false;
+            int fireMinimum = 2;
+            int fireMaximum = 5;
+            int fireEffect = random.Next(fireMinimum, fireMaximum);
+
+            //Предметы: Зелье (+Здоровье) и эфир (+Мана)
+
+            int potionRecover = 45000;
+            int etherRecover = 3000;
+
+            //Урон врага.
+
+            int damageMultiplier = 1;
+            int enemyAttackPotency = 3000;
+            int enemyAttackMinimum = 5;
+            int enemyAttackMaximum = 10;
+            int enemyAttack;
+
+            Console.Clear();
+            DefineEnemy(symbol, ref enemyName, ref enemyHealth, ref maxEnemyHealth, ref damageMultiplier);
+
+            while (isPlayerAlive && isEnemyAlive)
+            {
+                isInputCorrect = false;
+
+                //Проверка Dreaming.
+
+                if (isUsingDreaming)
+                {
+                    if (dreamingCount > 0)
+                    {
+                        if (playerMana + dreaming > maxPlayerMana)
+                        {
+                            playerMana = maxPlayerMana;
+                            dreamingCount--;
+                        }
+                        else
+                        {
+                            playerMana += dreaming;
+                            dreamingCount--;
+                        }
+                    }
+                    else if (dreamingCountDown > 1)
+                    {
+                        dreamingCountDown--;
+                    }
+                    else
+                    {
+                        isUsingDreaming = false;
+                        dreamingCount = dreamingCountStart;
+                        dreamingCountDown = dreamingCountDownStart;
+                    }
+                }
+
+                //Вывод всей информации о бое.
+
+                ShowPlayerInfo(playerHealth, maxPlayerHealth, playerMana, maxPlayerMana);
+                ShowBattleIntel(symbol, enemyName, enemyHealth, maxEnemyHealth, finalPlayerDamage, finalEnemyDamage, healthDivider);
+
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("ТАКТИЧЕСКОЕ МЕНЮ:\nskip - Пропустить ход.");
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine($"\n    АТАКА:\n1 - Лёд I: {potencyOfIce1} MP (+Ледяной эффект I)\n2 - Лёд II: {potencyOfIce2} MP (!Комбо при наличии ледяного эффекта)\nice - Вспышка: {potencyOfFlare} MP (!Необходим Ледяной эффект)\n4 - Огонь I: {potencyOfFire1} MP (+Огненный эффект I)\n5 - Огонь II: {potencyOfFire2} MP (!Комбо при наличии огненного эффекта)\nfire - Отчаяние: {potencyOfDespair} MP (!Необходим Огненный эффект)\n");
+
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.WriteLine($"    ПРЕДМЕТЫ:\npn - Зелье (Восстанавливает {potionRecover} здоровья). Осталось: {amountOfPotions}\ner - Эфир (Восстанавливает {etherRecover} маны). Осталось: {amountOfEthers}\n");
+
+                Console.ForegroundColor = ConsoleColor.DarkBlue;
+                Console.WriteLine($"    ЗАЩИТА/ВОССТАНОВЛЕНИЕ (При использовании ход не будет завершён.):\ndg - Сновидения (Восстанавливает {dreaming} маны/ход. Действует {dreamingCountStart} хода. КД {dreamingCountDownStart} ход.)\nmd - Защита (Уменьшает входящий урон в {manaward} раза. Действует {manawardCountStart} хода. КД {manawardCountDownStart} хода.)\n");
+
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.WriteLine("НАЛОЖЕННЫЕ ЭФФЕКТЫ:");
+
+                if (isIceEffectActive)
+                {
+                    Console.WriteLine("+Ледяной эффект");
+                }
+
+                if (isFireEffectActive)
+                {
+                    Console.WriteLine("+Огненный эффект");
+                }
+
+                if (isUsingDreaming && dreamingCount > 0)
+                {
+                    Console.WriteLine($"+Сновидения. Осталось {dreamingCount} ход(а).");
+                }
+                else if (isUsingDreaming && dreamingCount <= 0)
+                {
+                    Console.WriteLine($"-Сновидения. КД: осталось {dreamingCountDown} ход(а).");
+                }
+
+                if (isUsingManaward && manawardCount > 0)
+                {
+                    Console.WriteLine($"+Защита. Осталось {manawardCount} ход(а).");
+                }
+                else if (isUsingManaward && manawardCount <= 0)
+                {
+                    Console.WriteLine($"-Защита. КД: Осталось {manawardCountDown} ход(а).");
+                }
+
+                //Проверка ввода значения пользователя.
+
+                while (isInputCorrect == false)
+                {
+                    isManaEnough = true;
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write("\n>>>> ");
+                    userInput = Console.ReadLine();
+                    playerAttack = random.Next(playerAttackMinimum, playerAttackMaximum);
+
+                    switch (userInput)
+                    {
+                        case "pn":
+                            isInputCorrect = UseItem(ref amountOfPotions, ref playerHealth, maxPlayerHealth ,potionRecover, isInputCorrect);
+                            break;
+                        case "er":
+                            isInputCorrect = UseItem(ref amountOfEthers, ref playerHealth, maxPlayerHealth, etherRecover, isInputCorrect);
+                            break;
+                        case "md":
+                            isUsingManaward = UseAbility(isUsingManaward);
+                            break;
+                        case "dg":
+                            isUsingDreaming = UseAbility(isUsingDreaming);
+                            break;
+                        case "1":
+                            isInputCorrect = AttackEnemy(userInput, ref playerMana, potencyOfIce1, iceEffect, isManaEnough, ref isIceEffectActive, ref isFireEffectActive, ref finalPlayerDamage, playerAttack, ref enemyHealth, isInputCorrect);
+                            break;
+                        case "2":
+                            isInputCorrect = AttackEnemy(userInput, ref playerMana, potencyOfIce2, iceEffect, isManaEnough, ref isIceEffectActive, ref isFireEffectActive, ref finalPlayerDamage, playerAttack, ref enemyHealth, isInputCorrect);
+                            break;                        
+                        case "ice":
+                            isInputCorrect = AttackEnemy(userInput, ref playerMana, potencyOfFlare, iceEffect, isManaEnough, ref isIceEffectActive, ref isFireEffectActive, ref finalPlayerDamage, playerAttack, ref enemyHealth, isInputCorrect);
+                            break;
+                        case "3":
+                            isInputCorrect = AttackEnemy(userInput, ref playerMana, potencyOfFire1, fireEffect, isManaEnough, ref isFireEffectActive, ref isIceEffectActive, ref finalPlayerDamage, playerAttack, ref enemyHealth, isInputCorrect);
+                            break;
+                        case "4":
+                            isInputCorrect = AttackEnemy(userInput, ref playerMana, potencyOfFire2, fireEffect, isManaEnough, ref isFireEffectActive, ref isIceEffectActive, ref finalPlayerDamage, playerAttack, ref enemyHealth, isInputCorrect);
+                            break;
+                        case "fire":
+                            isInputCorrect = AttackEnemy(userInput, ref playerMana, potencyOfDespair, fireEffect, isManaEnough, ref isFireEffectActive, ref isIceEffectActive, ref finalPlayerDamage, playerAttack, ref enemyHealth, isInputCorrect);
+                            break;
+                        case "skip":
+                            isInputCorrect = true;
+                            break;
+                        default:
+                            Console.WriteLine("Команда не распознана.");
+                            break;
+                    }
+                }
+
+                //Атака врага.
+
+                enemyAttack = random.Next(enemyAttackMinimum, enemyAttackMaximum);
+
+                if (enemyHealth >= maxEnemyHealth / healthDivider)
+                {
+                    finalEnemyDamage = enemyAttack * enemyAttackPotency;
+                }
+                else
+                {
+                    finalEnemyDamage = enemyAttack * enemyAttackPotency * damageMultiplier;
+                }
+
+                //Проверка manaward.
+
+                if (isUsingManaward)
+                {
+                    if (manawardCount > 0)
+                    {
+                        finalEnemyDamage /= damageMultiplier;
+                        manawardCount--;
+                    }
+                    else if (manawardCountDown > 1)
+                    {
+                        manawardCountDown--;
+                    }
+                    else
+                    {
+                        isUsingManaward = false;
+                        manawardCount = manawardCountStart;
+                        manawardCountDown = manawardCountDownStart;
+                    }
+                }
+
+                playerHealth -= finalEnemyDamage;
+
+                //Проверка на HP.
+
+                if (playerHealth <= 0)
+                {
+                    isPlayerAlive = false;
+                }
+                if (enemyHealth <= 0)
+                {
+                    isEnemyAlive = false;
+                }
+
+                Console.Clear();
+            }
+
+            if (isPlayerAlive == false && isEnemyAlive == false)
+            {
+                Console.WriteLine("Вы и враг погибли.");
+            }
+            else if (isPlayerAlive == false)
+            {
+                Console.WriteLine("Вы пали в бою.");
+            }
+            else
+            {
+                Console.WriteLine("Победа! Враг повержен.");
+            }
+
+            return isPlayerAlive;
+        }      
+    }
+}
