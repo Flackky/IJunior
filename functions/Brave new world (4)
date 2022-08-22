@@ -258,35 +258,34 @@ namespace Second_part
                     isAnotherAttackEffectActive = false;
                 }
 
-                switch (isAttackEffectActive)
+                if (isAttackEffectActive == false)
                 {
-                    case false:
-                        if (isUltimateAttack)
-                        {
-                            Console.WriteLine("Для атаки необходим определённый эффект.");
-                        }
-                        else if (isStarterAttack)
-                        {
-                            DealDamage(ref finalPlayerDamage, playerAttack, attackPotency, ref enemyHealth, ref mana, ref isInputCorrect);
-                            isAttackEffectActive = true;
-                        }                       
-                        else
-                        {
-                            DealDamage(ref finalPlayerDamage, playerAttack, attackPotency, ref enemyHealth, ref mana, ref isInputCorrect);
-                        }
-                        break;
-                    case true:
-                        if (isUltimateAttack)
-                        {
-                            DealDamage(ref finalPlayerDamage, playerAttack, attackPotency, ref enemyHealth, ref mana, ref isInputCorrect, effectPotency);
-                            isAttackEffectActive = false;
-                        }
-                        else
-                        {
-                            DealDamage(ref finalPlayerDamage, playerAttack, attackPotency, ref enemyHealth, ref mana, ref isInputCorrect, effectPotency);
-                        }
-                        break;
-                }    
+                    if (isUltimateAttack)
+                    {
+                        Console.WriteLine("Для атаки необходим определённый эффект.");
+                    }
+                    else if (isStarterAttack)
+                    {
+                        DealDamage(ref finalPlayerDamage, playerAttack, attackPotency, ref enemyHealth, ref mana, ref isInputCorrect);
+                        isAttackEffectActive = true;
+                    }
+                    else
+                    {
+                        DealDamage(ref finalPlayerDamage, playerAttack, attackPotency, ref enemyHealth, ref mana, ref isInputCorrect);
+                    }
+                }
+                else
+                {
+                    if (isUltimateAttack)
+                    {
+                        DealDamage(ref finalPlayerDamage, playerAttack, attackPotency, ref enemyHealth, ref mana, ref isInputCorrect, effectPotency);
+                        isAttackEffectActive = false;
+                    }
+                    else
+                    {
+                        DealDamage(ref finalPlayerDamage, playerAttack, attackPotency, ref enemyHealth, ref mana, ref isInputCorrect, effectPotency);
+                    }
+                }   
             } 
 
             return isInputCorrect;
