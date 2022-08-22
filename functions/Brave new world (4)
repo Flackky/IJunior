@@ -33,10 +33,11 @@ namespace Second_part
 
             int playerPositionX = 1;
             int playerPositionY = 1;
-            int playerDirectionX = 0;
-            int playerDirectionY = 0;
+            int playerDirectionX;
+            int playerDirectionY;
             bool isPlaying = true;
             bool isOnMap = true;
+            bool isCorrectSymbol;
 
             DrawMap(map);
             Console.SetCursorPosition(0, 12);
@@ -44,6 +45,7 @@ namespace Second_part
 
             while (isPlaying)
             {
+                isCorrectSymbol = false;
                 Console.SetCursorPosition(playerPositionY, playerPositionX);
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine('P');
@@ -51,32 +53,34 @@ namespace Second_part
                 if (Console.KeyAvailable)
                 {
                     ConsoleKeyInfo key = Console.ReadKey(true);
-                    ChangeDirection(key, ref playerDirectionX, ref playerDirectionY);
+                    ChangeDirection(key, out playerDirectionX, out playerDirectionY);
                     symbol = map[playerPositionX + playerDirectionX, playerPositionY + playerDirectionY];
 
-                    if (map[playerPositionX + playerDirectionX, playerPositionY + playerDirectionY] == 'E' || map[playerPositionX + playerDirectionX, playerPositionY + playerDirectionY] == 'B')
+                    if (map[playerPositionX + playerDirectionX, playerPositionY + playerDirectionY] != '#')
                     {
                         Move(ref map, ref playerPositionX, ref playerPositionY, playerDirectionX, playerDirectionY);
-                        isPlaying = StartBattle(symbol, ref playerHealth, ref maxPlayerHealth, playerMana, maxPlayerMana, ref amountOfPotions, ref amountOfEthers);
-                        DrawMap(map);
-                        ShowPlayerInfo(playerHealth, maxPlayerHealth, playerMana, maxPlayerMana, amountOfPotions, amountOfEthers, isOnMap);
+                        isCorrectSymbol = true;
                     }
-                    else if (map[playerPositionX + playerDirectionX, playerPositionY + playerDirectionY] == 'C')
+
+                    if (isCorrectSymbol)
                     {
-                        Move(ref map, ref playerPositionX, ref playerPositionY, playerDirectionX, playerDirectionY);
-                        AddPotions(chestPotions, ref amountOfPotions);
-                        DrawMap(map);
-                        ShowPlayerInfo(playerHealth, maxPlayerHealth, playerMana, maxPlayerMana, amountOfPotions, amountOfEthers, isOnMap);
-                    }
-                    else if (map[playerPositionX + playerDirectionX, playerPositionY + playerDirectionY] == '^')
-                    {
-                        Move(ref map, ref playerPositionX, ref playerPositionY, playerDirectionX, playerDirectionY);
-                        isPlaying = ShowVictoryMessage(isPlaying);
-                    }
-                    else if (map[playerPositionX + playerDirectionX, playerPositionY + playerDirectionY] != '#')
-                    {
-                        Move(ref map, ref playerPositionX, ref playerPositionY, playerDirectionX, playerDirectionY);
-                    }
+                        if (map[playerPositionX, playerPositionY] == 'E' || map[playerPositionX, playerPositionY] == 'B')
+                        {
+                            isPlaying = StartBattle(symbol, ref playerHealth, ref maxPlayerHealth, playerMana, maxPlayerMana, ref amountOfPotions, ref amountOfEthers);
+                            DrawMap(map);
+                            ShowPlayerInfo(playerHealth, maxPlayerHealth, playerMana, maxPlayerMana, amountOfPotions, amountOfEthers, isOnMap);
+                        }
+                        else if (map[playerPositionX, playerPositionY] == 'C')
+                        {
+                            AddPotions(chestPotions, ref amountOfPotions);
+                            DrawMap(map);
+                            ShowPlayerInfo(playerHealth, maxPlayerHealth, playerMana, maxPlayerMana, amountOfPotions, amountOfEthers, isOnMap);
+                        }
+                        else if (map[playerPositionX, playerPositionY] == '^')
+                        {
+                            isPlaying = ShowVictoryMessage(isPlaying);
+                        }
+                    }                   
                 }             
             }
         }
@@ -124,21 +128,24 @@ namespace Second_part
             Console.Write('P');
         }
 
-        static void ChangeDirection(ConsoleKeyInfo key, ref int moveDirectionX, ref int moveDirectionY)
+        static void ChangeDirection(ConsoleKeyInfo key, out int moveDirectionX, out int moveDirectionY)
         {
+            moveDirectionX = 0;
+            moveDirectionY = 0;
+
             switch (key.Key)
             {
                 case ConsoleKey.UpArrow:
-                    moveDirectionX = -1; moveDirectionY = 0;
+                    moveDirectionX = -1;
                     break;
                 case ConsoleKey.DownArrow:
-                    moveDirectionX = 1; moveDirectionY = 0;
+                    moveDirectionX = 1;
                     break;
                 case ConsoleKey.LeftArrow:
-                    moveDirectionX = 0; moveDirectionY = -1;
+                    moveDirectionY = -1;
                     break;
                 case ConsoleKey.RightArrow:
-                    moveDirectionX = 0; moveDirectionY = 1;
+                    moveDirectionY = 1;
                     break;
             }
         }       
@@ -289,14 +296,7 @@ namespace Second_part
         {
             if (amountOfItems > 0)
             {
-                if (playerTrait + itemRecover >= maxPlayerTrait)
-                {
-                    playerTrait = maxPlayerTrait;
-                }
-                else
-                {
-                    playerTrait += itemRecover;
-                }
+                CheckExcess(ref playerTrait, itemRecover, maxPlayerTrait);
 
                 amountOfItems--;
                 isInputCorrect = true;
@@ -325,29 +325,21 @@ namespace Second_part
 
         static int CheckAbility(ref bool isUsingAbility, ref int abilityCount, int abilityCountStart, ref int abilityCountDown, int abilityCountDownStart, ref int mana, int maxMana, int abilityPotency, string abilityIndicator, int finalEnemyDamage = 0, int damageMultiplier = 0)
         {
+            bool isAbility = true;
+
             if (isUsingAbility)
             {
                 if (abilityCount > 0)
                 {
-                    switch (abilityIndicator)
+                    if (abilityIndicator == "dream")
                     {
-                        case "dream":
-                            if (mana + abilityPotency > maxMana)
-                            {
-                                mana = maxMana;
-                                abilityCount--;
-                            }
-                            else
-                            {
-                                mana += abilityPotency;
-                                abilityCount--;
-                            }
-                            break;
-                        case "ward":
-                            finalEnemyDamage /= damageMultiplier;
-                            abilityCount--;
-                            break;
-                    } 
+                        abilityCount = CheckExcess(ref mana, abilityPotency, maxMana, isAbility, abilityCount);
+                    }
+                    else if (abilityIndicator == "ward")
+                    {
+                        finalEnemyDamage /= damageMultiplier;
+                        abilityCount--;
+                    }
                 }
                 else if (abilityCountDown > 1)
                 {
@@ -362,6 +354,25 @@ namespace Second_part
             }
 
             return finalEnemyDamage;
+        }
+
+        static int CheckExcess(ref int playerTrait, int recover, int maxPlayerTrait, bool isAbility = false, int abilityCount = 0)
+        {
+            if (playerTrait + recover > maxPlayerTrait)
+            {
+                playerTrait = maxPlayerTrait;
+            }
+            else
+            {
+                playerTrait += recover;
+            }
+
+            if (isAbility)
+            {
+                abilityCount--;
+            }
+
+            return abilityCount;
         }
 
         static bool StartBattle(char symbol, ref int playerHealth, ref int maxPlayerHealth, int playerMana, int maxPlayerMana, ref int amountOfPotions, ref int amountOfEthers)
