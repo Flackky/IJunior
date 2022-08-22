@@ -7,8 +7,6 @@ namespace Second_part
     {            
         static void Main(string[] args)
         {
-            //Обозначения: E - обычные враги, B - сильные враги, C - сундуки, ^ - выход из подземелья.
-            
             char[,] map =
             {
                 {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
@@ -31,10 +29,12 @@ namespace Second_part
             int maxPlayerMana = 10000;
             int amountOfPotions = 25;
             int amountOfEthers = 5;
-            int chestPotions = 5;      
+            int chestPotions = 5;
 
-            int playerX = 1, playerY = 1;
-            int playerDirectionX = 0, playerDirectionY = 0;
+            int playerPositionX = 1;
+            int playerPositionY = 1;
+            int playerDirectionX = 0;
+            int playerDirectionY = 0;
             bool isPlaying = true;
             bool isOnMap = true;
 
@@ -44,7 +44,7 @@ namespace Second_part
 
             while (isPlaying)
             {
-                Console.SetCursorPosition(playerY, playerX);
+                Console.SetCursorPosition(playerPositionY, playerPositionX);
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine('P');
 
@@ -52,32 +52,30 @@ namespace Second_part
                 {
                     ConsoleKeyInfo key = Console.ReadKey(true);
                     ChangeDirection(key, ref playerDirectionX, ref playerDirectionY);
-                    symbol = map[playerX + playerDirectionX, playerY + playerDirectionY];
+                    symbol = map[playerPositionX + playerDirectionX, playerPositionY + playerDirectionY];
 
-                    switch (map[playerX + playerDirectionX, playerY + playerDirectionY])
+                    if (map[playerPositionX + playerDirectionX, playerPositionY + playerDirectionY] == 'E' || map[playerPositionX + playerDirectionX, playerPositionY + playerDirectionY] == 'B')
                     {
-                        case 'E':
-                        case 'B':
-                            Move(ref map, ref playerX, ref playerY, playerDirectionX, playerDirectionY);
-                            isPlaying = StartBattle(symbol, ref playerHealth, ref maxPlayerHealth, playerMana, maxPlayerMana, ref amountOfPotions, ref amountOfEthers);
-                            DrawMap(map);
-                            ShowPlayerInfo(playerHealth, maxPlayerHealth, playerMana, maxPlayerMana, amountOfPotions, amountOfEthers, isOnMap);
-                            break;
-                        case 'C':
-                            Move(ref map, ref playerX, ref playerY, playerDirectionX, playerDirectionY);
-                            AddPotions(chestPotions, ref amountOfPotions);
-                            DrawMap(map);
-                            ShowPlayerInfo(playerHealth, maxPlayerHealth, playerMana, maxPlayerMana, amountOfPotions, amountOfEthers, isOnMap);
-                            break;
-                        case '^':
-                            Move(ref map, ref playerX, ref playerY, playerDirectionX, playerDirectionY);
-                            isPlaying = ShowVictoryMessage(isPlaying);
-                            break;
-                        case '#':
-                            break;
-                        default:
-                            Move(ref map, ref playerX, ref playerY, playerDirectionX, playerDirectionY);
-                            break;
+                        Move(ref map, ref playerPositionX, ref playerPositionY, playerDirectionX, playerDirectionY);
+                        isPlaying = StartBattle(symbol, ref playerHealth, ref maxPlayerHealth, playerMana, maxPlayerMana, ref amountOfPotions, ref amountOfEthers);
+                        DrawMap(map);
+                        ShowPlayerInfo(playerHealth, maxPlayerHealth, playerMana, maxPlayerMana, amountOfPotions, amountOfEthers, isOnMap);
+                    }
+                    else if (map[playerPositionX + playerDirectionX, playerPositionY + playerDirectionY] == 'C')
+                    {
+                        Move(ref map, ref playerPositionX, ref playerPositionY, playerDirectionX, playerDirectionY);
+                        AddPotions(chestPotions, ref amountOfPotions);
+                        DrawMap(map);
+                        ShowPlayerInfo(playerHealth, maxPlayerHealth, playerMana, maxPlayerMana, amountOfPotions, amountOfEthers, isOnMap);
+                    }
+                    else if (map[playerPositionX + playerDirectionX, playerPositionY + playerDirectionY] == '^')
+                    {
+                        Move(ref map, ref playerPositionX, ref playerPositionY, playerDirectionX, playerDirectionY);
+                        isPlaying = ShowVictoryMessage(isPlaying);
+                    }
+                    else if (map[playerPositionX + playerDirectionX, playerPositionY + playerDirectionY] != '#')
+                    {
+                        Move(ref map, ref playerPositionX, ref playerPositionY, playerDirectionX, playerDirectionY);
                     }
                 }             
             }
@@ -131,20 +129,16 @@ namespace Second_part
             switch (key.Key)
             {
                 case ConsoleKey.UpArrow:
-                    moveDirectionX = -1;
-                    moveDirectionY = 0;
+                    moveDirectionX = -1; moveDirectionY = 0;
                     break;
                 case ConsoleKey.DownArrow:
-                    moveDirectionX = 1;
-                    moveDirectionY = 0;
+                    moveDirectionX = 1; moveDirectionY = 0;
                     break;
                 case ConsoleKey.LeftArrow:
-                    moveDirectionX = 0;
-                    moveDirectionY = -1;
+                    moveDirectionX = 0; moveDirectionY = -1;
                     break;
                 case ConsoleKey.RightArrow:
-                    moveDirectionX = 0;
-                    moveDirectionY = 1;
+                    moveDirectionX = 0; moveDirectionY = 1;
                     break;
             }
         }       
@@ -188,7 +182,9 @@ namespace Second_part
             if (isOnMap)
             {
                 Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.Write($"\nЗелья: {amountOfPotions}, Эфир: {amountOfEthers}.");
+                Console.WriteLine($"\nЗелья: {amountOfPotions}, Эфир: {amountOfEthers}.");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("\nОбозначения: E - обычные враги, B - сильные враги, C - сундуки, ^ - выход из подземелья.");
             }
         }
 
@@ -384,14 +380,9 @@ namespace Second_part
             int finalPlayerDamage = 0;
             int finalEnemyDamage = 0;
 
-            //Атака игрока от 1 до 10.
-
             int playerAttackMinimum = 5;
             int playerAttackMaximum = 10;
             int playerAttack;
-
-            //Потенциальный урон заклинаний в процентах. Минимально 1000, максимально 8000.
-            //Despair Можно использовать только при наличие огненного эффекта, а Flare при наличие ледяного эффекта.
 
             int potencyOfIce1 = 1000;
             int potencyOfIce2 = 3300;
@@ -416,9 +407,6 @@ namespace Second_part
             int manawardCountDown = 3;
             int manawardCountDownStart = 3;
 
-            //Усиление действующее при использовании заклинания одного типа: огонь/лёд.
-            //Если комбо прерывается, то усиление исчезает. Минимально 10, максимально 35.
-
             bool isIceEffectActive = false;
             int iceMinimum = 1;
             int iceMaximum = 4;
@@ -429,20 +417,14 @@ namespace Second_part
             int fireMaximum = 5;
             int fireEffect = random.Next(fireMinimum, fireMaximum);
 
-            //Предметы: Зелье (+Здоровье) и эфир (+Мана)
-
             int potionRecover = 45000;
             int etherRecover = 3000;
-
-            //Урон врага.
 
             int damageMultiplier = 1;
             int enemyAttackPotency = 3000;
             int enemyAttackMinimum = 5;
             int enemyAttackMaximum = 10;
             int enemyAttack;
-
-            //Начало боя.
 
             Console.Clear();
             DefineEnemy(symbol, ref enemyName, ref enemyHealth, ref maxEnemyHealth, ref damageMultiplier);
@@ -451,12 +433,7 @@ namespace Second_part
             {
                 isInputCorrect = false;
 
-                //Проверка Dreaming.
-
                 CheckAbility(ref isUsingDreaming, ref dreamingCount, dreamingCountStart, ref dreamingCountDown, dreamingCountDownStart, ref playerMana, maxPlayerMana, dreaming, dreamingIndicator);
-
-                //Вывод всей информации о бое.
-
                 ShowPlayerInfo(playerHealth, maxPlayerHealth, playerMana, maxPlayerMana);
                 ShowBattleIntel(symbol, enemyName, enemyHealth, maxEnemyHealth, finalPlayerDamage, finalEnemyDamage, healthDivider);
 
@@ -501,8 +478,6 @@ namespace Second_part
                 {
                     Console.WriteLine($"-Защита. КД: Осталось {manawardCountDown} ход(а).");
                 }
-
-                //Проверка ввода значения пользователя.
 
                 while (isInputCorrect == false)
                 {
@@ -553,8 +528,6 @@ namespace Second_part
                     }
                 }
 
-                //Атака врага.
-
                 enemyAttack = random.Next(enemyAttackMinimum, enemyAttackMaximum);
 
                 if (enemyHealth >= maxEnemyHealth / healthDivider)
@@ -566,12 +539,8 @@ namespace Second_part
                     finalEnemyDamage = enemyAttack * enemyAttackPotency * damageMultiplier;
                 }
 
-                //Проверка manaward.
-
                 finalEnemyDamage = CheckAbility(ref isUsingManaward, ref manawardCount, manawardCountStart, ref manawardCountDown, manawardCountDownStart, ref playerMana, maxPlayerMana, manaward, manawardIndicator, finalEnemyDamage, damageMultiplier);
                 playerHealth -= finalEnemyDamage;
-
-                //Проверка на HP.
 
                 if (playerHealth <= 0)
                 {
