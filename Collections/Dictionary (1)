@@ -1,0 +1,79 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Second_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            bool canEnter = true;
+            string userInput;
+            Dictionary<string, string> words = new Dictionary<string, string>();
+            
+            while (canEnter)
+            {
+                Console.Clear();
+                Console.SetCursorPosition(8, 0);
+                Console.Write("Меню:\n1 - Проверить словарь.\n2 - Пополнить словарь.\n3 - Выйти из программы.\n-> ");
+                userInput = Console.ReadLine();
+
+                switch (userInput)
+                {
+                    case "1":                       
+                        CheckDictionary(words);
+                        break;
+                    case "2":
+                        AddToDictionary(words);
+                        break;
+                    case "3":
+                        canEnter = false;
+                        break;
+                    default:
+                        Console.WriteLine("Такой команды не существует.");
+                        Console.ReadKey();
+                        break;
+                }
+            }
+        }
+
+        static void AddToDictionary(Dictionary<string, string> words)
+        {
+            string userInputWord;
+            string userInputValue;
+            Console.Write("Введите Слово, которое будет занесено в словарь: ");
+            userInputWord = Console.ReadLine();
+
+            if (words.ContainsKey(userInputWord))
+            {
+                Console.WriteLine("Такое слово уже есть в словаре.");
+                Console.ReadKey();
+            }
+            else
+            {
+                Console.Write("Введите значение этого слова, которое будет занесено в словарь: ");
+                userInputValue = Console.ReadLine();
+                words.Add(key: userInputWord, value: userInputValue);
+            }   
+        }
+
+        static void CheckDictionary(Dictionary<string, string> words)
+        {
+            string userInput;
+            Console.Write("Введите слово из словаря: ");
+            userInput = Console.ReadLine();
+
+            if (words.ContainsKey(userInput))
+            {
+                Console.WriteLine("Значение: " + words[userInput]);
+            }
+            else
+            {
+                Console.WriteLine("Такого слова нет в словаре.");
+            }
+
+            Console.ReadKey();
+        }
+    }
+}
