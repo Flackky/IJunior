@@ -16,7 +16,7 @@ namespace Second_part
             {
                 Console.Clear();
                 Console.SetCursorPosition(8, 0);
-                Console.Write("Меню:\n1 - Проверить словарь.\n2 - Пополнить словарь.\n3 - Выйти из программы.\n-> ");
+                Console.Write("Меню:\n1 - Найти слово в словаре.\n2 - Пополнить словарь.\n3 - Выйти из программы.\n-> ");
                 userInput = Console.ReadLine();
 
                 switch (userInput)
