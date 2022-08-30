@@ -21,8 +21,8 @@ namespace Second_part
 
                 switch (userInput)
                 {
-                    case "1":                       
-                        ViewDictionary(words);
+                    case "1":
+                        SearchInDictionary(words);
                         break;
                     case "2":
                         AddToDictionary(words);
@@ -58,7 +58,7 @@ namespace Second_part
             }   
         }
 
-        static void ViewDictionary(Dictionary<string, string> words)
+        static void SearchInDictionary(Dictionary<string, string> words)
         {
             string userInput;
             Console.Write("Введите слово из словаря: ");
