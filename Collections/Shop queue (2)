@@ -8,6 +8,8 @@ namespace Second_part
     {
         static void Main(string[] args)
         {
+            int menuPositionX = 8;
+            int menuPositionY = 3;
             bool canEnter = true;
             string userInput;
             int cashAccount = 0;
@@ -22,7 +24,7 @@ namespace Second_part
                 if (customers.Count != 0 && purchasesSums.Count != 0)
                     Console.WriteLine($"Следующий покупатель: {customers.Peek()}. Сумма покупок: {purchasesSums.Peek()}\n");
 
-                Console.SetCursorPosition(8, 3);
+                Console.SetCursorPosition(menuPositionX, menuPositionY);
                 Console.Write("Меню:\n1 - Обслужить покупателя.\n2 - Добавить покупателя.\n3 - Вывести весь список покупателей.\n4 - Выйти из программы.\n-> ");
                 userInput = Console.ReadLine();
 
