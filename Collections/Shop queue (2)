@@ -1,0 +1,105 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Second_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            bool canEnter = true;
+            string userInput;
+            int cashAccount = 0;
+            Queue<string> customers = new Queue<string>();
+            Queue<int> purchasesSums = new Queue<int>();  
+
+            while (canEnter)
+            {
+                Console.Clear();
+                Console.WriteLine($"Счёт: {cashAccount} Руб.");
+
+                if (customers.Count != 0 && purchasesSums.Count != 0)
+                    Console.WriteLine($"Следующий покупатель: {customers.Peek()}. Сумма покупок: {purchasesSums.Peek()}\n");
+
+                Console.SetCursorPosition(8, 3);
+                Console.Write("Меню:\n1 - Обслужить покупателя.\n2 - Добавить покупателя.\n3 - Вывести весь список покупателей.\n4 - Выйти из программы.\n-> ");
+                userInput = Console.ReadLine();
+
+                switch (userInput)
+                {
+                    case "1":
+                        cashAccount = ServePurchaser(customers, purchasesSums, cashAccount);
+                        break;
+                    case "2":
+                        AddPurchaser(customers, purchasesSums);
+                        break;
+                    case "3":
+                        ShowListOfPurchasers(customers, purchasesSums);
+                        break;
+                    case "4":
+                        canEnter = false;
+                        break;
+                    default:
+                        Console.WriteLine("Такой команды не существует.");
+                        Console.ReadKey();
+                        break;
+                }
+            }
+        }
+
+        static int ServePurchaser(Queue<string> names, Queue<int> sums, int cashAccount)
+        {
+            if (names.Count != 0 && sums.Count != 0)
+            {
+                Console.WriteLine($"Покупатель: {names.Peek()} обслужен. Сумма его покупок: {sums.Peek()} была добавлена на счёт\n");
+                names.Dequeue();
+                int sumsToAdd = sums.Dequeue();
+                cashAccount += sumsToAdd;                
+            }
+            else
+            {
+                Console.WriteLine("Покупателей нет.");
+            }
+
+            Console.ReadKey();
+            return cashAccount;
+        }
+
+        static void AddPurchaser(Queue<string> names, Queue<int> sums)
+        {
+            string userNamesInput;
+            int userSumsInput;
+            Console.Write("Введите имя покупателя: ");
+            userNamesInput = Console.ReadLine();
+            names.Enqueue(userNamesInput);
+            Console.Write("Введите сумму покупок: ");
+            userSumsInput = Convert.ToInt32(Console.ReadLine());
+            sums.Enqueue(userSumsInput);
+        }
+
+        static void ShowListOfPurchasers(Queue<string> names, Queue<int> sums)
+        {
+            int shift = 2;
+            int numberOfLine = 9;
+            int numberOfColumn = 0;
+            List<int> LengthsOfNames = new List<int>();
+
+            foreach (var name in names)
+            {
+                LengthsOfNames.Add(name.Length);
+                Console.WriteLine(name + ":");
+            }
+
+            foreach (var sum in sums)
+            {
+                Console.SetCursorPosition(LengthsOfNames[numberOfColumn] + shift, numberOfLine);
+                Console.WriteLine(sum);
+                numberOfColumn++;
+                numberOfLine++;
+            }
+
+            Console.ReadKey();
+        }
+    }
+}
