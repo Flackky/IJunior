@@ -11,7 +11,6 @@ namespace Second_part
             int menuPositionX = 8;
             int menuPositionY = 3;
             bool canEnter = true;
-            string userInput;
             int cashAccount = 0;
             Queue<string> customers = new Queue<string>();
             Queue<int> purchasesSums = new Queue<int>();  
@@ -26,9 +25,8 @@ namespace Second_part
 
                 Console.SetCursorPosition(menuPositionX, menuPositionY);
                 Console.Write("Меню:\n1 - Обслужить покупателя.\n2 - Добавить покупателя.\n3 - Вывести весь список покупателей.\n4 - Выйти из программы.\n-> ");
-                userInput = Console.ReadLine();
 
-                switch (userInput)
+                switch (Console.ReadLine())
                 {
                     case "1":
                         cashAccount = ServePurchaser(customers, purchasesSums, cashAccount);
@@ -70,14 +68,27 @@ namespace Second_part
 
         static void AddPurchaser(Queue<string> names, Queue<int> sums)
         {
-            string userNamesInput;
-            int userSumsInput;
+            bool isCorrectInput = false;
+            int convertedInput;
             Console.Write("Введите имя покупателя: ");
-            userNamesInput = Console.ReadLine();
-            names.Enqueue(userNamesInput);
-            Console.Write("Введите сумму покупок: ");
-            userSumsInput = Convert.ToInt32(Console.ReadLine());
-            sums.Enqueue(userSumsInput);
+            names.Enqueue(Console.ReadLine());
+
+            while (isCorrectInput == false)
+            {
+                Console.Write("Введите сумму покупок: ");
+
+                if (Int32.TryParse(Console.ReadLine(), out convertedInput) && convertedInput > 0)
+                {
+                    sums.Enqueue(convertedInput);
+                    isCorrectInput = true;
+                }                   
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Неверный формат.");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }                  
+            }            
         }
 
         static void ShowListOfPurchasers(Queue<string> names, Queue<int> sums)
