@@ -54,8 +54,7 @@ namespace Second_part
             {
                 Console.WriteLine($"Покупатель: {names.Peek()} обслужен. Сумма его покупок: {sums.Peek()} была добавлена на счёт\n");
                 names.Dequeue();
-                int sumsToAdd = sums.Dequeue();
-                cashAccount += sumsToAdd;                
+                cashAccount += sums.Dequeue();
             }
             else
             {
@@ -95,20 +94,20 @@ namespace Second_part
         {
             int shift = 2;
             int numberOfLine = 9;
-            int numberOfColumn = 0;
-            List<int> LengthsOfNames = new List<int>();
+            int purchaserId = 0;
+            List<int> lengthsOfNames = new List<int>();
 
             foreach (var name in names)
             {
-                LengthsOfNames.Add(name.Length);
+                lengthsOfNames.Add(name.Length);
                 Console.WriteLine(name + ":");
             }
 
             foreach (var sum in sums)
             {
-                Console.SetCursorPosition(LengthsOfNames[numberOfColumn] + shift, numberOfLine);
+                Console.SetCursorPosition(lengthsOfNames[purchaserId] + shift, numberOfLine);
                 Console.WriteLine(sum);
-                numberOfColumn++;
+                purchaserId++;
                 numberOfLine++;
             }
 
