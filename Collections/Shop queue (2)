@@ -8,6 +8,10 @@ namespace Second_part
     {
         static void Main(string[] args)
         {
+            const string Choice1 = "1";
+            const string Choice2 = "2";
+            const string Choice3 = "3";
+            const string Choice4 = "4";
             int menuPositionX = 8;
             int menuPositionY = 3;
             bool canEnter = true;
@@ -28,16 +32,16 @@ namespace Second_part
 
                 switch (Console.ReadLine())
                 {
-                    case "1":
+                    case Choice1:
                         cashAccount = ServePurchaser(customers, purchasesSums, cashAccount);
                         break;
-                    case "2":
+                    case Choice2:
                         AddPurchaser(customers, purchasesSums);
                         break;
-                    case "3":
+                    case Choice3:
                         ShowListOfPurchasers(customers, purchasesSums);
                         break;
-                    case "4":
+                    case Choice4:
                         canEnter = false;
                         break;
                     default:
