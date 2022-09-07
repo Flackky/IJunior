@@ -8,15 +8,14 @@ namespace Second_part
     {
         static void Main(string[] args)
         {
-            const string Choice1 = "1";
-            const string Choice2 = "2";
-            const string Choice3 = "3";
-            const string Choice4 = "4";
+            const string Serve = "1";
+            const string Add = "2";
+            const string ShowList = "3";
+            const string Exit = "4";
             int menuPositionX = 8;
             int menuPositionY = 3;
             bool canEnter = true;
             int cashAccount = 0;
-            Queue<string> customers = new Queue<string>();
             Queue<int> purchasesSums = new Queue<int>();  
 
             while (canEnter)
@@ -24,24 +23,24 @@ namespace Second_part
                 Console.Clear();
                 Console.WriteLine($"Счёт: {cashAccount} Руб.");
 
-                if (customers.Count != 0 && purchasesSums.Count != 0)
-                    Console.WriteLine($"Следующий покупатель: {customers.Peek()}. Сумма покупок: {purchasesSums.Peek()}\n");
+                if (purchasesSums.Count != 0)
+                    Console.WriteLine($"Следующий покупатель. Сумма покупок: {purchasesSums.Peek()}\n");
 
                 Console.SetCursorPosition(menuPositionX, menuPositionY);
                 Console.Write("Меню:\n1 - Обслужить покупателя.\n2 - Добавить покупателя.\n3 - Вывести весь список покупателей.\n4 - Выйти из программы.\n-> ");
 
                 switch (Console.ReadLine())
                 {
-                    case Choice1:
-                        cashAccount = ServePurchaser(customers, purchasesSums, cashAccount);
+                    case Serve:
+                        cashAccount = ServePurchaser(purchasesSums, cashAccount);
                         break;
-                    case Choice2:
-                        AddPurchaser(customers, purchasesSums);
+                    case Add:
+                        AddPurchaser(purchasesSums);
                         break;
-                    case Choice3:
-                        ShowListOfPurchasers(customers, purchasesSums);
+                    case ShowList:
+                        ShowListOfPurchasers(purchasesSums);
                         break;
-                    case Choice4:
+                    case Exit:
                         canEnter = false;
                         break;
                     default:
@@ -52,12 +51,11 @@ namespace Second_part
             }
         }
 
-        static int ServePurchaser(Queue<string> names, Queue<int> sums, int cashAccount)
+        static int ServePurchaser(Queue<int> sums, int cashAccount)
         {
-            if (names.Count != 0 && sums.Count != 0)
+            if (sums.Count != 0)
             {
-                Console.WriteLine($"Покупатель: {names.Peek()} обслужен. Сумма его покупок: {sums.Peek()} была добавлена на счёт\n");
-                names.Dequeue();
+                Console.WriteLine($"Покупатель обслужен. Сумма его покупок: {sums.Peek()} была добавлена на счёт\n");
                 cashAccount += sums.Dequeue();
             }
             else
@@ -69,12 +67,10 @@ namespace Second_part
             return cashAccount;
         }
 
-        static void AddPurchaser(Queue<string> names, Queue<int> sums)
+        static void AddPurchaser(Queue<int> sums)
         {
             bool isCorrectInput = false;
             int convertedInput;
-            Console.Write("Введите имя покупателя: ");
-            names.Enqueue(Console.ReadLine());
 
             while (isCorrectInput == false)
             {
@@ -94,25 +90,11 @@ namespace Second_part
             }            
         }
 
-        static void ShowListOfPurchasers(Queue<string> names, Queue<int> sums)
+        static void ShowListOfPurchasers(Queue<int> sums)
         {
-            int shift = 2;
-            int numberOfLine = 9;
-            int purchaserId = 0;
-            List<int> lengthsOfNames = new List<int>();
-
-            foreach (var name in names)
-            {
-                lengthsOfNames.Add(name.Length);
-                Console.WriteLine(name + ":");
-            }
-
             foreach (var sum in sums)
             {
-                Console.SetCursorPosition(lengthsOfNames[purchaserId] + shift, numberOfLine);
-                Console.WriteLine(sum);
-                purchaserId++;
-                numberOfLine++;
+                Console.WriteLine(sum + " Руб.");
             }
 
             Console.ReadKey();
