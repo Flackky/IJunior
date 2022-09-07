@@ -1,0 +1,77 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Second_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            const string Summarize = "sum";
+            const string Exit = "exit";
+            bool canEnter = true;
+            string userInput;         
+            List<int> dynamicArray = new List<int>();
+
+            while (canEnter)
+            {
+                Console.Write("Массив: ");
+
+                for (int i = 0; i < dynamicArray.Count; i++)
+                {
+                    Console.Write($"{dynamicArray[i]} ");
+                }
+
+                Console.WriteLine($"\nРазмер массива: {dynamicArray.Count}");
+                Console.Write($"\nВведите любое число, чтобы его запомнить, или введите команду:\nsum - Сумма всех веденных чисел\nexit - Выйти из программы.\n\n->");         
+                userInput = Console.ReadLine();
+
+                switch (userInput)
+                {
+                    case Summarize:
+                        SummarizeArrayElements(dynamicArray);
+                        break;
+                    case Exit:
+                        canEnter = false;
+                        break;
+                    default:
+                        AddElementsToArray(dynamicArray, userInput);
+                        break;
+                }
+
+                Console.Clear();
+            }
+        }
+
+        static void SummarizeArrayElements(List<int> dynamicArray)
+        {
+            int arraySummation = 0;
+
+            for (int i = 0; i < dynamicArray.Count; i++)
+            {
+                arraySummation += dynamicArray[i];
+            }
+
+            Console.WriteLine($"Cумма всех веденных чисел {arraySummation}");
+            Console.ReadKey();
+        }
+
+        static void AddElementsToArray(List<int> dynamicArray, string userInput)
+        {
+            int convertedInput;
+
+            if (Int32.TryParse(userInput, out convertedInput))
+            {
+                dynamicArray.Add(convertedInput);
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Неверный формат.");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.ReadKey();
+            }
+        }
+    }
+}
