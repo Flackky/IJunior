@@ -1,0 +1,101 @@
+using System;
+using System.Linq;
+using System.Collections.Generic;
+
+namespace Fourth_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            const string AddFile = "1";
+            const string ShowFile = "2";
+            const string DeleteFile = "3";
+            const string Exit = "4";
+            bool canEnter = true;
+            Dictionary<string, string> personnel = new Dictionary<string, string>();
+
+            while (canEnter)
+            {
+                Console.Write("Меню:\n1 - добавить досье\n2 - вывести все досье \n3 - удалить досье \n4 - выход\n-> ");
+
+                switch (Console.ReadLine())
+                {
+                    case AddFile:
+                        AddRecord(personnel);
+                        break;
+                    case ShowFile:
+                        ShowRecords(personnel);
+                        break;
+                    case DeleteFile:
+                        DeleteRecord(personnel);
+                        break;
+                    case Exit:
+                        canEnter = false;
+                        break;
+                    default:
+                        Console.WriteLine("Неизвестная команда.");
+                        Console.ReadKey();
+                        Console.Clear();
+                        break;
+                }
+            }
+        }
+
+        static void AddRecord(Dictionary<string, string> personnel)
+        {
+            Console.Write("Введите ФИО.\n-> ");
+            string name = Console.ReadLine();
+            Console.Write("Введите Должность.\n-> ");
+            string position = Console.ReadLine();
+            personnel.Add(name, position);
+            Console.WriteLine("Досье добавлено.");
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        static void ShowRecords(Dictionary<string, string> personnel)
+        {
+            int index = 0;
+
+            foreach (var item in personnel)
+            {
+                Console.WriteLine($"{index + 1}) {item.Key} - {item.Value}.");
+                index++;
+            }
+
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        static void DeleteRecord(Dictionary<string, string> personnel)
+        {
+            const string Cancel = "Отмена";
+            bool isCorrectInput = false;
+            Console.Write($"Введите ФИО досье, которое вы хотите удалить или напишите \"{Cancel}\" для того, чтобы вернуться в меню.\n-> ");        
+
+            while (isCorrectInput == false)
+            {
+                string userInput = Console.ReadLine();
+
+                if (userInput == Cancel)
+                {
+                    isCorrectInput = true;
+                }
+                else if (personnel.ContainsKey(userInput))
+                {
+                    isCorrectInput = true;
+                    personnel.Remove(userInput);
+                    Console.WriteLine("Досье удалено.");
+                }
+                else
+                {
+                    Console.Write("Такого индекса досье не существует.\n-> ");                   
+                }
+            }
+           
+            Console.ReadKey();
+            Console.Clear();
+        }
+    }
+}
