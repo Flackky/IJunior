@@ -83,23 +83,17 @@ namespace Fourth_part
 
         static void DeleteRecord(Dictionary<string, string> personnel)
         {
-            bool isCorrectInput = false;
             Console.Write($"Введите ФИО досье, которое вы хотите удалить.\n-> ");        
+            string userInput = Console.ReadLine();
 
-            while (isCorrectInput == false)
+            if (personnel.ContainsKey(userInput))
             {
-                string userInput = Console.ReadLine();
-
-                if (personnel.ContainsKey(userInput))
-                {
-                    isCorrectInput = true;
-                    personnel.Remove(userInput);
-                    Console.WriteLine("Досье удалено.");
-                }
-                else
-                {
-                    Console.Write("Такого индекса досье не существует.\n-> ");                   
-                }
+                personnel.Remove(userInput);
+                Console.WriteLine("Досье удалено.");
+            }
+            else
+            {
+                Console.Write("Такого индекса досье не существует.\n-> ");                   
             }
            
             Console.ReadKey();
