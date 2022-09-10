@@ -8,20 +8,20 @@ namespace Fourth_part
     {
         static void Main(string[] args)
         {
-            const string AddFileMessage = "\n1 - добавить досье";
-            const string ShowFileMessage = "\n2 - вывести все досье";
-            const string DeleteFileMessage = "\n3 - удалить досье";
-            const string ExitMessage = "\n4 - выход";
             const string AddFileAction = "1";
             const string ShowFileAction = "2";
             const string DeleteFileAction = "3";
             const string ExitAction = "4";
+            const string AddFileMessage = AddFileAction + " - добавить досье\n";
+            const string ShowFileMessage = ShowFileAction + " - вывести все досье\n";
+            const string DeleteFileMessage = DeleteFileAction + " - удалить досье\n";
+            const string ExitMessage = ExitAction + " - выход";           
             bool canEnter = true;
             Dictionary<string, string> personnel = new Dictionary<string, string>();
 
             while (canEnter)
             {
-                Console.Write($"Меню:{AddFileMessage} {ShowFileMessage} {DeleteFileMessage} {ExitMessage}\n-> ");
+                Console.Write($"Меню:\n{AddFileMessage}{ShowFileMessage}{DeleteFileMessage}{ExitMessage}\n-> ");
 
                 switch (Console.ReadLine())
                 {
@@ -71,9 +71,9 @@ namespace Fourth_part
         {
             int index = 0;
 
-            foreach (var item in personnel)
+            foreach (var employee in personnel)
             {
-                Console.WriteLine($"{index + 1}) {item.Key} - {item.Value}.");
+                Console.WriteLine($"{index + 1}) {employee.Key} - {employee.Value}.");
                 index++;
             }
 
