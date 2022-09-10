@@ -8,29 +8,33 @@ namespace Fourth_part
     {
         static void Main(string[] args)
         {
-            const string AddFile = "1";
-            const string ShowFile = "2";
-            const string DeleteFile = "3";
-            const string Exit = "4";
+            const string AddFileMessage = "\n1 - добавить досье";
+            const string ShowFileMessage = "\n2 - вывести все досье";
+            const string DeleteFileMessage = "\n3 - удалить досье";
+            const string ExitMessage = "\n4 - выход";
+            const string AddFileAction = "1";
+            const string ShowFileAction = "2";
+            const string DeleteFileAction = "3";
+            const string ExitAction = "4";
             bool canEnter = true;
             Dictionary<string, string> personnel = new Dictionary<string, string>();
 
             while (canEnter)
             {
-                Console.Write("Меню:\n1 - добавить досье\n2 - вывести все досье \n3 - удалить досье \n4 - выход\n-> ");
+                Console.Write($"Меню:{AddFileMessage} {ShowFileMessage} {DeleteFileMessage} {ExitMessage}\n-> ");
 
                 switch (Console.ReadLine())
                 {
-                    case AddFile:
+                    case AddFileAction:
                         AddRecord(personnel);
                         break;
-                    case ShowFile:
+                    case ShowFileAction:
                         ShowRecords(personnel);
                         break;
-                    case DeleteFile:
+                    case DeleteFileAction:
                         DeleteRecord(personnel);
                         break;
-                    case Exit:
+                    case ExitAction:
                         canEnter = false;
                         break;
                     default:
@@ -48,8 +52,17 @@ namespace Fourth_part
             string name = Console.ReadLine();
             Console.Write("Введите Должность.\n-> ");
             string position = Console.ReadLine();
-            personnel.Add(name, position);
-            Console.WriteLine("Досье добавлено.");
+
+            if (personnel.ContainsKey(name))
+            {
+                Console.Write("Такое досье уже существует.\n-> ");
+            }
+            else
+            {
+                personnel.Add(name, position);
+                Console.WriteLine("Досье добавлено.");
+            }
+                
             Console.ReadKey();
             Console.Clear();
         }
@@ -70,19 +83,14 @@ namespace Fourth_part
 
         static void DeleteRecord(Dictionary<string, string> personnel)
         {
-            const string Cancel = "Отмена";
             bool isCorrectInput = false;
-            Console.Write($"Введите ФИО досье, которое вы хотите удалить или напишите \"{Cancel}\" для того, чтобы вернуться в меню.\n-> ");        
+            Console.Write($"Введите ФИО досье, которое вы хотите удалить.\n-> ");        
 
             while (isCorrectInput == false)
             {
                 string userInput = Console.ReadLine();
 
-                if (userInput == Cancel)
-                {
-                    isCorrectInput = true;
-                }
-                else if (personnel.ContainsKey(userInput))
+                if (personnel.ContainsKey(userInput))
                 {
                     isCorrectInput = true;
                     personnel.Remove(userInput);
