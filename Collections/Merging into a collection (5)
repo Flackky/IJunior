@@ -1,0 +1,67 @@
+using System;
+using System.Collections.Generic;
+
+namespace Fourth_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            const string CombineAction = "1";
+            const string ExitAction = "2";
+            const string CombineMessage = CombineAction + " - объединить две строки в одну коллекцию\n";
+            const string ExitMessage = ExitAction + " - выход";           
+            bool canEnter = true;
+            List<string> numbers = new List<string>();
+            string[] line1 = {"1", "2", "1"};
+            string[] line2 = { "3", "2"};
+
+
+            while (canEnter)
+            {
+                Console.Write($"Меню:\n{CombineMessage}{ExitMessage}\n-> ");
+
+                switch (Console.ReadLine())
+                {
+                    case CombineAction:
+                        CombineLines(numbers, line1, line2);
+                        break;
+                    case ExitAction:
+                        canEnter = false;
+                        break;
+                    default:
+                        Console.WriteLine("Неизвестная команда.");
+                        Console.ReadKey();
+                        Console.Clear();
+                        break;
+                }
+            }
+        }
+
+        static void CombineLines(List<string> numbers, string[] line1, string[] line2)
+        {
+            AddLineToList(numbers, line1);
+            AddLineToList(numbers, line2);
+
+            numbers.Sort();
+            Console.Write("Получившаяся коллекция: ");
+
+            foreach (string line in numbers)
+            {
+                Console.Write(line + " ");
+            }
+
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        static void AddLineToList(List<string> numbers, string[] line)
+        {          
+            for (int i = 0; i < line.Length; i++)
+            {
+                if (numbers.Contains(line[i]) == false)
+                    numbers.Add(line[i]);
+            }
+        }
+    }
+}
