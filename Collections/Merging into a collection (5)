@@ -1,0 +1,81 @@
+using System;
+using System.Collections.Generic;
+
+namespace Fourth_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            const string CombineAction = "1";
+            const string ExitAction = "2";
+            const string CombineMessage = CombineAction + " - объединить две строки в одну коллекцию\n";
+            const string ExitMessage = ExitAction + " - выход";           
+            bool canEnter = true;
+            List<string> numbers = new List<string>();
+            
+
+            while (canEnter)
+            {
+                Console.Write($"Меню:\n{CombineMessage}{ExitMessage}\n-> ");
+
+                switch (Console.ReadLine())
+                {
+                    case CombineAction:
+                        CombineLines(numbers);
+                        break;
+                    case ExitAction:
+                        canEnter = false;
+                        break;
+                    default:
+                        Console.WriteLine("Неизвестная команда.");
+                        Console.ReadKey();
+                        Console.Clear();
+                        break;
+                }
+            }
+        }
+
+        static void CombineLines(List<string> numbers)
+        {
+            Console.Write("Введите строки из чисел через пробел.\n-> ");
+            Console.Write("Первая строка:\n-> ");
+            AddLineToList(numbers);
+            Console.Write("Вторая строка:\n-> ");
+            AddLineToList(numbers);           
+
+            for (int i = 0; i < numbers.Count; i++)
+            {
+                for (int j = i + 1; j < numbers.Count; j++)
+                {
+                    if (numbers[i].Equals(numbers[j]))
+                    {
+                        numbers.RemoveAt(j--);
+                    }
+                }
+            }
+
+            numbers.Sort();
+
+            foreach (string line in numbers)
+            {
+                Console.Write(line + " ");
+            }
+
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        static void AddLineToList(List<string> numbers)
+        {
+            string userInput = Console.ReadLine();
+            string[] line = new string[userInput.Length];
+            line = userInput.Split(' ');
+
+            for (int i = 0; i < line.Length; i++)
+            {
+                numbers.Add(line[i]);
+            }
+        }
+    }
+}
