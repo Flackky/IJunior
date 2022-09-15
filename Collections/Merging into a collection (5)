@@ -14,7 +14,7 @@ namespace Fourth_part
             bool canEnter = true;
             List<string> numbers = new List<string>();
             string[] line1 = {"1", "2", "1"};
-            string[] line2 = { "3", "2"};
+            string[] line2 = {"3", "2"};
 
 
             while (canEnter)
