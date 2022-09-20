@@ -1,0 +1,100 @@
+using System;
+
+namespace Sixth_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            const string AddAction = "1";
+            const string BanAction = "2";
+            const string UnbanAction = "3";
+            const string DeleteAction = "4";
+            const string ExitAction = "5";
+
+            const string AddMessage = AddAction + " - Добавить игрока\n";
+            const string BanMessage = BanAction + " - Заблокировать игрока\n";
+            const string UnbanMessage = UnbanAction + " - Разблокировать игрока\n";
+            const string DeleteMessage = DeleteAction + " - Удалить игрока\n";
+            const string ExitMessage = ExitAction + " - выход";           
+            bool canEnter = true;
+
+            int playerQuantity = 0;
+            Database [] players = new Database [playerQuantity];
+
+            while (canEnter)
+            {
+                Console.Write($"Меню:\n{AddMessage}{BanMessage}{UnbanMessage}{DeleteMessage}{ExitMessage}\n-> ");
+
+                switch (Console.ReadLine())
+                {
+                    case AddAction:
+                        Database[] tempPlayers = new Database[players.Length + 1];
+
+                        for (int i = 0; i < players.Length; i++)
+                        {
+                            tempPlayers[i] = players[i];
+                        }
+
+                        //tempPlayers[tempPlayers.Length - 1] = value;
+                        players = tempPlayers;
+                        break;
+                    case BanAction:
+
+                        break;
+                    case UnbanAction:
+
+                        break;
+                    case DeleteAction:
+
+                        break;
+                    case ExitAction:
+                        canEnter = false;
+                        break;
+                    default:
+                        Console.WriteLine("Неизвестная команда.");
+                        break;
+                }
+
+                Console.ReadKey();
+                Console.Clear();
+            }
+        }   
+    }
+
+    class Database
+    {
+        public int Id;
+        public string Name;
+        public int Level;
+        public int HealthPoints;
+        public int ManaPoints;
+        public bool IsBanned;
+
+        public Database()
+        {
+            Id = 0;
+            Name = "Игрок";
+            Level = 1;
+            HealthPoints = 100;
+            ManaPoints = 100;
+            IsBanned = false;
+        }
+
+        public Database(int id, string name, int level, int healthPoints, int manaPoints, bool isBanned)
+        {
+            Id = id;
+            Name = name;
+            Level = level;
+            HealthPoints = healthPoints;
+            ManaPoints = manaPoints;
+            IsBanned = isBanned;
+
+        }
+
+        public void ShowStats()
+        {
+            Console.WriteLine($"Имя - {Name}\nОчки здоровья - {HealthPoints}\nОчки маны - {ManaPoints}\nСила атаки - {AttackPotency}\n");
+        }
+    }
+}
