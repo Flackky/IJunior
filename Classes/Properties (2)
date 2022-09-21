@@ -16,9 +16,9 @@ namespace Sixth_part
             bool canEnter = true;
 
             Renderer renderer = new Renderer();
-            int cordinateX = 5;
-            int cordinateY = 5;
-            Player player = new Player(cordinateX, cordinateY);
+            int positionCordinateX = 5;
+            int positionCordinateY = 5;
+            Player player = new Player(positionCordinateX, positionCordinateY);
             
 
             while (canEnter)
@@ -29,10 +29,10 @@ namespace Sixth_part
                 switch (Console.ReadLine())
                 {
                     case DrawAction:
-                        renderer.DrawPlayer(player.X, player.Y);
+                        renderer.DrawPlayer(player.PositionX, player.PositionY);
                         break;
                     case ChangeСordinatesAction:
-                        EnterCordinates(player);
+                        player.EnterPlayerPosition(player);
                         break;
                     case ExitAction:
                         canEnter = false;
@@ -42,9 +42,21 @@ namespace Sixth_part
                         break;
                 }
             }
+        }       
+    }
+
+    class Player
+    {
+        public int PositionX { get; private set; }
+        public int PositionY { get; private set; }
+
+        public Player(int x, int y)
+        {
+            PositionX = x;
+            PositionY = y;
         }
 
-        static void EnterCordinates(Player player)
+        public void EnterPlayerPosition(Player player)
         {
             int convertedInputX = 0;
             int convertedInputY = 0;
@@ -54,56 +66,20 @@ namespace Sixth_part
             string cordinatesY = Console.ReadLine();
 
             if (Int32.TryParse(cordinatesX, out convertedInputX) && Int32.TryParse(cordinatesY, out convertedInputY) && convertedInputX >= 0 && convertedInputY >= 0)
-            {               
-                player.ChangeCordinates(convertedInputX, convertedInputY);
+            {
+                player.SetPlayerPosition(convertedInputX, convertedInputY);
             }
             else
             {
                 Console.WriteLine("Неверный формат кординат.");
                 Console.ReadKey();
-            }            
-        }
-    }
-
-    class Player
-    {
-        private int _x;
-        private int _y;
-
-        public int X
-        {
-            get
-            {
-                return _x;
-            }
-            private set
-            { 
-                _x = value; 
             }
         }
 
-        public int Y
+        public void SetPlayerPosition(int x, int y)
         {
-            get 
-            { 
-                return _y; 
-            }
-             private set 
-            { 
-                _y = value; 
-            }
-        }
-
-        public Player(int x, int y)
-        {
-            _x = x;
-            _y = y;
-        }
-
-        public void ChangeCordinates(int x, int y)
-        {
-            _x = x;
-            _y = y;
+            PositionX = x;
+            PositionY = y;
         }
     }
 
