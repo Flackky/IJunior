@@ -9,10 +9,10 @@ namespace Sixth_part
             const string ShowStatsAction = "1";
             const string ExitAction = "2";
             const string ShowStatsMessage = ShowStatsAction + " - Вывести информацию об игроке\n";
-            const string ExitMessage = ExitAction + " - выход";           
+            const string ExitMessage = ExitAction + " - выход";
             bool canEnter = true;
             Character player = new Character();
-            Character vendor = new Character("Продавец",100,0,3);
+            Character vendor = new Character("Продавец", 100, 0, 3);
 
             while (canEnter)
             {
@@ -35,15 +35,15 @@ namespace Sixth_part
                 Console.ReadKey();
                 Console.Clear();
             }
-        }   
+        }
     }
 
     class Character
     {
-        public string Name;
-        public int HealthPoints;
-        public int ManaPoints;
-        public int AttackPotency;
+        public string Name { get; private set; }
+        public int HealthPoints { get; private set; }
+        public int ManaPoints { get; private set; }
+        public int AttackPotency { get; private set; }
 
         public Character()
         {
@@ -53,7 +53,7 @@ namespace Sixth_part
             AttackPotency = 10;
         }
 
-        public Character (string name, int healthPoints, int manaPoints, int attackPotency)
+        public Character(string name, int healthPoints, int manaPoints, int attackPotency)
         {
             Name = name;
             HealthPoints = healthPoints;
