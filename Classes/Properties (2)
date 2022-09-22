@@ -9,17 +9,17 @@ namespace Sixth_part
             const string DrawAction = "1";
             const string ChangeСordinatesAction = "2";
             const string ExitAction = "3";
-            
+
             const string DrawMessage = DrawAction + " - Отрисовать игрока в консоли\n";
             const string ChangeСordinatesMessage = ChangeСordinatesAction + " - Сменить кординты игрока по \"X\" и \"Y\"\n";
-            const string ExitMessage = ExitAction + " - выход";           
+            const string ExitMessage = ExitAction + " - выход";
             bool canEnter = true;
 
             Renderer renderer = new Renderer();
             int positionCordinateX = 5;
             int positionCordinateY = 5;
             Player player = new Player(positionCordinateX, positionCordinateY);
-            
+
 
             while (canEnter)
             {
@@ -42,7 +42,7 @@ namespace Sixth_part
                         break;
                 }
             }
-        }       
+        }
     }
 
     class Player
@@ -50,16 +50,16 @@ namespace Sixth_part
         public int PositionX { get; private set; }
         public int PositionY { get; private set; }
 
-        public Player(int x, int y)
+        public Player(int positionCordinateX, int positionCordinateY)
         {
-            PositionX = x;
-            PositionY = y;
+            PositionX = positionCordinateX;
+            PositionY = positionCordinateY;
         }
 
         public void EnterPlayerPosition(Player player)
         {
-            int convertedInputX = 0;
-            int convertedInputY = 0;
+            int convertedInputX;
+            int convertedInputY;
             Console.WriteLine("Введите новую кординату X:");
             string cordinatesX = Console.ReadLine();
             Console.WriteLine("Введите новую кординату Y:");
@@ -76,21 +76,21 @@ namespace Sixth_part
             }
         }
 
-        public void SetPlayerPosition(int x, int y)
+        public void SetPlayerPosition(int positionCordinateX, int positionCordinateY)
         {
-            PositionX = x;
-            PositionY = y;
+            PositionX = positionCordinateX;
+            PositionY = positionCordinateY;
         }
     }
 
     class Renderer
     {
-        public void DrawPlayer(int x, int y, char symbol = 'P')
+        public void DrawPlayer(int positionCordinateX, int positionCordinateY, char symbol = 'P')
         {
             Console.Clear();
-            Console.SetCursorPosition(x, y);
+            Console.SetCursorPosition(positionCordinateX, positionCordinateY);
             Console.WriteLine(symbol);
-            Console.ReadKey();          
+            Console.ReadKey();
         }
     }
 }
