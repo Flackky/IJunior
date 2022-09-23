@@ -1,0 +1,203 @@
+using System;
+using System.Collections.Generic;
+
+namespace Sixth_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            const string AddAction = "1";
+            const string BanAction = "2";
+            const string UnbanAction = "3";
+            const string DeleteAction = "4";
+            const string ExitAction = "5";
+
+            const string AddMessage = AddAction + " - Добавить игрока\n";
+            const string BanMessage = BanAction + " - Заблокировать игрока\n";
+            const string UnbanMessage = UnbanAction + " - Разблокировать игрока\n";
+            const string DeleteMessage = DeleteAction + " - Удалить игрока\n";
+            const string ExitMessage = ExitAction + " - выход";
+            bool canEnter = true;
+
+            string userInput;
+            int playerId = 0;
+            List<Player> playerList = new List<Player>();
+            Database database = new Database();
+
+            while (canEnter)
+            {
+                Console.SetCursorPosition(0, 20);
+                Console.WriteLine("Список игроков:");
+
+                for (int i = 0; i < playerList.Count; i++)
+                {
+                    playerList[i].ShowStats();
+                }
+
+                Console.SetCursorPosition(0, 0);
+                Console.Write($"Меню:\n{AddMessage}{BanMessage}{UnbanMessage}{DeleteMessage}{ExitMessage}\n-> ");
+                userInput = Console.ReadLine();
+
+                switch (userInput)
+                {
+                    case AddAction:
+                        database.AddNewPlayer(playerList, ref playerId);
+                        break;
+                    case BanAction:
+                        database.BanPlayer(playerList, userInput, BanAction, UnbanAction, DeleteAction);
+                        break;
+                    case UnbanAction:
+                        database.UnbanPlayer(playerList, userInput, BanAction, UnbanAction, DeleteAction);
+                        break;
+                    case DeleteAction:
+                        database.DeletePlayer(playerList, userInput, BanAction, UnbanAction, DeleteAction);
+                        break;
+                    case ExitAction:
+                        canEnter = false;
+                        break;
+                    default:
+                        Console.WriteLine("Неизвестная команда.");
+                        Console.ReadKey();
+                        Console.Clear();
+                        break;
+                }
+            }
+        }
+    }
+
+    class Player
+    {
+        public int Id { get; private set; }
+        public string Name { get; private set; }
+        public int Level { get; private set; }
+        public int HealthPoints { get; private set; }
+        public int ManaPoints { get; private set; }
+        public bool IsBanned { get; private set; }
+
+        public Player()
+        {
+            Id = 0;
+            Name = "Игрок";
+            Level = 1;
+            HealthPoints = 100;
+            ManaPoints = 10000;
+            IsBanned = false;
+        }
+
+        public Player(int id, string name, int level)
+        {
+            Id = id;
+            Name = name;
+            Level = level;
+            HealthPoints = 100;
+            ManaPoints = 10000;
+            IsBanned = false;
+        }
+
+        public void ShowStats()
+        {
+            Console.Write($"ID игрока - {Id}, Имя - {Name}, Уровень - {Level}, Очки здоровья - {HealthPoints}, Очки маны - {ManaPoints}, ");
+
+            if (IsBanned)
+                Console.WriteLine("Блокировка - Есть");
+            else
+                Console.WriteLine("Блокировка - Отсутствует");
+        }
+
+        public void SetBanStatus(bool isBanned)
+        {
+            IsBanned = isBanned;
+        }
+    }
+
+    class Database
+    {
+        public void AddNewPlayer(List<Player> playerList, ref int playerId)
+        {
+            Random random = new Random();
+            int randomMin = 1;
+            int randomMax = 101;
+
+            Console.Write("Введите имя игрока: ");
+            string name = Console.ReadLine();
+            Player player = new Player(playerId, name, random.Next(randomMin, randomMax));
+            playerList.Add(player);
+            playerId++;
+
+            Console.WriteLine("Информация о добавленном игроке: ");
+            player.ShowStats();
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        public void CheckIncorrectInput(List<Player> playerList, string userInput, string banAction, string unbanAction, string deleteAction)
+        {
+            bool isExist = false;
+            int convertedId;
+            string idInput = Console.ReadLine();
+
+            if (Int32.TryParse(idInput, out convertedId))
+            {
+                for (int i = 0; i < playerList.Count; i++)
+                {
+                    if (playerList[i].Id == convertedId)
+                    {
+                        if (userInput == banAction)
+                            playerList[i].SetBanStatus(true);
+                        else if (userInput == unbanAction)
+                            playerList[i].SetBanStatus(false);
+                        else if (userInput == deleteAction)
+                            playerList.Remove(playerList[i]);
+
+                        isExist = true;
+                    }
+                }
+            }
+
+            if (isExist == false)
+            {
+                Console.Write("Такого ID не существует.");
+                Console.ReadKey();
+            }
+        }
+
+        public void BanPlayer(List<Player> playerList, string userInput, string banAction, string unbanAction, string deleteAction)
+        {
+            bool isExist = false;
+            int convertedId;
+            Console.Write("Введите ID игрока, которого необходимо заблокировать: ");
+            CheckIncorrectInput(playerList, userInput, banAction, unbanAction, deleteAction);
+
+            Console.Clear();
+        }
+
+        public void UnbanPlayer(List<Player> playerList, string userInput, string banAction, string unbanAction, string deleteAction)
+        {
+            bool isExist = false;
+            int convertedId;
+            Console.Write("Введите ID игрока, которого необходимо разблокировать: ");
+            CheckIncorrectInput(playerList, userInput, banAction, unbanAction, deleteAction);
+
+            Console.Clear();
+        }
+
+        public void DeletePlayer(List<Player> playerList, string userInput, string banAction, string unbanAction, string deleteAction)
+        {
+            bool isExist = false;
+            int convertedId;
+
+            if (playerList.Count == 0)
+            {
+                Console.WriteLine("Список игроков пустой.");
+            }
+            else
+            {
+                Console.Write("Введите ID игрока, которого необходимо удалить: ");
+                CheckIncorrectInput(playerList, userInput, banAction, unbanAction, deleteAction);
+            }
+
+            Console.Clear();
+        }
+    }
+}
