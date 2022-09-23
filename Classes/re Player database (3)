@@ -131,7 +131,7 @@ namespace Sixth_part
             Console.Clear();
         }
 
-        public void CheckIncorrectInput(List<Player> playerList, string userInput, string banAction, string unbanAction, string deleteAction)
+        public void DoActionBasedOnInput(List<Player> playerList, string userInput, string banAction, string unbanAction, string deleteAction)
         {
             bool isExist = false;
             int convertedId;
@@ -167,7 +167,7 @@ namespace Sixth_part
             bool isExist = false;
             int convertedId;
             Console.Write("Введите ID игрока, которого необходимо заблокировать: ");
-            CheckIncorrectInput(playerList, userInput, banAction, unbanAction, deleteAction);
+            DoActionBasedOnInput(playerList, userInput, banAction, unbanAction, deleteAction);
 
             Console.Clear();
         }
@@ -177,7 +177,7 @@ namespace Sixth_part
             bool isExist = false;
             int convertedId;
             Console.Write("Введите ID игрока, которого необходимо разблокировать: ");
-            CheckIncorrectInput(playerList, userInput, banAction, unbanAction, deleteAction);
+            DoActionBasedOnInput(playerList, userInput, banAction, unbanAction, deleteAction);
 
             Console.Clear();
         }
@@ -194,7 +194,7 @@ namespace Sixth_part
             else
             {
                 Console.Write("Введите ID игрока, которого необходимо удалить: ");
-                CheckIncorrectInput(playerList, userInput, banAction, unbanAction, deleteAction);
+                DoActionBasedOnInput(playerList, userInput, banAction, unbanAction, deleteAction);
             }
 
             Console.Clear();
