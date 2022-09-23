@@ -61,11 +61,11 @@ namespace Sixth_part
             int convertedInputX;
             int convertedInputY;
             Console.WriteLine("Введите новую кординату X:");
-            string cordinatesX = Console.ReadLine();
+            string cordinateX = Console.ReadLine();
             Console.WriteLine("Введите новую кординату Y:");
-            string cordinatesY = Console.ReadLine();
+            string cordinateY = Console.ReadLine();
 
-            if (Int32.TryParse(cordinatesX, out convertedInputX) && Int32.TryParse(cordinatesY, out convertedInputY) && convertedInputX >= 0 && convertedInputY >= 0)
+            if (Int32.TryParse(cordinateX, out convertedInputX) && Int32.TryParse(cordinateY, out convertedInputY) && convertedInputX >= 0 && convertedInputY >= 0)
             {
                 player.SetPlayerPosition(convertedInputX, convertedInputY);
             }
