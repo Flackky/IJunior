@@ -20,7 +20,6 @@ namespace Sixth_part
             int positionCordinateY = 5;
             Player player = new Player(positionCordinateX, positionCordinateY);
 
-
             while (canEnter)
             {
                 Console.Clear();
@@ -32,7 +31,7 @@ namespace Sixth_part
                         renderer.DrawPlayer(player.PositionX, player.PositionY);
                         break;
                     case ChangeСordinatesAction:
-                        player.EnterPlayerPosition(player);
+                        renderer.EnterPlayerPosition(player);
                         break;
                     case ExitAction:
                         canEnter = false;
@@ -56,6 +55,15 @@ namespace Sixth_part
             PositionY = positionCordinateY;
         }
 
+        public void SetPosition(int positionCordinateX, int positionCordinateY)
+        {
+            PositionX = positionCordinateX;
+            PositionY = positionCordinateY;
+        }
+    }
+
+    class Renderer
+    {
         public void EnterPlayerPosition(Player player)
         {
             int convertedInputX;
@@ -67,24 +75,15 @@ namespace Sixth_part
 
             if (Int32.TryParse(cordinateX, out convertedInputX) && Int32.TryParse(cordinateY, out convertedInputY) && convertedInputX >= 0 && convertedInputY >= 0)
             {
-                player.SetPlayerPosition(convertedInputX, convertedInputY);
+                player.SetPosition(convertedInputX, convertedInputY);
             }
             else
             {
                 Console.WriteLine("Неверный формат кординат.");
                 Console.ReadKey();
             }
-        }
+        }     
 
-        public void SetPlayerPosition(int positionCordinateX, int positionCordinateY)
-        {
-            PositionX = positionCordinateX;
-            PositionY = positionCordinateY;
-        }
-    }
-
-    class Renderer
-    {
         public void DrawPlayer(int positionCordinateX, int positionCordinateY, char symbol = 'P')
         {
             Console.Clear();
