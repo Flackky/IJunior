@@ -21,19 +21,12 @@ namespace Sixth_part
             bool canEnter = true;
 
             string userInput;
-            int playerId = 0;
-            List<Player> playerList = new List<Player>();
+            List<Database> playerList = new List<Database>();
             Database database = new Database();
 
             while (canEnter)
             {
-                Console.SetCursorPosition(0, 20);
-                Console.WriteLine("Список игроков:");
-
-                for (int i = 0; i < playerList.Count; i++)
-                {
-                    playerList[i].ShowStats();
-                }
+                database.ShowPlayerList(playerList);
 
                 Console.SetCursorPosition(0, 0);
                 Console.Write($"Меню:\n{AddMessage}{BanMessage}{UnbanMessage}{DeleteMessage}{ExitMessage}\n-> ");
@@ -42,16 +35,16 @@ namespace Sixth_part
                 switch (userInput)
                 {
                     case AddAction:
-                        database.AddNewPlayer(playerList, ref playerId);
+                        database.AddNewPlayer(playerList);
                         break;
                     case BanAction:
-                        database.BanPlayer(playerList, userInput, BanAction, UnbanAction, DeleteAction);
+                        database.BanPlayer(playerList);
                         break;
                     case UnbanAction:
-                        database.UnbanPlayer(playerList, userInput, BanAction, UnbanAction, DeleteAction);
+                        database.UnbanPlayer(playerList);
                         break;
                     case DeleteAction:
-                        database.DeletePlayer(playerList, userInput, BanAction, UnbanAction, DeleteAction);
+                        database.DeletePlayer(playerList);
                         break;
                     case ExitAction:
                         canEnter = false;
@@ -68,16 +61,17 @@ namespace Sixth_part
 
     class Player
     {
-        public int Id { get; private set; }
-        public string Name { get; private set; }
-        public int Level { get; private set; }
-        public int HealthPoints { get; private set; }
-        public int ManaPoints { get; private set; }
-        public bool IsBanned { get; private set; }
+        public static int Ids {get; protected set;}
+        public int Id { get; protected set; }
+        public string Name { get; protected set; }
+        public int Level { get; protected set; }
+        public int HealthPoints { get; protected set; }
+        public int ManaPoints { get; protected set; }
+        public bool IsBanned { get; protected set; }
 
         public Player()
         {
-            Id = 0;
+            Id = ++Ids;
             Name = "Игрок";
             Level = 1;
             HealthPoints = 100;
@@ -85,9 +79,9 @@ namespace Sixth_part
             IsBanned = false;
         }
 
-        public Player(int id, string name, int level)
+        public Player(string name, int level)
         {
-            Id = id;
+            Id = Ids++;
             Name = name;
             Level = level;
             HealthPoints = 100;
@@ -105,15 +99,35 @@ namespace Sixth_part
                 Console.WriteLine("Блокировка - Отсутствует");
         }
 
-        public void SetBanStatus(bool isBanned)
+        public void SetBannedStatus()
         {
-            IsBanned = isBanned;
+            IsBanned = true;
+        }
+
+        public void SetUnbannedStatus()
+        {
+            IsBanned = false;
         }
     }
 
-    class Database
+    class Database : Player
     {
-        public void AddNewPlayer(List<Player> playerList, ref int playerId)
+        public Database(string name, int level) : base (name, level) { }
+
+        public Database() { }
+
+        public void ShowPlayerList(List<Database> playerList)
+        {
+            Console.SetCursorPosition(0, 20);
+            Console.WriteLine("Список игроков:");
+
+            for (int i = 0; i < playerList.Count; i++)
+            {
+                playerList[i].ShowStats();
+            }
+        }
+
+        public void AddNewPlayer(List<Database> playerList)
         {
             Random random = new Random();
             int randomMin = 1;
@@ -121,9 +135,8 @@ namespace Sixth_part
 
             Console.Write("Введите имя игрока: ");
             string name = Console.ReadLine();
-            Player player = new Player(playerId, name, random.Next(randomMin, randomMax));
+            Database player = new Database(name, random.Next(randomMin, randomMax));
             playerList.Add(player);
-            playerId++;
 
             Console.WriteLine("Информация о добавленном игроке: ");
             player.ShowStats();
@@ -131,11 +144,10 @@ namespace Sixth_part
             Console.Clear();
         }
 
-        public void DoActionBasedOnInput(List<Player> playerList, string userInput, string banAction, string unbanAction, string deleteAction)
+        public void GetPlayerId(List<Database> playerList, ref int outputId)
         {
-            bool isExist = false;
-            int convertedId;
             string idInput = Console.ReadLine();
+            int convertedId;
 
             if (Int32.TryParse(idInput, out convertedId))
             {
@@ -143,58 +155,65 @@ namespace Sixth_part
                 {
                     if (playerList[i].Id == convertedId)
                     {
-                        if (userInput == banAction)
-                            playerList[i].SetBanStatus(true);
-                        else if (userInput == unbanAction)
-                            playerList[i].SetBanStatus(false);
-                        else if (userInput == deleteAction)
-                            playerList.Remove(playerList[i]);
-
-                        isExist = true;
+                        outputId = i;
+                        break;
                     }
                 }
             }
+        }
 
-            if (isExist == false)
+        public void BanPlayer(List<Database> playerList)
+        {
+            int outputId = -1;
+            Console.Write("Введите ID игрока, которого необходимо заблокировать: ");
+            GetPlayerId(playerList, ref outputId);
+
+            if (outputId == -1)
             {
                 Console.Write("Такого ID не существует.");
                 Console.ReadKey();
             }
-        }
-
-        public void BanPlayer(List<Player> playerList, string userInput, string banAction, string unbanAction, string deleteAction)
-        {
-            bool isExist = false;
-            int convertedId;
-            Console.Write("Введите ID игрока, которого необходимо заблокировать: ");
-            DoActionBasedOnInput(playerList, userInput, banAction, unbanAction, deleteAction);
-
-            Console.Clear();
-        }
-
-        public void UnbanPlayer(List<Player> playerList, string userInput, string banAction, string unbanAction, string deleteAction)
-        {
-            bool isExist = false;
-            int convertedId;
-            Console.Write("Введите ID игрока, которого необходимо разблокировать: ");
-            DoActionBasedOnInput(playerList, userInput, banAction, unbanAction, deleteAction);
-
-            Console.Clear();
-        }
-
-        public void DeletePlayer(List<Player> playerList, string userInput, string banAction, string unbanAction, string deleteAction)
-        {
-            bool isExist = false;
-            int convertedId;
-
-            if (playerList.Count == 0)
+            else
             {
-                Console.WriteLine("Список игроков пустой.");
+                playerList[outputId].SetBannedStatus();
+            }
+
+            Console.Clear();
+        }
+
+        public void UnbanPlayer(List<Database> playerList)
+        {
+            int outputId = -1;
+            Console.Write("Введите ID игрока, которого необходимо разлокировать: ");
+            GetPlayerId(playerList, ref outputId);
+
+            if (outputId == -1)
+            {
+                Console.Write("Такого ID не существует.");
+                Console.ReadKey();
             }
             else
             {
-                Console.Write("Введите ID игрока, которого необходимо удалить: ");
-                DoActionBasedOnInput(playerList, userInput, banAction, unbanAction, deleteAction);
+                playerList[outputId].SetUnbannedStatus();
+            }
+
+            Console.Clear();
+        }
+
+        public void DeletePlayer(List<Database> playerList)
+        {
+            int outputId = -1;
+            Console.Write("Введите ID игрока, которого необходимо удалить: ");
+            GetPlayerId(playerList, ref outputId);
+
+            if (outputId == -1)
+            {
+                Console.Write("Такого ID не существует.");
+                Console.ReadKey();
+            }
+            else
+            {
+                playerList.Remove(playerList[outputId]);
             }
 
             Console.Clear();
