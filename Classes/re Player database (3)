@@ -61,13 +61,13 @@ namespace Sixth_part
 
     class Player
     {
-        public static int Ids {get; protected set;}
-        public int Id { get; protected set; }
-        public string Name { get; protected set; }
-        public int Level { get; protected set; }
-        public int HealthPoints { get; protected set; }
-        public int ManaPoints { get; protected set; }
-        public bool IsBanned { get; protected set; }
+        public static int Ids {get; private set;}
+        public int Id { get; private set; }
+        public string Name { get; private set; }
+        public int Level { get; private set; }
+        public int HealthPoints { get; private set; }
+        public int ManaPoints { get; private set; }
+        public bool IsBanned { get; private set; }
 
         public Player()
         {
