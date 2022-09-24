@@ -16,7 +16,6 @@ namespace Sixth_part
             bool canEnter = true;
 
             Renderer renderer = new Renderer();
-            DataReader dataReader = new DataReader();
             int positionCordinateX = 5;
             int positionCordinateY = 5;
             Player player = new Player(positionCordinateX, positionCordinateY);
@@ -32,7 +31,7 @@ namespace Sixth_part
                         renderer.DrawPlayer(player.PositionX, player.PositionY);
                         break;
                     case ChangeСordinatesAction:
-                        dataReader.EnterPlayerPosition(player);
+                        player.EnterPosition(player);
                         break;
                     case ExitAction:
                         canEnter = false;
@@ -56,27 +55,7 @@ namespace Sixth_part
             PositionY = positionCordinateY;
         }
 
-        public void SetPosition(int positionCordinateX, int positionCordinateY)
-        {
-            PositionX = positionCordinateX;
-            PositionY = positionCordinateY;
-        }
-    }
-
-    class Renderer
-    {
-        public void DrawPlayer(int positionCordinateX, int positionCordinateY, char symbol = 'P')
-        {
-            Console.Clear();
-            Console.SetCursorPosition(positionCordinateX, positionCordinateY);
-            Console.WriteLine(symbol);
-            Console.ReadKey();
-        }
-    }
-
-    class DataReader
-    {
-        public void EnterPlayerPosition(Player player)
+        public void EnterPosition(Player player)
         {
             int convertedInputX;
             int convertedInputY;
@@ -94,6 +73,23 @@ namespace Sixth_part
                 Console.WriteLine("Неверный формат кординат.");
                 Console.ReadKey();
             }
+        }
+
+        public void SetPosition(int positionCordinateX, int positionCordinateY)
+        {
+            PositionX = positionCordinateX;
+            PositionY = positionCordinateY;
+        }
+    }
+
+    class Renderer
+    {
+        public void DrawPlayer(int positionCordinateX, int positionCordinateY, char symbol = 'P')
+        {
+            Console.Clear();
+            Console.SetCursorPosition(positionCordinateX, positionCordinateY);
+            Console.WriteLine(symbol);
+            Console.ReadKey();
         }
     }
 }
