@@ -21,12 +21,12 @@ namespace Sixth_part
             bool canEnter = true;
 
             string userInput;
-            List<Database> playerList = new List<Database>();
-            Database database = new Database();
+            List<Player> players = new List<Player>();
+            Database database = new Database(players);
 
             while (canEnter)
             {
-                database.ShowPlayerList(playerList);
+                database.ShowPlayerList(database.Players);
 
                 Console.SetCursorPosition(0, 0);
                 Console.Write($"Меню:\n{AddMessage}{BanMessage}{UnbanMessage}{DeleteMessage}{ExitMessage}\n-> ");
@@ -35,16 +35,16 @@ namespace Sixth_part
                 switch (userInput)
                 {
                     case AddAction:
-                        database.AddNewPlayer(playerList);
+                        database.AddNewPlayer(database.Players);
                         break;
                     case BanAction:
-                        database.BanPlayer(playerList);
+                        database.BanPlayer(database.Players);
                         break;
                     case UnbanAction:
-                        database.UnbanPlayer(playerList);
+                        database.UnbanPlayer(database.Players);
                         break;
                     case DeleteAction:
-                        database.DeletePlayer(playerList);
+                        database.DeletePlayer(database.Players);
                         break;
                     case ExitAction:
                         canEnter = false;
@@ -61,7 +61,7 @@ namespace Sixth_part
 
     class Player
     {
-        public static int Ids {get; private set;}
+        public static int Ids { get; private set; }
         public int Id { get; private set; }
         public string Name { get; private set; }
         public int Level { get; private set; }
@@ -110,24 +110,27 @@ namespace Sixth_part
         }
     }
 
-    class Database : Player
+    class Database
     {
-        public Database(string name, int level) : base (name, level) { }
+        public List<Player> Players { get; private set; }
 
-        public Database() { }
+        public Database (List<Player> players)
+        {
+            Players = players;
+        }
 
-        public void ShowPlayerList(List<Database> playerList)
+        public void ShowPlayerList(List<Player> players)
         {
             Console.SetCursorPosition(0, 20);
             Console.WriteLine("Список игроков:");
 
-            for (int i = 0; i < playerList.Count; i++)
+            for (int i = 0; i < players.Count; i++)
             {
-                playerList[i].ShowStats();
+                players[i].ShowStats();
             }
         }
 
-        public void AddNewPlayer(List<Database> playerList)
+        public void AddNewPlayer(List<Player> players)
         {
             Random random = new Random();
             int randomMin = 1;
@@ -135,8 +138,8 @@ namespace Sixth_part
 
             Console.Write("Введите имя игрока: ");
             string name = Console.ReadLine();
-            Database player = new Database(name, random.Next(randomMin, randomMax));
-            playerList.Add(player);
+            Player player = new Player(name, random.Next(randomMin, randomMax));
+            players.Add(player);
 
             Console.WriteLine("Информация о добавленном игроке: ");
             player.ShowStats();
@@ -144,29 +147,30 @@ namespace Sixth_part
             Console.Clear();
         }
 
-        public void GetPlayerId(List<Database> playerList, ref int outputId)
+        public int GetPlayerId(List<Player> players)
         {
             string idInput = Console.ReadLine();
             int convertedId;
 
             if (Int32.TryParse(idInput, out convertedId))
             {
-                for (int i = 0; i < playerList.Count; i++)
+                for (int i = 0; i < players.Count; i++)
                 {
-                    if (playerList[i].Id == convertedId)
+                    if (players[i].Id == convertedId)
                     {
-                        outputId = i;
-                        break;
+                        return i;
                     }
                 }
             }
+
+            return -1;
         }
 
-        public void BanPlayer(List<Database> playerList)
+        public void BanPlayer(List<Player> players)
         {
-            int outputId = -1;
+            int outputId;
             Console.Write("Введите ID игрока, которого необходимо заблокировать: ");
-            GetPlayerId(playerList, ref outputId);
+            outputId = GetPlayerId(players);
 
             if (outputId == -1)
             {
@@ -175,17 +179,17 @@ namespace Sixth_part
             }
             else
             {
-                playerList[outputId].SetBannedStatus();
+                players[outputId].SetBannedStatus();
             }
 
             Console.Clear();
         }
 
-        public void UnbanPlayer(List<Database> playerList)
+        public void UnbanPlayer(List<Player> players)
         {
-            int outputId = -1;
+            int outputId;
             Console.Write("Введите ID игрока, которого необходимо разлокировать: ");
-            GetPlayerId(playerList, ref outputId);
+            outputId = GetPlayerId(players);
 
             if (outputId == -1)
             {
@@ -194,17 +198,17 @@ namespace Sixth_part
             }
             else
             {
-                playerList[outputId].SetUnbannedStatus();
+                players[outputId].SetUnbannedStatus();
             }
 
             Console.Clear();
         }
 
-        public void DeletePlayer(List<Database> playerList)
+        public void DeletePlayer(List<Player> players)
         {
-            int outputId = -1;
+            int outputId;
             Console.Write("Введите ID игрока, которого необходимо удалить: ");
-            GetPlayerId(playerList, ref outputId);
+            outputId = GetPlayerId(players);
 
             if (outputId == -1)
             {
@@ -213,7 +217,7 @@ namespace Sixth_part
             }
             else
             {
-                playerList.Remove(playerList[outputId]);
+                players.Remove(players[outputId]);
             }
 
             Console.Clear();
