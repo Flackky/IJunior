@@ -13,18 +13,18 @@ namespace Sixth_part
             const string DeleteAction = "4";
             const string ExitAction = "5";
 
-            const string AddMessage = AddAction + " - Добавить игрока\n";
-            const string BanMessage = BanAction + " - Заблокировать игрока\n";
-            const string UnbanMessage = UnbanAction + " - Разблокировать игрока\n";
-            const string DeleteMessage = DeleteAction + " - Удалить игрока\n";
-            const string ExitMessage = ExitAction + " - выход";
-            bool canEnter = true;
+            string AddMessage = AddAction + " - Добавить игрока\n";
+            string BanMessage = BanAction + " - Заблокировать игрока\n";
+            string UnbanMessage = UnbanAction + " - Разблокировать игрока\n";
+            string DeleteMessage = DeleteAction + " - Удалить игрока\n";
+            string ExitMessage = ExitAction + " - выход";
+            bool isWorking = true;
 
             string userInput;
             List<Player> players = new List<Player>();
             Database database = new Database(players);
 
-            while (canEnter)
+            while (isWorking)
             {
                 database.ShowPlayerList();
 
@@ -47,7 +47,7 @@ namespace Sixth_part
                         database.DeletePlayer();
                         break;
                     case ExitAction:
-                        canEnter = false;
+                        isWorking = false;
                         break;
                     default:
                         Console.WriteLine("Неизвестная команда.");
@@ -61,7 +61,7 @@ namespace Sixth_part
 
     class Player
     {
-        private static int Ids;
+        private static int _ids;
         public int Id { get; private set; }
         public string Name { get; private set; }
         public int Level { get; private set; }
@@ -71,7 +71,7 @@ namespace Sixth_part
 
         public Player()
         {
-            Id = ++Ids;
+            Id = ++_ids;
             Name = "Игрок";
             Level = 1;
             HealthPoints = 100;
@@ -81,7 +81,7 @@ namespace Sixth_part
 
         public Player(string name, int level)
         {
-            Id = Ids++;
+            Id = ++_ids;
             Name = name;
             Level = level;
             HealthPoints = 100;
@@ -99,12 +99,12 @@ namespace Sixth_part
                 Console.WriteLine("Блокировка - Отсутствует");
         }
 
-        public void SetBannedStatus()
+        public void Ban()
         {
             IsBanned = true;
         }
 
-        public void SetUnbannedStatus()
+        public void Unban()
         {
             IsBanned = false;
         }
@@ -178,7 +178,15 @@ namespace Sixth_part
             }
             else
             {
-                _players[_players.IndexOf(player)].SetBannedStatus();
+                player.Ban();
+
+                for (int i = 0; i < _players.Count; i++)
+                {
+                    if (_players[i].Id == player.Id)
+                    {
+                        _players[i] = player;
+                    }
+                }
             }
 
             Console.Clear();
@@ -196,7 +204,15 @@ namespace Sixth_part
             }
             else
             {
-                _players[_players.IndexOf(player)].SetUnbannedStatus();
+                player.Unban();
+
+                for (int i = 0; i < _players.Count; i++)
+                {
+                    if (_players[i].Id == player.Id)
+                    {
+                        _players[i] = player;
+                    }
+                }
             }
 
             Console.Clear();
