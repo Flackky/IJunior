@@ -1,0 +1,225 @@
+using System;
+using System.Collections.Generic;
+
+namespace Sixth_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            const string AddAction = "1";
+            const string DeleteAction = "2";
+            const string ShowAction = "3";
+            const string ExitAction = "4";
+                                          
+            string addMessage = AddAction + " - Добавить книгу в хранилище\n";
+            string deleteMessage = DeleteAction + " - Убрать книгу из хранилища\n";
+            string showMessage = ShowAction + " - Вывести список книг в хранилище\n";      
+            string exitMessage = ExitAction + " - выход";
+            bool isWorking = true;
+
+            List<Book> books = new List<Book>();
+            Depository depository = new Depository(books);
+
+            while (isWorking)
+            {
+                Console.Write($"Меню:\n{addMessage}{deleteMessage}{showMessage}{exitMessage}\n-> ");
+
+                switch (Console.ReadLine())
+                {
+                    case AddAction:
+                        depository.AddNewBook();
+                        break;
+                    case DeleteAction:
+                        depository.DeleteBook();
+                        break;
+                    case ShowAction:
+                        depository.ShowBookList();
+                        break;
+                    case ExitAction:
+                        isWorking = false;
+                        break;
+                    default:
+                        Console.WriteLine("Неизвестная команда.");
+                        Console.ReadKey();
+                        Console.Clear();
+                        break;
+                }
+            }
+        }
+    }
+
+    class Book
+    {
+        public string Title { get; private set; }
+        public string Author { get; private set; }
+        public int ReleaseDate { get; private set; }
+
+        public Book()
+        {
+            Title = "Нет";
+            Author = "Нет";
+            ReleaseDate = 0;
+        }
+
+        public Book(string title, string author, int releaseDate)
+        {
+            Title = title;
+            Author = author;
+            ReleaseDate = releaseDate;
+        }
+
+        public void ShowInfo()
+        {
+            Console.Write($"Название книги - {Title}, Автор - {Author}, Дата выпуска - {ReleaseDate}\n");
+        }
+    }
+
+    class Depository
+    {
+        private List<Book> _books;
+
+        public Depository (List<Book> books)
+        {
+            _books = books;
+        }
+
+        public void ShowBookList()
+        {
+            const string ShowAction = "1";
+            const string ShowByTitleAction = "2";
+            const string ShowByAuthorAction = "3";
+            const string ShowByYearAction = "4";
+
+            string showMessage = ShowAction + " - Вывести список всех книг\n";
+            string showByTitleMessage = ShowByTitleAction + " - Вывести список книг по названию\n";
+            string showByAuthorMessage = ShowByAuthorAction + " - Вывести список книг по автору\n";
+            string showByYearMessage = ShowByYearAction + " - Вывести список книг по году выпуска\n";
+
+            Console.Write($"{showMessage}{showByTitleMessage}{showByAuthorMessage}{showByYearMessage}-> ");
+            string userInput = Console.ReadLine();
+
+            if (userInput == ShowAction)
+            {
+                for (int i = 0; i < _books.Count; i++)
+                {
+                    _books[i].ShowInfo();
+                }
+            }
+            else if (userInput == ShowByTitleAction)
+            {
+                Console.WriteLine("Введите название книги.");
+                userInput = Console.ReadLine();
+
+                for (int i = 0; i < _books.Count; i++)
+                {
+                    if (userInput == _books[i].Title)
+                        _books[i].ShowInfo();
+                }
+            }
+            else if (userInput == ShowByAuthorAction)
+            {
+                Console.WriteLine("Введите автора книги.");
+                userInput = Console.ReadLine();
+
+                for (int i = 0; i < _books.Count; i++)
+                {
+                    if (userInput == _books[i].Author)
+                        _books[i].ShowInfo();
+                }
+            }
+            else if (userInput == ShowByYearAction)
+            {
+                int convertedDate;
+                Console.WriteLine("Введите год выпуска книги.");
+                userInput = Console.ReadLine();
+
+                if (Int32.TryParse(userInput, out convertedDate) && convertedDate >= 0)
+                {
+                    for (int i = 0; i < _books.Count; i++)
+                    {
+                        if (convertedDate == _books[i].ReleaseDate)
+                            _books[i].ShowInfo();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Неверный формат записи даты выпуска.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Неизвестная команда.");
+            }
+
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        public void AddNewBook()
+        {
+            int convertedDate;
+            bool isExist = false;
+            Console.Write("Введите название книги: ");
+            string title = Console.ReadLine();
+            Console.Write("Введите автора: ");
+            string author = Console.ReadLine();
+            Console.Write("Введите год выпуска: ");
+            string releaseDate = Console.ReadLine();
+
+            if (Int32.TryParse(releaseDate, out convertedDate) && convertedDate >= 0)
+            {
+                for (int i = 0; i < _books.Count; i++)
+                {
+                    if (title == _books[i].Title && author == _books[i].Author && convertedDate == _books[i].ReleaseDate)
+                    {
+                        Console.Write("Такая книга уже существует.");
+                        Console.ReadKey();
+                        isExist = true;
+                        break;
+                    }
+                }
+
+                if (isExist == false)
+                {
+                    Book book = new Book(title, author, convertedDate);
+                    _books.Add(book);
+                }              
+            }
+            else
+            {
+                Console.WriteLine("Неверный формат записи даты выпуска.");
+                Console.ReadKey();
+            }
+            
+            Console.Clear();
+        }
+
+        public void DeleteBook()
+        {
+            int convertedDate;
+            Console.Write("Введите название книги, которую необходимо удалить: ");
+            string title = Console.ReadLine();
+            Console.Write("Введите автора книги: ");
+            string author = Console.ReadLine();
+            Console.Write("Введите дату выпуска книги: ");
+            string releaseDate = Console.ReadLine();
+
+            if (Int32.TryParse(releaseDate, out convertedDate) && convertedDate >= 0)
+            {
+                for (int i = 0; i < _books.Count; i++)
+                {
+                    if (title == _books[i].Title && author == _books[i].Author && convertedDate == _books[i].ReleaseDate)
+                        _books.Remove(_books[i]);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Неверный формат записи даты выпуска.");
+                Console.ReadKey();
+            }
+
+            Console.Clear();
+        }
+    }
+}
