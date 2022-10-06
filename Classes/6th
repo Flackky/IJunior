@@ -7,34 +7,48 @@ namespace Sixth_part
     {
         static void Main(string[] args)
         {
-            const string AddAction = "1";
-            const string DeleteAction = "2";
-            const string ShowAction = "3";
+            const string CheckPlayerInventoryAction = "1";
+            const string CheckVendorInventoryAction = "2";
+            const string BuyAction = "3";
             const string ExitAction = "4";
-                                          
-            string addMessage = AddAction + " - Добавить книгу в хранилище\n";
-            string deleteMessage = DeleteAction + " - Убрать книгу из хранилища\n";
-            string showMessage = ShowAction + " - Вывести список книг в хранилище\n";      
+
+            string checkPlayerInventoryMessage = CheckPlayerInventoryAction + " - Посмотреть инвентарь игрока\n";
+            string checkVendorInventoryMessage = CheckVendorInventoryAction + " - Посмотреть каталог продовца\n";
+            string buyMessage = BuyAction + " - Купить предметы продовца\n";
             string exitMessage = ExitAction + " - выход";
             bool isWorking = true;
 
-            List<> books = new List<Book>();
-            Inventory inventory = new Inventory(books);
+            List<Item> playerItems = new List<Item>();
+            Inventory playerInventory = new Inventory(playerItems);
+            Player player = new Player("Игрок", 10000, playerInventory);
+
+            List<Item> vendorItems = new List<Item>();
+            Item item1 = new Item("Картина", 4000);
+            Item item2 = new Item("Зеркало", 3500);
+            Item item3 = new Item("Шкаф", 8500);
+            vendorItems.Add(item1);
+            vendorItems.Add(item2);
+            vendorItems.Add(item3);
+            Inventory vendorInventory = new Inventory(vendorItems);
+            Vendor vendor = new Vendor("Продавец", vendorInventory);
 
             while (isWorking)
             {
-                Console.Write($"Меню:\n{addMessage}{deleteMessage}{showMessage}{exitMessage}\n-> ");
+                player.ShowInfo();
+                vendor.ShowInfo();
+
+                Console.Write($"\nМеню:\n{checkPlayerInventoryMessage}{checkVendorInventoryMessage}{buyMessage}{exitMessage}\n-> ");
 
                 switch (Console.ReadLine())
                 {
-                    case AddAction:
-                        depository.AddNewBook();
+                    case CheckPlayerInventoryAction:
+                        playerInventory.ShowInventory();
                         break;
-                    case DeleteAction:
-                        depository.DeleteBook();
+                    case CheckVendorInventoryAction:
+                        vendorInventory.ShowInventory();
                         break;
-                    case ShowAction:
-                        depository.ShowBookList();
+                    case BuyAction:
+                        //depository.ShowBookList();
                         break;
                     case ExitAction:
                         isWorking = false;
@@ -70,9 +84,9 @@ namespace Sixth_part
     {
         public int Money { get; private set; }
 
-        public Player(string name, int money, Inventory inventory) : base (name, inventory)
+        public Player(string name, int money, Inventory inventory) : base(name, inventory)
         {
-            Money = money;           
+            Money = money;
         }
 
         public override void ShowInfo()
@@ -85,104 +99,61 @@ namespace Sixth_part
 
     class Vendor : Character
     {
-        public Vendor(string name, Inventory inventory) : base(name, inventory) 
+        public Vendor(string name, Inventory inventory) : base(name, inventory)
         {
         }
 
         public override void ShowInfo()
         {
-            Console.Write("Продавец ");
+            Console.Write(" >>>> Продавец ");
             base.ShowInfo();
         }
     }
 
     class Item
     {
+        public string Name { get; private set; }
+        public int Price { get; private set; }
 
+        public Item()
+        {
+            Name = "Нет";
+            Price = 0;
+        }
+        
+        public Item(string name, int price)
+        {
+            Name = name;
+            Price = price;
+        }
+
+        public void ShowInfo()
+        {
+            Console.WriteLine($"Предмет - {Name}, Стоимость - {Price}.");
+        }
     }
 
     class Inventory
     {
         private List<Item> _items;
 
-        public Inventory (List<Item> items)
+        public Inventory(List<Item> items)
         {
             _items = items;
         }
 
-        public void ShowBookList()
+        public void ShowInventory()
         {
-            const string ShowAction = "1";
-            const string ShowByTitleAction = "2";
-            const string ShowByAuthorAction = "3";
-            const string ShowByYearAction = "4";
-
-            string showMessage = ShowAction + " - Вывести список всех книг\n";
-            string showByTitleMessage = ShowByTitleAction + " - Вывести список книг по названию\n";
-            string showByAuthorMessage = ShowByAuthorAction + " - Вывести список книг по автору\n";
-            string showByYearMessage = ShowByYearAction + " - Вывести список книг по году выпуска\n";
-
-            Console.Write($"{showMessage}{showByTitleMessage}{showByAuthorMessage}{showByYearMessage}-> ");
-            string userInput = Console.ReadLine();
-
-            if (userInput == ShowAction)
+            for (int i = 0; i < _items.Count; i++)
             {
-                for (int i = 0; i < _books.Count; i++)
-                {
-                    _books[i].ShowInfo();
-                }
-            }
-            else if (userInput == ShowByTitleAction)
-            {
-                Console.WriteLine("Введите название книги.");
-                userInput = Console.ReadLine();
-
-                for (int i = 0; i < _books.Count; i++)
-                {
-                    if (userInput == _books[i].Title)
-                        _books[i].ShowInfo();
-                }
-            }
-            else if (userInput == ShowByAuthorAction)
-            {
-                Console.WriteLine("Введите автора книги.");
-                userInput = Console.ReadLine();
-
-                for (int i = 0; i < _books.Count; i++)
-                {
-                    if (userInput == _books[i].Author)
-                        _books[i].ShowInfo();
-                }
-            }
-            else if (userInput == ShowByYearAction)
-            {
-                int convertedDate;
-                Console.WriteLine("Введите год выпуска книги.");
-                userInput = Console.ReadLine();
-
-                if (Int32.TryParse(userInput, out convertedDate) && convertedDate >= 0)
-                {
-                    for (int i = 0; i < _books.Count; i++)
-                    {
-                        if (convertedDate == _books[i].ReleaseDate)
-                            _books[i].ShowInfo();
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Неверный формат записи даты выпуска.");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Неизвестная команда.");
+                _items[i].ShowInfo();
             }
 
             Console.ReadKey();
             Console.Clear();
         }
 
-        public void AddNewBook()
+        public void BuyItem()
         {
             int convertedDate;
             bool isExist = false;
@@ -193,57 +164,7 @@ namespace Sixth_part
             Console.Write("Введите год выпуска: ");
             string releaseDate = Console.ReadLine();
 
-            if (Int32.TryParse(releaseDate, out convertedDate) && convertedDate >= 0)
-            {
-                for (int i = 0; i < _books.Count; i++)
-                {
-                    if (title == _books[i].Title && author == _books[i].Author && convertedDate == _books[i].ReleaseDate)
-                    {
-                        Console.Write("Такая книга уже существует.");
-                        Console.ReadKey();
-                        isExist = true;
-                        break;
-                    }
-                }
-
-                if (isExist == false)
-                {
-                    Book book = new Book(title, author, convertedDate);
-                    _books.Add(book);
-                }              
-            }
-            else
-            {
-                Console.WriteLine("Неверный формат записи даты выпуска.");
-                Console.ReadKey();
-            }
             
-            Console.Clear();
-        }
-
-        public void DeleteBook()
-        {
-            int convertedDate;
-            Console.Write("Введите название книги, которую необходимо удалить: ");
-            string title = Console.ReadLine();
-            Console.Write("Введите автора книги: ");
-            string author = Console.ReadLine();
-            Console.Write("Введите дату выпуска книги: ");
-            string releaseDate = Console.ReadLine();
-
-            if (Int32.TryParse(releaseDate, out convertedDate) && convertedDate >= 0)
-            {
-                for (int i = 0; i < _books.Count; i++)
-                {
-                    if (title == _books[i].Title && author == _books[i].Author && convertedDate == _books[i].ReleaseDate)
-                        _books.Remove(_books[i]);
-                }
-            }
-            else
-            {
-                Console.WriteLine("Неверный формат записи даты выпуска.");
-                Console.ReadKey();
-            }
 
             Console.Clear();
         }
