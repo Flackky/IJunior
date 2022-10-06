@@ -10,11 +10,17 @@ namespace Sixth_part
             const string AddAction = "1";
             const string DeleteAction = "2";
             const string ShowAction = "3";
-            const string ExitAction = "4";
-                                          
+            const string ShowByTitleAction = "4";
+            const string ShowByAuthorAction = "5";
+            const string ShowByYearAction = "6";         
+            const string ExitAction = "7";
+
             string addMessage = AddAction + " - Добавить книгу в хранилище\n";
             string deleteMessage = DeleteAction + " - Убрать книгу из хранилища\n";
-            string showMessage = ShowAction + " - Вывести список книг в хранилище\n";      
+            string showMessage = ShowAction + " - Вывести список всех книг, которые находятся в хранилище\n";
+            string showByTitleMessage = ShowByTitleAction + " - Вывести список книг по названию\n";
+            string showByAuthorMessage = ShowByAuthorAction + " - Вывести список книг по автору\n";
+            string showByYearMessage = ShowByYearAction + " - Вывести список книг по году выпуска\n";
             string exitMessage = ExitAction + " - выход";
             bool isWorking = true;
 
@@ -23,7 +29,7 @@ namespace Sixth_part
 
             while (isWorking)
             {
-                Console.Write($"Меню:\n{addMessage}{deleteMessage}{showMessage}{exitMessage}\n-> ");
+                Console.Write($"Меню:\n{addMessage}{deleteMessage}{showMessage}{showByTitleMessage}{showByAuthorMessage}{showByYearMessage}{exitMessage}\n-> ");
 
                 switch (Console.ReadLine())
                 {
@@ -34,17 +40,27 @@ namespace Sixth_part
                         library.DeleteBook();
                         break;
                     case ShowAction:
-                        library.ShowBookList();
+                        library.ShowWholeBookList();
+                        break;
+                    case ShowByTitleAction:
+                        library.ShowBookListByTitle();
+                        break;
+                    case ShowByAuthorAction:
+                        library.ShowBookListByAuthor();
+                        break;
+                    case ShowByYearAction:
+                        library.ShowBookListByYear();
                         break;
                     case ExitAction:
                         isWorking = false;
                         break;
                     default:
-                        Console.WriteLine("Неизвестная команда.");
-                        Console.ReadKey();
-                        Console.Clear();
+                        Console.WriteLine("Неизвестная команда.");                      
                         break;
                 }
+
+                Console.ReadKey();
+                Console.Clear();
             }
         }
     }
@@ -79,77 +95,57 @@ namespace Sixth_part
     {
         private List<Book> _books;
 
-        public Library (List<Book> books)
+        public Library(List<Book> books)
         {
             _books = books;
         }
 
-        public void ShowBookList()
+        public void ShowWholeBookList()
         {
-            const string ShowAction = "1";
-            const string ShowByTitleAction = "2";
-            const string ShowByAuthorAction = "3";
-            const string ShowByYearAction = "4";
+            for (int i = 0; i < _books.Count; i++)
+            {
+                _books[i].ShowInfo();
+            }
+        }
 
-            string showMessage = ShowAction + " - Вывести список всех книг\n";
-            string showByTitleMessage = ShowByTitleAction + " - Вывести список книг по названию\n";
-            string showByAuthorMessage = ShowByAuthorAction + " - Вывести список книг по автору\n";
-            string showByYearMessage = ShowByYearAction + " - Вывести список книг по году выпуска\n";
-
-            Console.Write($"{showMessage}{showByTitleMessage}{showByAuthorMessage}{showByYearMessage}-> ");
+        public void ShowBookListByTitle()
+        {
+            Console.WriteLine("Введите название книги.");
             string userInput = Console.ReadLine();
 
-            if (userInput == ShowAction)
+            for (int i = 0; i<_books.Count; i++)
             {
-                for (int i = 0; i < _books.Count; i++)
-                {
+                if (userInput == _books[i].Title)
                     _books[i].ShowInfo();
-                }
             }
-            else if (userInput == ShowByTitleAction)
-            {
-                Console.WriteLine("Введите название книги.");
-                userInput = Console.ReadLine();
+        }
 
+        public void ShowBookListByAuthor()
+        {
+            Console.WriteLine("Введите автора книги.");
+            string userInput = Console.ReadLine();
+
+            for (int i = 0; i < _books.Count; i++)
+            {
+                if (userInput == _books[i].Author)
+                    _books[i].ShowInfo();
+            }
+        }
+
+        public void ShowBookListByYear()
+        {
+            Console.WriteLine("Введите год выпуска книги.");
+            string unconvertedDate = Console.ReadLine();
+            int convertedDate = ReadNumber(unconvertedDate);
+
+            if (convertedDate != -1)
+            {
                 for (int i = 0; i < _books.Count; i++)
                 {
-                    if (userInput == _books[i].Title)
+                    if (convertedDate == _books[i].ReleaseDate)
                         _books[i].ShowInfo();
                 }
             }
-            else if (userInput == ShowByAuthorAction)
-            {
-                Console.WriteLine("Введите автора книги.");
-                userInput = Console.ReadLine();
-
-                for (int i = 0; i < _books.Count; i++)
-                {
-                    if (userInput == _books[i].Author)
-                        _books[i].ShowInfo();
-                }
-            }
-            else if (userInput == ShowByYearAction)
-            {
-                Console.WriteLine("Введите год выпуска книги.");
-                string unconvertedDate = Console.ReadLine();
-                ReadNumber(unconvertedDate, out int convertedDate);
-
-                if (convertedDate != -1)
-                {
-                    for (int i = 0; i < _books.Count; i++)
-                    {
-                        if (convertedDate == _books[i].ReleaseDate)
-                            _books[i].ShowInfo();
-                    }
-                }
-            }
-            else
-            {
-                Console.WriteLine("Неизвестная команда.");
-            }
-
-            Console.ReadKey();
-            Console.Clear();
         }
 
         public void AddNewBook()
@@ -161,7 +157,7 @@ namespace Sixth_part
             string author = Console.ReadLine();
             Console.Write("Введите год выпуска: ");
             string unconvertedDate = Console.ReadLine();
-            ReadNumber(unconvertedDate, out int convertedDate);
+            int convertedDate = ReadNumber(unconvertedDate);
 
             if (convertedDate != -1)
             {
@@ -180,36 +176,49 @@ namespace Sixth_part
                 {
                     Book book = new Book(title, author, convertedDate);
                     _books.Add(book);
+                    Console.Write("Книга добавлена.");
                 }
             }
-      
-            Console.Clear();
         }
 
         public void DeleteBook()
         {
+            int counter = 0;
             Console.Write("Введите название книги, которую необходимо удалить: ");
             string title = Console.ReadLine();
             Console.Write("Введите автора книги: ");
             string author = Console.ReadLine();
             Console.Write("Введите дату выпуска книги: ");
             string unconvertedDate = Console.ReadLine();
-            ReadNumber(unconvertedDate, out int convertedDate);
+            int convertedDate = ReadNumber(unconvertedDate);
 
             if (convertedDate != -1)
             {
                 for (int i = 0; i < _books.Count; i++)
                 {
                     if (title == _books[i].Title && author == _books[i].Author && convertedDate == _books[i].ReleaseDate)
+                    {
+                        counter++;
                         _books.Remove(_books[i]);
+                    }
+                        
+                }
+
+                if (counter == 0)
+                {
+                    Console.WriteLine("Такой книги не существует.");
+                }
+                else
+                {
+                    Console.WriteLine("Книга удалена.");
                 }
             }
-            
-            Console.Clear();
         }
 
-        public int ReadNumber(string unconvertedNumber, out int convertedNumber)
+        public int ReadNumber(string unconvertedNumber)
         {
+            int convertedNumber;
+
             if (Int32.TryParse(unconvertedNumber, out convertedNumber) && convertedNumber >= 0)
             {
                 return convertedNumber;
@@ -217,10 +226,9 @@ namespace Sixth_part
             else
             {
                 Console.WriteLine("Неверный формат записи даты выпуска.");
-                Console.ReadKey();
             }
 
-            return convertedNumber = -1;
+            return -1;
         }
     }
 }
