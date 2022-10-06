@@ -19,7 +19,7 @@ namespace Sixth_part
             bool isWorking = true;
 
             List<Book> books = new List<Book>();
-            Depository depository = new Depository(books);
+            Library library = new Library(books);
 
             while (isWorking)
             {
@@ -28,13 +28,13 @@ namespace Sixth_part
                 switch (Console.ReadLine())
                 {
                     case AddAction:
-                        depository.AddNewBook();
+                        library.AddNewBook();
                         break;
                     case DeleteAction:
-                        depository.DeleteBook();
+                        library.DeleteBook();
                         break;
                     case ShowAction:
-                        depository.ShowBookList();
+                        library.ShowBookList();
                         break;
                     case ExitAction:
                         isWorking = false;
@@ -75,11 +75,11 @@ namespace Sixth_part
         }
     }
 
-    class Depository
+    class Library
     {
         private List<Book> _books;
 
-        public Depository (List<Book> books)
+        public Library (List<Book> books)
         {
             _books = books;
         }
@@ -130,21 +130,17 @@ namespace Sixth_part
             }
             else if (userInput == ShowByYearAction)
             {
-                int convertedDate;
                 Console.WriteLine("Введите год выпуска книги.");
-                userInput = Console.ReadLine();
+                string unconvertedDate = Console.ReadLine();
+                ReadNumber(unconvertedDate, out int convertedDate);
 
-                if (Int32.TryParse(userInput, out convertedDate) && convertedDate >= 0)
+                if (convertedDate != -1)
                 {
                     for (int i = 0; i < _books.Count; i++)
                     {
                         if (convertedDate == _books[i].ReleaseDate)
                             _books[i].ShowInfo();
                     }
-                }
-                else
-                {
-                    Console.WriteLine("Неверный формат записи даты выпуска.");
                 }
             }
             else
@@ -158,16 +154,16 @@ namespace Sixth_part
 
         public void AddNewBook()
         {
-            int convertedDate;
             bool isExist = false;
             Console.Write("Введите название книги: ");
             string title = Console.ReadLine();
             Console.Write("Введите автора: ");
             string author = Console.ReadLine();
             Console.Write("Введите год выпуска: ");
-            string releaseDate = Console.ReadLine();
+            string unconvertedDate = Console.ReadLine();
+            ReadNumber(unconvertedDate, out int convertedDate);
 
-            if (Int32.TryParse(releaseDate, out convertedDate) && convertedDate >= 0)
+            if (convertedDate != -1)
             {
                 for (int i = 0; i < _books.Count; i++)
                 {
@@ -184,28 +180,23 @@ namespace Sixth_part
                 {
                     Book book = new Book(title, author, convertedDate);
                     _books.Add(book);
-                }              
+                }
             }
-            else
-            {
-                Console.WriteLine("Неверный формат записи даты выпуска.");
-                Console.ReadKey();
-            }
-            
+      
             Console.Clear();
         }
 
         public void DeleteBook()
         {
-            int convertedDate;
             Console.Write("Введите название книги, которую необходимо удалить: ");
             string title = Console.ReadLine();
             Console.Write("Введите автора книги: ");
             string author = Console.ReadLine();
             Console.Write("Введите дату выпуска книги: ");
-            string releaseDate = Console.ReadLine();
+            string unconvertedDate = Console.ReadLine();
+            ReadNumber(unconvertedDate, out int convertedDate);
 
-            if (Int32.TryParse(releaseDate, out convertedDate) && convertedDate >= 0)
+            if (convertedDate != -1)
             {
                 for (int i = 0; i < _books.Count; i++)
                 {
@@ -213,13 +204,23 @@ namespace Sixth_part
                         _books.Remove(_books[i]);
                 }
             }
+            
+            Console.Clear();
+        }
+
+        public int ReadNumber(string unconvertedNumber, out int convertedNumber)
+        {
+            if (Int32.TryParse(unconvertedNumber, out convertedNumber) && convertedNumber >= 0)
+            {
+                return convertedNumber;
+            }
             else
             {
                 Console.WriteLine("Неверный формат записи даты выпуска.");
                 Console.ReadKey();
             }
 
-            Console.Clear();
+            return convertedNumber = -1;
         }
     }
 }
