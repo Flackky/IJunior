@@ -48,7 +48,7 @@ namespace Sixth_part
                         vendorInventory.ShowInventory();
                         break;
                     case BuyAction:
-                        //depository.ShowBookList();
+                        vendorInventory.BuyItem(playerInventory, player);
                         break;
                     case ExitAction:
                         isWorking = false;
@@ -94,6 +94,11 @@ namespace Sixth_part
             Console.Write("Игрок ");
             base.ShowInfo();
             Console.Write($" Деньги - {Money}.");
+        }
+
+        public void PayForItem(int itemPrice)
+        {
+            Money -= itemPrice;
         }
     }
 
@@ -153,19 +158,31 @@ namespace Sixth_part
             Console.Clear();
         }
 
-        public void BuyItem()
+        public void BuyItem(Inventory playerInventory, Player player)
         {
-            int convertedDate;
-            bool isExist = false;
-            Console.Write("Введите название книги: ");
-            string title = Console.ReadLine();
-            Console.Write("Введите автора: ");
-            string author = Console.ReadLine();
-            Console.Write("Введите год выпуска: ");
-            string releaseDate = Console.ReadLine();
+            bool hasBeenBought = false;
+            Console.Write("Введите название предмета, который вы хотите купить: ");
+            string itemName = Console.ReadLine();
 
-            
+            foreach (Item item in _items)
+            {
+                if (itemName.ToLower() == item.Name.ToLower() && player.Money - item.Price >= 0)
+                {
+                    player.PayForItem(item.Price);
+                    _items.Remove(item);
+                    playerInventory._items.Add(item);
+                    hasBeenBought = true;
+                    Console.Write("Предмет куплен и помещён в ваш инвентарь.");
+                    break;
+                }
+            }
 
+            if (hasBeenBought == false)
+            {
+                Console.Write("Ошибка: предмет не существует или его нет в продаже.");
+            }
+
+            Console.ReadKey();
             Console.Clear();
         }
     }
