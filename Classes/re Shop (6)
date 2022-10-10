@@ -1,0 +1,217 @@
+using System;
+using System.Collections.Generic;
+
+namespace Sixth_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            const string CheckPlayerInventoryAction = "1";
+            const string CheckVendorInventoryAction = "2";
+            const string BuyAction = "3";
+            const string ExitAction = "4";
+
+            string checkPlayerInventoryMessage = CheckPlayerInventoryAction + " - Посмотреть инвентарь игрока\n";
+            string checkVendorInventoryMessage = CheckVendorInventoryAction + " - Посмотреть каталог продовца\n";
+            string buyMessage = BuyAction + " - Купить предметы продовца\n";
+            string exitMessage = ExitAction + " - выход";
+            bool isWorking = true;
+
+            List<Item> playerItems = new List<Item>();
+            Inventory playerInventory = new Inventory(playerItems);
+            Player player = new Player("Игрок", 10000, playerInventory);
+
+            List<Item> vendorItems = new List<Item>();
+            Item item1 = new Item("Картина", 4000);
+            Item item2 = new Item("Зеркало", 3500);
+            Item item3 = new Item("Шкаф", 8500);
+            vendorItems.Add(item1);
+            vendorItems.Add(item2);
+            vendorItems.Add(item3);
+            Inventory vendorInventory = new Inventory(vendorItems);
+            Vendor vendor = new Vendor("Продавец", vendorInventory);           
+
+            while (isWorking)
+            {
+                player.ShowInfo();
+                vendor.ShowInfo();
+
+                Console.Write($"\nМеню:\n{checkPlayerInventoryMessage}{checkVendorInventoryMessage}{buyMessage}{exitMessage}\n-> ");
+
+                switch (Console.ReadLine())
+                {
+                    case CheckPlayerInventoryAction:
+                        playerInventory.ShowItems();
+                        break;
+                    case CheckVendorInventoryAction:
+                        vendorInventory.ShowItems();
+                        break;
+                    case BuyAction:
+                        player.BuyItem(vendor);
+                        break;
+                    case ExitAction:
+                        isWorking = false;
+                        break;
+                    default:
+                        Console.WriteLine("Неизвестная команда.");
+                        Console.ReadKey();
+                        Console.Clear();
+                        break;
+                }
+            }
+        }
+    }
+
+    class Character
+    {       
+        protected Inventory Inventory;
+
+        public string Name { get; private set; }
+
+        public Character(string name, Inventory inventory)
+        {
+            Name = name;
+            Inventory = inventory;
+        }
+
+        public Inventory GetInventory(Character character)
+        {
+            return character.Inventory;
+        }
+
+        public virtual void ShowInfo()
+        {
+            Console.Write($"Имя - {Name};");
+        }
+    }
+
+    class Player : Character
+    {
+        public int Money { get; private set; }
+
+        public Player(string name, int money, Inventory inventory) : base(name, inventory)
+        {
+            Money = money;
+        }
+
+        public void PayForItem(int itemPrice)
+        {
+            Money -= itemPrice;
+        }
+
+        public void BuyItem(Vendor vendor)
+        {
+            bool isItemExists = false;
+            bool hasBeenBought = false;
+            Inventory vendorInventory = GetInventory(vendor);
+            Item requiredItem = vendorInventory.GetRequiredItem(ref isItemExists);
+
+            if (isItemExists && Money - requiredItem.Price >= 0)
+            {
+                vendorInventory.RemoveItem(requiredItem);
+                PayForItem(requiredItem.Price);
+                Inventory.AddItem(requiredItem);
+                hasBeenBought = true;
+                Console.Write("Предмет куплен и помещён в ваш инвентарь.");
+            }
+
+            if (hasBeenBought == false)
+            {
+                Console.Write("Ошибка: предмет не существует или его нет в продаже либо у вас не достаточно средств.");
+            }
+
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        public override void ShowInfo()
+        {
+            Console.Write("Игрок ");
+            base.ShowInfo();
+            Console.Write($" Деньги - {Money}.");
+        }
+    }
+
+    class Vendor : Character
+    {
+        public Vendor(string name, Inventory inventory) : base(name, inventory) {}
+
+        public override void ShowInfo()
+        {
+            Console.Write(" >>>> Продавец ");
+            base.ShowInfo();
+        }
+    }
+
+    class Item
+    {
+        public string Name { get; private set; }
+        public int Price { get; private set; }
+
+        public Item()
+        {
+            Name = "Нет";
+            Price = 0;
+        }
+        
+        public Item(string name, int price)
+        {
+            Name = name;
+            Price = price;
+        }
+
+        public void ShowInfo()
+        {
+            Console.WriteLine($"Предмет - {Name}, Стоимость - {Price}.");
+        }
+    }
+
+    class Inventory
+    {
+        private List<Item> _items;
+
+        public Inventory(List<Item> items)
+        {
+            _items = items;
+        }
+
+        public void ShowItems()
+        {
+            for (int i = 0; i < _items.Count; i++)
+            {
+                _items[i].ShowInfo();
+            }
+
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        public Item GetRequiredItem(ref bool isItemExists)
+        {
+            Console.Write("Введите название предмета, который вы хотите купить: ");
+            string itemName = Console.ReadLine();
+
+            foreach (Item item in _items)
+            {
+                if (itemName.ToLower() == item.Name.ToLower())
+                {
+                    isItemExists = true;
+                    return item;
+                }   
+            }
+
+            return new Item();
+        }
+
+        public void AddItem(Item item)
+        {
+            _items.Add(item);
+        }
+
+        public void RemoveItem(Item item)
+        {
+            _items.Remove(item);
+        }
+    }
+}
