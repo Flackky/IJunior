@@ -64,20 +64,14 @@ namespace Sixth_part
     }
 
     class Character
-    {       
-        protected Inventory Inventory;
-
+    {             
         public string Name { get; private set; }
+        public Inventory Inventory { get; private set; }
 
         public Character(string name, Inventory inventory)
         {
             Name = name;
             Inventory = inventory;
-        }
-
-        public Inventory GetInventory(Character character)
-        {
-            return character.Inventory;
         }
 
         public virtual void ShowInfo()
@@ -104,12 +98,11 @@ namespace Sixth_part
         {
             bool isItemExists = false;
             bool hasBeenBought = false;
-            Inventory vendorInventory = GetInventory(vendor);
-            Item requiredItem = vendorInventory.GetRequiredItem(ref isItemExists);
+            Item requiredItem = vendor.Inventory.GetRequiredItem(ref isItemExists);
 
             if (isItemExists && Money - requiredItem.Price >= 0)
             {
-                vendorInventory.RemoveItem(requiredItem);
+                vendor.Inventory.RemoveItem(requiredItem);
                 PayForItem(requiredItem.Price);
                 Inventory.AddItem(requiredItem);
                 hasBeenBought = true;
