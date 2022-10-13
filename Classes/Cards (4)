@@ -1,0 +1,190 @@
+using System;
+using System.Collections.Generic;
+
+namespace Sixth_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            const string TakeCardAction = "1";
+            const string EndAction = "2";
+
+            string takeCardMessage = TakeCardAction + " - Взять карту из главной колоды\n";
+            string endMessage = EndAction + " - Закончить набор карт и посмотреть свои карты\n";
+            bool isWorking = true;
+            bool isCreated = false;
+            
+            List<Card> playerCards = new List<Card>();
+            Player player = new Player(playerCards);    
+
+            Stack<Card> cards = new Stack<Card>();
+            Deck mainDeck = new Deck(cards);
+            
+            while (isCreated == false)
+            {
+                Console.Write($"Введите количество карт (значение от 1 до 36), которые будут находиться в главной колоде: ");
+                string quantity = Console.ReadLine();
+                int convertedQuantity = mainDeck.ReadNumber(quantity);
+
+                if (convertedQuantity != -1)
+                {
+                    mainDeck.CreateListOfCards(convertedQuantity);
+                    isCreated = true;
+                }
+            }
+
+            while (isWorking)
+            {
+                mainDeck.ShowCardsInfo();
+                Console.Write($"Меню:\n{takeCardMessage}{endMessage}-> ");
+
+                switch (Console.ReadLine())
+                {
+                    case TakeCardAction:
+                        player.TakeCard(mainDeck);
+                        break;
+                    case EndAction:
+                        player.ShowCardsOnHand(ref isWorking);
+                        break;
+                    default:
+                        Console.WriteLine("Неизвестная команда.");
+                        Console.ReadKey();
+                        Console.Clear();
+                        break;
+                }
+            }
+        }
+    }
+
+    enum Suit
+    {
+        Пика,
+        Трефа,
+        Червь,
+        Бубна
+    }
+
+    class Player
+    {
+        private List<Card> _cardsOnHand;
+
+        public Player(List<Card> cardsOnHand)
+        {
+            _cardsOnHand = cardsOnHand;
+        }
+
+        public void TakeCard(Deck deck)
+        {
+            bool isExist = true;
+            Card card = deck.GetCard(ref isExist);
+
+            if (isExist)
+            {          
+                _cardsOnHand.Add(card);
+            }
+            else
+            {
+                Console.WriteLine("В главной колоде больше нет карт.");
+                Console.ReadLine();
+            }
+
+            Console.Clear();
+        }
+
+        public void ShowCardsOnHand(ref bool isWorking)
+        {
+            isWorking = false;
+            Console.WriteLine("Карты, которые вы взяли:");
+
+            for (int i = 0; i < _cardsOnHand.Count; i++)
+            {
+                _cardsOnHand[i].ShowInfo();
+            }
+
+            Console.ReadLine();
+            Console.Clear();
+        }
+    }
+
+    class Card
+    {
+        public int Value { get; private set; }
+        public Suit Suit { get; private set; }
+
+        public Card()
+        {
+            Value = 0;
+            Suit = 0;
+        }
+
+        public Card(int value, Suit suit)
+        {
+            Value = value;
+            Suit = suit;
+        }
+
+        public void ShowInfo()
+        {
+            Console.WriteLine($"Масть карты - {Suit}, значение - {Value}.");
+        }
+    }
+
+    class Deck
+    {
+        private static int _quantity;
+        private Stack<Card> _cards;
+
+        public Deck(Stack<Card> cards)
+        {
+            _cards = cards;
+        }
+
+        public void CreateListOfCards(int quantity)
+        {
+            Random random = new Random();
+
+            for (int i = 0; i < quantity; i++)
+            {
+                Card card = new Card(random.Next(6,15), (Suit)random.Next(0,4));
+                _cards.Push(card);
+                _quantity++;
+            }        
+        }
+
+        public Card GetCard(ref bool isExist)
+        {
+            if (_quantity > 0)
+            {      
+                _quantity--;
+                return _cards.Pop();
+            }
+
+            isExist = false;
+            return new Card();
+        }
+
+        public int ReadNumber(string quantity)
+        {
+            int convertedQuantity;
+
+            if (Int32.TryParse(quantity, out convertedQuantity) && convertedQuantity <= 36 && convertedQuantity >= 1)
+            {
+                return convertedQuantity;
+            }
+            else
+            {
+                Console.WriteLine("Неверный формат записи количества карт.");
+                Console.ReadKey();
+            }
+
+            Console.Clear();
+            return -1;
+        }
+
+        public void ShowCardsInfo()
+        {
+            Console.WriteLine($"Осталось {_quantity} карт(а) в главной колоде.");
+        }
+    }
+}
