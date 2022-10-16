@@ -14,6 +14,9 @@ namespace Sixth_part
             string endMessage = EndAction + " - Закончить набор карт и посмотреть свои карты\n";
             bool isWorking = true;
             bool isCreated = false;
+
+            int minCardValue = 1;
+            int maxCardValue = 36;
             
             List<Card> playerCards = new List<Card>();
             Player player = new Player(playerCards);    
@@ -23,9 +26,9 @@ namespace Sixth_part
             
             while (isCreated == false)
             {
-                Console.Write($"Введите количество карт (значение от 1 до 36), которые будут находиться в главной колоде: ");
+                Console.Write($"Введите количество карт (значение от {minCardValue} до {maxCardValue}), которые будут находиться в главной колоде: ");
                 string quantity = Console.ReadLine();
-                int convertedQuantity = mainDeck.ReadNumber(quantity);
+                int convertedQuantity = mainDeck.ReadNumber(quantity, minCardValue, maxCardValue);
 
                 if (convertedQuantity != -1)
                 {
@@ -76,10 +79,9 @@ namespace Sixth_part
 
         public void TakeCard(Deck deck)
         {
-            bool isExist = true;
-            Card card = deck.GetCard(ref isExist);
+            Card card = deck.GetCard();
 
-            if (isExist)
+            if (card != null)
             {          
                 _cardsOnHand.Add(card);
             }
@@ -112,12 +114,6 @@ namespace Sixth_part
         public int Value { get; private set; }
         public Suit Suit { get; private set; }
 
-        public Card()
-        {
-            Value = 0;
-            Suit = 0;
-        }
-
         public Card(int value, Suit suit)
         {
             Value = value;
@@ -143,16 +139,20 @@ namespace Sixth_part
         public void CreateListOfCards(int quantity)
         {
             Random random = new Random();
+            int minRandomCardValue = 6;
+            int maxRandomCardValue = 15;
+            int minRandomSuitValue = 0;
+            int maxRandomSuitValue = 4;
 
             for (int i = 0; i < quantity; i++)
             {
-                Card card = new Card(random.Next(6,15), (Suit)random.Next(0,4));
+                Card card = new Card(random.Next(minRandomCardValue, maxRandomCardValue), (Suit)random.Next(minRandomSuitValue, maxRandomSuitValue));
                 _cards.Push(card);
                 _quantity++;
             }        
         }
 
-        public Card GetCard(ref bool isExist)
+        public Card GetCard()
         {
             if (_quantity > 0)
             {      
@@ -160,15 +160,14 @@ namespace Sixth_part
                 return _cards.Pop();
             }
 
-            isExist = false;
-            return new Card();
+            return null;
         }
 
-        public int ReadNumber(string quantity)
+        public int ReadNumber(string quantity, int minCardValue, int maxCardValue)
         {
             int convertedQuantity;
 
-            if (Int32.TryParse(quantity, out convertedQuantity) && convertedQuantity <= 36 && convertedQuantity >= 1)
+            if (Int32.TryParse(quantity, out convertedQuantity) && convertedQuantity <= maxCardValue && convertedQuantity >= minCardValue)
             {
                 return convertedQuantity;
             }
