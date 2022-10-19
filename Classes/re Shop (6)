@@ -62,7 +62,7 @@ namespace Sixth_part
 
     class Character
     {
-        public string Name { get; private set; }
+        public string Name { get; protected set; }
         public int Money { get; protected set; }
         protected Inventory Inventory;
 
@@ -92,11 +92,10 @@ namespace Sixth_part
 
     class Player : Character
     {
-        public Player(string name, int money, Inventory inventory) : base(name, money, inventory){}
+        public Player(string name, int money, Inventory inventory) : base(name, money, inventory) { }
 
         public void BuyItem(Vendor vendor)
         {
-            bool hasBeenBought = false;
             Item requiredItem = vendor.GetFromInventory();
 
             if (requiredItem != null && Money - requiredItem.Price >= 0)
@@ -104,11 +103,9 @@ namespace Sixth_part
                 vendor.RemoveFromInventory(requiredItem);
                 PayForItem(requiredItem.Price, vendor);
                 Inventory.AddItem(requiredItem);
-                hasBeenBought = true;
                 Console.Write("Предмет куплен и помещён в ваш инвентарь.");
             }
-
-            if (hasBeenBought == false)
+            else
             {
                 Console.Write("Ошибка: предмет не существует или его нет в продаже либо у вас не достаточно средств.");
             }
@@ -117,7 +114,7 @@ namespace Sixth_part
             Console.Clear();
         }
 
-        
+
 
         public override void ShowInfo()
         {
@@ -145,7 +142,7 @@ namespace Sixth_part
         {
             Console.Write(" >>>> Продавец ");
             base.ShowInfo();
-            Console.Write($" Деньги - {Money}."); 
+            Console.Write($" Деньги - {Money}.");
         }
     }
 
