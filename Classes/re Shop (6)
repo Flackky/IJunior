@@ -114,8 +114,6 @@ namespace Sixth_part
             Console.Clear();
         }
 
-
-
         public override void ShowInfo()
         {
             Console.Write("Игрок ");
