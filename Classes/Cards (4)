@@ -13,29 +13,14 @@ namespace Sixth_part
             string takeCardMessage = TakeCardAction + " - Взять карту из главной колоды\n";
             string endMessage = EndAction + " - Закончить набор карт и посмотреть свои карты\n";
             bool isWorking = true;
-            bool isCreated = false;
 
-            int minCardValue = 1;
-            int maxCardValue = 36;
-            
             List<Card> playerCards = new List<Card>();
-            Player player = new Player(playerCards);    
+            Player player = new Player(playerCards);
 
-            Stack<Card> cards = new Stack<Card>();
+            List<Card> cards = new List<Card>();
             Deck mainDeck = new Deck(cards);
-            
-            while (isCreated == false)
-            {
-                Console.Write($"Введите количество карт (значение от {minCardValue} до {maxCardValue}), которые будут находиться в главной колоде: ");
-                string quantity = Console.ReadLine();
-                int convertedQuantity = mainDeck.ReadNumber(quantity, minCardValue, maxCardValue);
 
-                if (convertedQuantity != -1)
-                {
-                    mainDeck.CreateListOfCards(convertedQuantity);
-                    isCreated = true;
-                }
-            }
+            mainDeck.CreateListOfCards();
 
             while (isWorking)
             {
@@ -45,10 +30,11 @@ namespace Sixth_part
                 switch (Console.ReadLine())
                 {
                     case TakeCardAction:
-                        player.TakeCard(mainDeck);
+                        player.TakeCard(mainDeck.GetCard());
                         break;
                     case EndAction:
-                        player.ShowCardsOnHand(ref isWorking);
+                        player.ShowCardsOnHand();
+                        isWorking = false;
                         break;
                     default:
                         Console.WriteLine("Неизвестная команда.");
@@ -62,10 +48,23 @@ namespace Sixth_part
 
     enum Suit
     {
-        Пика,
-        Трефа,
-        Червь,
-        Бубна
+        Spades,
+        Clubs,
+        Hearts,
+        Diamonds
+    }
+
+    enum Rank
+    {
+        Six = 6,
+        Seven = 7,
+        Eight = 8,
+        Nine = 9,
+        Ace = 10,
+        King = 11,
+        Queen = 12,
+        Jack = 13,
+        Joker = 14
     }
 
     class Player
@@ -77,12 +76,10 @@ namespace Sixth_part
             _cardsOnHand = cardsOnHand;
         }
 
-        public void TakeCard(Deck deck)
+        public void TakeCard(Card card)
         {
-            Card card = deck.GetCard();
-
             if (card != null)
-            {          
+            {
                 _cardsOnHand.Add(card);
             }
             else
@@ -94,9 +91,8 @@ namespace Sixth_part
             Console.Clear();
         }
 
-        public void ShowCardsOnHand(ref bool isWorking)
+        public void ShowCardsOnHand()
         {
-            isWorking = false;
             Console.WriteLine("Карты, которые вы взяли:");
 
             for (int i = 0; i < _cardsOnHand.Count; i++)
@@ -111,79 +107,60 @@ namespace Sixth_part
 
     class Card
     {
-        public int Value { get; private set; }
         public Suit Suit { get; private set; }
+        public Rank Rank { get; private set; }
 
-        public Card(int value, Suit suit)
+        public Card(Suit suit, Rank rank)
         {
-            Value = value;
             Suit = suit;
+            Rank = rank;
         }
 
         public void ShowInfo()
         {
-            Console.WriteLine($"Масть карты - {Suit}, значение - {Value}.");
+            Console.WriteLine($"Масть карты - {Suit}, значение - {Rank}.");
         }
     }
 
     class Deck
     {
-        private static int _quantity;
-        private Stack<Card> _cards;
+        private List<Card> _cards;
 
-        public Deck(Stack<Card> cards)
+        public Deck(List<Card> cards)
         {
             _cards = cards;
         }
 
-        public void CreateListOfCards(int quantity)
+        public void CreateListOfCards()
         {
-            Random random = new Random();
-            int minRandomCardValue = 6;
-            int maxRandomCardValue = 15;
-            int minRandomSuitValue = 0;
-            int maxRandomSuitValue = 4;
-
-            for (int i = 0; i < quantity; i++)
+            for (int i = (int)Suit.Spades; i <= (int)Suit.Diamonds; i++)
             {
-                Card card = new Card(random.Next(minRandomCardValue, maxRandomCardValue), (Suit)random.Next(minRandomSuitValue, maxRandomSuitValue));
-                _cards.Push(card);
-                _quantity++;
-            }        
+                for (int j = (int)Rank.Six; j <= (int)Rank.Joker; j++)
+                {
+                    Card card = new Card((Suit)i, (Rank)j);
+                    _cards.Add(card);
+                }
+            }
         }
 
         public Card GetCard()
         {
-            if (_quantity > 0)
-            {      
-                _quantity--;
-                return _cards.Pop();
+            Random random = new Random();
+            int numberOfCard = random.Next(_cards.Count);
+
+            if (_cards.Count > 0)
+            {
+                Card card = _cards[numberOfCard];
+                _cards.RemoveAt(numberOfCard);
+                return card;
             }
 
             return null;
         }
 
-        public int ReadNumber(string quantity, int minCardValue, int maxCardValue)
-        {
-            int convertedQuantity;
-
-            if (Int32.TryParse(quantity, out convertedQuantity) && convertedQuantity <= maxCardValue && convertedQuantity >= minCardValue)
-            {
-                return convertedQuantity;
-            }
-            else
-            {
-                Console.WriteLine("Неверный формат записи количества карт.");
-                Console.ReadKey();
-            }
-
-            Console.Clear();
-            return -1;
-        }
-
         public void ShowCardsInfo()
         {
-            Console.WriteLine($"Осталось {_quantity} карт(а) в главной колоде.");
+            Console.WriteLine($"Осталось {_cards.Count} карт(а) в главной колоде.");
         }
     }
 }
