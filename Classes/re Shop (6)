@@ -7,14 +7,14 @@ namespace Sixth_part
     {
         static void Main(string[] args)
         {
-            const string CheckPlayerInventoryAction = "1";
-            const string CheckVendorInventoryAction = "2";
-            const string BuyAction = "3";
+            const string PlayerInventoryCheckAction = "1";
+            const string VendorInventoryCheckAction = "2";
+            const string PurchaseAction = "3";
             const string ExitAction = "4";
 
-            string checkPlayerInventoryMessage = CheckPlayerInventoryAction + " - Посмотреть инвентарь игрока\n";
-            string checkVendorInventoryMessage = CheckVendorInventoryAction + " - Посмотреть каталог продовца\n";
-            string buyMessage = BuyAction + " - Купить предметы продовца\n";
+            string playerInventoryCheckMessage = PlayerInventoryCheckAction + " - Посмотреть инвентарь игрока\n";
+            string vendorInventoryCheckMessage = VendorInventoryCheckAction + " - Посмотреть каталог продовца\n";
+            string PurchaseMessage = PurchaseAction + " - Купить предметы продовца\n";
             string exitMessage = ExitAction + " - выход";
             bool isWorking = true;
 
@@ -34,17 +34,17 @@ namespace Sixth_part
                 player.ShowInfo();
                 vendor.ShowInfo();
 
-                Console.Write($"\nМеню:\n{checkPlayerInventoryMessage}{checkVendorInventoryMessage}{buyMessage}{exitMessage}\n-> ");
+                Console.Write($"\nМеню:\n{playerInventoryCheckMessage}{vendorInventoryCheckMessage}{PurchaseMessage}{exitMessage}\n-> ");
 
                 switch (Console.ReadLine())
                 {
-                    case CheckPlayerInventoryAction:
+                    case PlayerInventoryCheckAction:
                         player.ShowInventory();
                         break;
-                    case CheckVendorInventoryAction:
+                    case VendorInventoryCheckAction:
                         vendor.ShowInventory();
                         break;
-                    case BuyAction:
+                    case PurchaseAction:
                         player.BuyItem(vendor);
                         break;
                     case ExitAction:
@@ -62,21 +62,16 @@ namespace Sixth_part
 
     class Character
     {
+        protected Inventory Inventory;
+
         public string Name { get; protected set; }
         public int Money { get; protected set; }
-        protected Inventory Inventory;
 
         public Character(string name, int money, Inventory inventory)
         {
             Name = name;
             Money = money;
             Inventory = inventory;
-        }
-
-        public void PayForItem(int itemPrice, Character seller)
-        {
-            Money -= itemPrice;
-            seller.Money += itemPrice;
         }
 
         public void ShowInventory()
@@ -94,14 +89,20 @@ namespace Sixth_part
     {
         public Player(string name, int money, Inventory inventory) : base(name, money, inventory) { }
 
+        public void PayMoney(int itemPrice)
+        {
+            Money -= itemPrice;
+        }
+
         public void BuyItem(Vendor vendor)
         {
-            Item requiredItem = vendor.GetFromInventory();
+            Item requiredItem = vendor.Get();
 
             if (requiredItem != null && Money - requiredItem.Price >= 0)
             {
-                vendor.RemoveFromInventory(requiredItem);
-                PayForItem(requiredItem.Price, vendor);
+                PayMoney(requiredItem.Price);
+                vendor.ReceiveMoney(requiredItem.Price);
+                vendor.SellItem(requiredItem);
                 Inventory.AddItem(requiredItem);
                 Console.Write("Предмет куплен и помещён в ваш инвентарь.");
             }
@@ -113,7 +114,7 @@ namespace Sixth_part
             Console.ReadKey();
             Console.Clear();
         }
-
+        
         public override void ShowInfo()
         {
             Console.Write("Игрок ");
@@ -126,12 +127,17 @@ namespace Sixth_part
     {
         public Vendor(string name, int money, Inventory inventory) : base(name, money, inventory) { }
 
-        public Item GetFromInventory()
+        public Item Get()
         {
-            return Inventory.GetRequiredItem();
+            return Inventory.GetItem();
         }
 
-        public void RemoveFromInventory(Item requiredItem)
+        public void ReceiveMoney(int itemPrice)
+        {
+            Money += itemPrice;
+        }
+
+        public void SellItem(Item requiredItem)
         {
             Inventory.RemoveItem(requiredItem);
         }
@@ -181,7 +187,7 @@ namespace Sixth_part
             Console.Clear();
         }
 
-        public Item GetRequiredItem()
+        public Item GetItem()
         {
             Console.Write("Введите название предмета, который вы хотите купить: ");
             string itemName = Console.ReadLine();
