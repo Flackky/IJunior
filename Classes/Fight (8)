@@ -1,0 +1,324 @@
+using System;
+using System.Collections.Generic;
+
+namespace Sixth_part 
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            bool isWorking = true;
+            bool isRedCorrect;
+            bool isBlueCorrect;
+            int blueFighterIndex;
+            int redFighterIndex;
+
+            while (isWorking)
+            {
+                Fighter[] blueFighters = { new Paladin(), new Warrior(), new DarkKnight(), new GunBreaker(), new Reaper() };
+                Fighter[] redFighters = { new Paladin(), new Warrior(), new DarkKnight(), new GunBreaker(), new Reaper() };
+                int counter = 0;
+
+                for (int i = 0; i < blueFighters.Length; i++)
+                {
+                    Console.Write("№" + (i+1) + " - ");
+                    blueFighters[i].ShowInfo();
+                    Console.WriteLine();
+                }
+
+                Console.Write("Введите номер участника, который будет находиться в КРАСНОЙ команде -> ");
+                isRedCorrect = ReadNumber(Console.ReadLine(), out redFighterIndex);
+                Console.Write("Введите номер участника, который будет находиться в СИНЕЙ команде -> ");
+                isBlueCorrect = ReadNumber(Console.ReadLine(), out blueFighterIndex);
+                
+                if (isBlueCorrect && isRedCorrect)
+                {
+                    Fighter redFighter = redFighters[redFighterIndex - 1];
+                    Fighter blueFighter = blueFighters[blueFighterIndex - 1];
+
+                    while (redFighter.Health > 0 && blueFighter.Health > 0)
+                    {
+                        Console.WriteLine();
+                        counter++;
+                        blueFighter.TakeDamage(redFighter.DealDamage());
+                        Console.WriteLine();
+                        redFighter.ShowBattleIntel();
+                        redFighter.TakeDamage(blueFighter.DealDamage());
+                        blueFighter.ShowBattleIntel();
+                    }
+
+                    if (redFighter.Health <= 0 && blueFighter.Health <= 0)
+                    {
+                        Console.Write($"Оба бойца погибли");
+                    }
+                    else if (redFighter.Health <= 0)
+                    {
+                        Console.Write($"Победил {blueFighter.ClassName}");
+                    }
+                    else if (blueFighter.Health <= 0)
+                    {
+                        Console.Write($"Победил {redFighter.ClassName}");
+                    }
+                }
+               
+                Console.ReadLine();
+                Console.Clear();
+            }
+        }
+
+        public static bool ReadNumber(string unconvertedNumber, out int convertedNumber)
+        {
+            if (Int32.TryParse(unconvertedNumber, out convertedNumber) && convertedNumber > 0 && convertedNumber <= 5)
+            {
+                return true;
+            }
+            else
+            {
+                Console.WriteLine("Неверный формат записи.");
+            }
+
+            return false;
+        }
+    }
+
+    class Fighter
+    {
+        protected int ResultDamage;
+        protected Random Random = new Random();
+
+        public string ClassName { get; protected set; }
+        public int Health { get; protected set; }
+        public int Damage { get; protected set; }
+        public int Resistance { get; protected set; }
+
+        public Fighter(string className, int health, int damage, int resistance)
+        {
+            ClassName = className;
+            Health = health;
+            Damage = damage;
+            Resistance = resistance;
+        }
+
+        public virtual int DealDamage()
+        {
+            ResultDamage = Damage;
+            return ResultDamage;
+        }
+
+        public virtual void TakeDamage(int damage)
+        {
+            Health -= damage - Resistance;
+        }
+
+        public virtual void ShowInfo()
+        {
+            Console.WriteLine($"; ОЗ - {Health}; Атака - {Damage}; Защита - {Resistance};");
+        }
+
+        public virtual void ShowBattleIntel()
+        {
+            Console.WriteLine($"ОЗ - {Health}; Нанёс - {ResultDamage} урона");
+        }
+    }
+
+    class Paladin : Fighter
+    {   
+        private int _shieldResistance;
+
+        public Paladin() : base ("Паладин", 1000, 100, 40)
+        {
+            _shieldResistance = 20;
+        }
+
+        public override int DealDamage()
+        {
+            return base.DealDamage();
+        }
+
+        public override void TakeDamage(int damage)
+        {
+            int perCent = Random.Next(0, 100);
+
+            if (perCent < 60)
+                Health -= damage - Resistance - _shieldResistance;
+            else
+                Health -= damage - Resistance;
+        }
+
+        public override void ShowInfo()
+        {
+            Console.Write(ClassName);
+            base.ShowInfo();
+            Console.WriteLine("Навык - Несломленная крепость - Имеет щит, который с 60 % шансом может заблокировать некоторый входящий урон."); 
+        }
+
+        public override void ShowBattleIntel()
+        {
+            Console.Write($"|{ClassName}| ");
+            base.ShowBattleIntel();
+        }
+    }
+
+    class Warrior : Fighter 
+    {
+        private bool _isRaged = false;
+
+        public Warrior() : base("Воин", 900, 120, 35) { }
+
+        public override int DealDamage()
+        {
+            int perCent = Random.Next(0, 100);
+
+            if (perCent < 40)
+            {
+                _isRaged = true;
+                ResultDamage = Damage * 2;
+                return ResultDamage;
+            }
+            else
+            {
+                return base.DealDamage();
+            }
+        }
+
+        public override void TakeDamage(int damage)
+        {
+            if (_isRaged)
+            {
+                _isRaged = false;
+                Health -= damage;
+            } 
+            else
+            {
+                Health -= damage - Resistance;
+            }           
+        }
+
+        public override void ShowInfo()
+        {
+            Console.Write(ClassName);
+            base.ShowInfo();
+            Console.WriteLine("Навык - Ярость воина - С 40% шансом может удвоить свой урон, но и может остаться без сопротивления.");
+        }
+
+        public override void ShowBattleIntel()
+        {
+            Console.Write($"|{ClassName}| ");
+            base.ShowBattleIntel();
+        }
+    }
+
+    class DarkKnight : Fighter
+    {
+        private int _tempDamage = 0;
+        public DarkKnight() : base("Тёмный рыцарь", 950, 110, 40) { }
+
+        public override int DealDamage()
+        {
+            ResultDamage = Damage + _tempDamage;
+            return ResultDamage;
+        }
+
+        public override void TakeDamage(int damage)
+        {
+            int perCent = Random.Next(0, 100);
+
+            if (perCent < 35)
+            {
+                _tempDamage = damage / 2;
+                Health -= damage / 2 - Resistance;
+            }
+            else
+            {
+                _tempDamage = 0;
+                Health -= damage - Resistance;
+            }
+        }
+
+        public override void ShowInfo()
+        {
+            Console.Write(ClassName);
+            base.ShowInfo();
+            Console.WriteLine("Навык - За собой во тьму - C шансом 35% разделяет полученный урон. Половину принимает, а другую половину отдаёт на след. ходу.");
+        }
+
+        public override void ShowBattleIntel()
+        {
+            Console.Write($"|{ClassName}| ");
+            base.ShowBattleIntel();
+        }
+    }
+    
+    class GunBreaker : Fighter
+    {
+        public int GunBladeCounter { get; private set; }
+
+        public GunBreaker() : base("Ганбрейкер", 750, 140, 35) { }
+
+        public override int DealDamage()
+        {
+            int perCent = Random.Next(0, 100);
+
+            if (perCent < 20)
+            {
+                Health += Damage * 50 / 100;
+            }
+
+            return base.DealDamage();
+        }
+
+        public override void TakeDamage(int damage)
+        {
+            base.TakeDamage(damage);
+        }
+
+        public override void ShowInfo()
+        {
+            Console.Write(ClassName);
+            base.ShowInfo();
+            Console.WriteLine("Навык - Эфирная нить - С 20% шансом поглощает свою атаку в виде HP (Количеством равным 50% от нанесённого урона).");
+        }
+
+        public override void ShowBattleIntel()
+        {
+            Console.Write($"|{ClassName}| ");
+            base.ShowBattleIntel();
+        }
+    }
+
+    class Reaper : Fighter
+    {
+        public int HealingMultiplier { get; private set; }
+        public Reaper() : base("Жнец", 540, 220, 15) { }
+
+        public override int DealDamage()
+        {
+            return base.DealDamage();
+        }
+
+        public override void TakeDamage(int damage)
+        {
+            int perCent = Random.Next(0, 100);
+
+            Health -= damage - Resistance;
+
+            if (perCent < 30)
+            {
+                Health += damage * 40 / 100;
+            }
+        }
+
+        public override void ShowInfo()
+        {
+            Console.Write(ClassName);
+            base.ShowInfo();
+            Console.WriteLine("Навык - Пожиная плоды - C 30% шансом лечит себя (количеством HP 40% от полученного урона).");
+        }
+
+        public override void ShowBattleIntel()
+        {
+            Console.Write($"|{ClassName}| ");
+            base.ShowBattleIntel();
+        }
+    }
+}
