@@ -1,0 +1,221 @@
+using System;
+using System.Collections.Generic;
+
+namespace Sixth_part 
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            bool isWorking = true;
+            bool isCorrectDirection = false;
+            List<Direction> cities = new List<Direction> { new Direction("Краснодар"), new Direction("Новороссийск"), new Direction("Москва"), new Direction("Санкт-Петербург"), new Direction("Казань") };
+            List<Car> cars = new List<Car>();
+            Configurator configurator = new Configurator(cities, cars);
+            string trip;
+
+            while (isWorking)
+            {               
+                while (isCorrectDirection == false)
+                {
+                    Console.WriteLine("План поезда: Шаг 1 - Создание направления.");
+
+                    configurator.ShowList();
+
+                    Console.WriteLine("Выберите номер города откуда поедет поезд.");
+                    bool isCorrectInput = ReadNumber(Console.ReadLine(), out int cityDepartureIndex);
+                  
+                    if (isCorrectInput)
+                    {                       
+                        Console.WriteLine("Выберите город куда приедет поезд.");
+                        isCorrectInput = ReadNumber(Console.ReadLine(), out int cityArrivalIndex);
+
+                        if (isCorrectInput)
+                        {
+                            trip = configurator.CreateDirection(cityDepartureIndex, cityArrivalIndex);
+                            Console.WriteLine(trip);
+                            isCorrectDirection = true;
+                        }
+                    }  
+                }
+
+                Console.WriteLine("План поезда: Шаг 2 - Формирование поезда.");
+                configurator.CreateTrain();
+
+                Console.WriteLine("План поезда: Шаг 3 - Отправление поезда.");
+                configurator.SendTrain();            
+               
+                Console.ReadLine();
+                Console.Clear();
+            }
+        }
+
+        public static bool ReadNumber(string unconvertedNumber, out int convertedNumber)
+        {
+            if (Int32.TryParse(unconvertedNumber, out convertedNumber))
+            {
+                return true;
+            }
+            else
+            {
+                Console.WriteLine("Неверный формат записи.");
+            }
+
+            return false;
+        }
+    }
+
+    class Configurator
+    {
+        private Random random = new Random();
+        private List<Direction> _cities;
+        private List<Car> _cars;
+        private string _trip;
+        private int _passangers;
+
+        public Configurator(List<Direction> cities, List<Car> cars)
+        {
+            _cities = cities;
+            _cars = cars;
+        }
+
+        public string CreateDirection(int departureIndex, int arrivalIndex)
+        {
+            _trip = $"{_cities[departureIndex].City} - {_cities[arrivalIndex].City}";
+            return _trip;
+        }
+
+        public int SellTickets()
+        {
+            int passengerCount = random.Next(50, 200);
+            return passengerCount;
+        }
+
+        public void CreateTrain()
+        {
+            Console.ReadKey();
+            Console.Clear();
+            _passangers = SellTickets();
+            int numberOfSeats = 0;
+            int smallCarCount = 0;
+            int largeCarCount = 0;
+            SmallCar smallCar = new SmallCar();
+            LargeCar largeCar = new LargeCar();
+
+            Console.WriteLine($"Количество оформленных билетов: {_passangers}");
+            
+            while (numberOfSeats < _passangers)
+            {
+                if (numberOfSeats + largeCar.Capacity < _passangers)
+                {
+                    numberOfSeats += largeCar.Capacity;
+                    _cars.Add(new LargeCar());
+                    largeCarCount++;
+                }
+                else
+                {
+                    if (numberOfSeats + smallCar.Capacity < _passangers)
+                    {
+                        numberOfSeats += largeCar.Capacity;
+                        _cars.Add(new LargeCar());
+                        largeCarCount++;
+                    }
+                    else
+                    {
+                        numberOfSeats += smallCar.Capacity;
+                        _cars.Add(new SmallCar());
+                        smallCarCount++;
+                    }
+                }
+            }
+
+            Console.WriteLine($"Необходимое количество вагонов: {_cars.Count} на {numberOfSeats} мест\nБольших вагонов на // мест: {largeCarCount}\nМаленьких вагонов на // мест: {smallCarCount}.");
+        }   
+
+        public void SendTrain()
+        {
+            Console.ReadKey();
+            Console.Clear();
+            bool isDecided = false;
+            Console.WriteLine("Отправить поезд?\n1 - Да\n2 - Нет");
+            bool isCorrectInput = Program.ReadNumber(Console.ReadLine(), out int Index);
+
+            while (isDecided == false)
+            {
+                if (isCorrectInput && Index == 1)
+                {
+                    Train train = new Train(_trip, _passangers, _cars);
+                    isDecided = true;
+                }
+                else if (isCorrectInput && Index == 2)
+                {
+                    Console.WriteLine("Поезд на был отправлен.");
+                }
+            }   
+        }
+
+        public void ShowList()
+        {
+            for (int i = 0; i < _cities.Count; i++)
+            {
+                Console.Write("№" + (i + 1) + " - ");
+                _cities[i].ShowInfo();
+                Console.WriteLine();
+            }
+        }
+    }
+
+    class Direction
+    {
+        public string City { get; private set; }
+
+        public Direction(string city)
+        {
+            City = city;
+        }
+
+        public void ShowInfo()
+        {
+            Console.WriteLine(City);
+        }
+    }
+
+    class Train
+    {
+        private string _trip;
+        private int _passangers;
+        private List<Car> _cars;
+        
+        public Train(string trip, int passangers, List<Car> cars)
+        {
+            _trip = trip;
+            _passangers = passangers;
+            _cars = cars;
+        }
+
+        public void ShowTripInfo()
+        {
+
+        }
+    }
+
+    class Car
+    {
+        public int Capacity { get; protected set; }
+
+        public Car(int capacity)
+        {
+            Capacity = capacity;
+        }
+    }
+
+    class SmallCar : Car
+    {
+        public SmallCar() : base (18){}
+    }
+
+    class LargeCar : Car
+    {
+        public LargeCar() : base(33){}
+    }
+}
