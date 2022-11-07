@@ -167,6 +167,9 @@ namespace Sixth_part
 
         public void SendTrain(Train train)
         {
+            const int AgreeAction = 1;
+            const int RefuseAction = 2;
+
             Console.ReadKey();
             Console.Clear();
             bool isDecided = false;
@@ -174,15 +177,15 @@ namespace Sixth_part
             while (isDecided == false)
             {
                 Console.WriteLine("План поезда: Отправление поезда.");
-                Console.WriteLine("Отправить поезд?\n1 - Да\n2 - Нет");
+                Console.WriteLine($"Отправить поезд?\n{AgreeAction} - Да\n{RefuseAction} - Нет");
                 bool isCorrectInput = ReadNumber(Console.ReadLine(), out int Index);
 
-                if (isCorrectInput && Index == 1)
+                if (isCorrectInput && Index == AgreeAction)
                 {
                     _trains.Add(train);
                     isDecided = true;
                 }
-                else if (isCorrectInput && Index == 2)
+                else if (isCorrectInput && Index == RefuseAction)
                 {
                     Console.WriteLine("Поезд не был отправлен.");
                     Console.ReadKey();
