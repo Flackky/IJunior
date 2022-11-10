@@ -27,15 +27,16 @@ namespace Sixth_part
                 }
 
                 Console.Write($"Обслужить покупателей?\n{ServeAction} - Да\n{ExitAction} - Нет\n-> ");
+                string userInput = Console.ReadLine();
 
-                if (Console.ReadLine() == ServeAction)
+                if (userInput == ServeAction)
                 {
                     for (int i = 0; i < clients.Count; i++)
                     {
                         cashRegister.ServeClient(clients[i], i);
                     }
                 }
-                else if (Console.ReadLine() == ExitAction)
+                else if (userInput == ExitAction)
                 {
                     isWorking = false;
                 }
@@ -51,11 +52,6 @@ namespace Sixth_part
             public CashRegister(List<Client> clients)
             {
                 _clients = clients;
-            }
-
-            public void GenerateClients(Client client)
-            {
-
             }
 
             public void ServeClient(Client client, int index)
@@ -105,12 +101,6 @@ namespace Sixth_part
                     _shoppingCart.Clear();
                     Console.WriteLine($"Покупатель оплатил товары. Баланс покупателя {Money}.");
                 }              
-            }
-
-            public void AddProducts(List<Product> products)
-            {
-                for (int i = 0; i < products.Count; i++)
-                    _shoppingCart.Add(products[i]);
             }
 
             public int GetProductsOverallPrice()
