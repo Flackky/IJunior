@@ -1,0 +1,176 @@
+using System;
+using System.Collections.Generic;
+
+namespace Sixth_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            List<Product> products1 = new List<Product>() { new Product("Овощи", 300), new Product("Фрукты", 250), new Product("Сладости", 400)};
+            List<Product> products2 = new List<Product>() { new Product("Овощи", 300), new Product("Фрукты", 250), new Product("Сладости", 400), new Product("Рыба", 480) };
+            List<Product> products3 = new List<Product>() { new Product("Сладости", 400), new Product("Мясо", 540) };
+            List<Product> products4 = new List<Product>() { new Product("Овощи", 300), new Product("Фрукты", 250), new Product("Сладости", 400), new Product("Рыба", 480), new Product("Мясо", 540) };
+            List<Client> clients = new List<Client>() { new Client(600, products1), new Client(1000, products2), new Client(800, products3) , new Client(2000, products4) };
+            CashRegister cashRegister = new CashRegister(clients);
+
+            const string ServeAction = "1";
+            const string ExitAction = "2";
+            bool isWorking = true;
+         
+            while (isWorking)
+            {
+                for (int i = 0; i < clients.Count; i++)
+                {
+                    clients[i].ShowInfo();
+                    Console.WriteLine();
+                }
+
+                Console.Write($"Обслужить покупателей?\n{ServeAction} - Да\n{ExitAction} - Нет\n-> ");
+
+                if (Console.ReadLine() == ServeAction)
+                {
+                    for (int i = 0; i < clients.Count; i++)
+                    {
+                        cashRegister.ServeClient(clients[i], i);
+                    }
+                }
+                else if (Console.ReadLine() == ExitAction)
+                {
+                    isWorking = false;
+                }
+
+                Console.Clear();
+            }
+        }
+
+        class CashRegister
+        {
+            private List<Client> _clients;
+
+            public CashRegister(List<Client> clients)
+            {
+                _clients = clients;
+            }
+
+            public void GenerateClients(Client client)
+            {
+
+            }
+
+            public void ServeClient(Client client, int index)
+            {
+                bool isRemovedProduct = false;
+                Console.Clear();
+                Console.WriteLine($"Обслуживается покупатель №{index + 1}.");
+                int overall = client.GetProductsOverallPrice();
+                Console.WriteLine($"Деньги покупателя: {client.Money}, Итоговая цена: {overall}");
+
+                while (client.Money - overall < 0)
+                {
+                    client.ChooseRemovableProduct();
+                    overall = client.GetProductsOverallPrice();
+                    isRemovedProduct = true;
+                }
+
+                if (isRemovedProduct)
+                    Console.WriteLine($"Итоговая цена: {overall}");
+
+                client.BuyProducts(overall);
+                Console.ReadKey();
+            }
+        }
+
+        class Client
+        {
+            private List<Product> _shoppingCart;
+
+            public int Money { get; private set; }           
+            
+            public Client(int money, List<Product> shoppingCart)
+            {
+                Money = money;
+                _shoppingCart = shoppingCart;
+            }
+
+            public void BuyProducts(int overall)
+            {
+                if (_shoppingCart.Count == 0)
+                {
+                    Console.WriteLine("У покупателя нет товаров в корзине.");                  
+                }
+                else
+                {                   
+                    Money -= overall;
+                    _shoppingCart.Clear();
+                    Console.WriteLine($"Покупатель оплатил товары. Баланс покупателя {Money}.");
+                }              
+            }
+
+            public void AddProducts(List<Product> products)
+            {
+                for (int i = 0; i < products.Count; i++)
+                    _shoppingCart.Add(products[i]);
+            }
+
+            public int GetProductsOverallPrice()
+            {
+                int overall = 0;
+
+                foreach (Product product in _shoppingCart)
+                {
+                    overall += product.Price;
+                }
+
+                return overall;
+            }
+
+            public void ChooseRemovableProduct()
+            {
+                int maxPrice = 0;
+                int maxPriceIndex = 0;
+
+                for (int i = 0; i < _shoppingCart.Count; i++)
+                {
+                    if (_shoppingCart[i].Price > maxPrice)
+                    {
+                        maxPrice = _shoppingCart[i].Price;
+                        maxPriceIndex = i;
+                    }
+                }
+
+                Console.Write("У покупателя не хватает денег для оплаты. Был убран: ");
+                _shoppingCart[maxPriceIndex].ShowInfo();
+                _shoppingCart.Remove(_shoppingCart[maxPriceIndex]);
+                Console.ReadKey();
+            }
+
+            public void ShowInfo()
+            {
+                Console.WriteLine($"Покупатель: Деньги - {Money}. Корзина - список ниже.");
+
+                foreach (Product product in _shoppingCart)
+                {
+                    product.ShowInfo();
+                }
+            }
+        }
+
+        class Product
+        {
+            public string Name { get; private set; }
+            public int Price { get; private set; }
+
+            public Product(string name, int price)
+            {
+                Name = name;
+                Price = price;
+            }
+
+            public void ShowInfo()
+            {
+                Console.WriteLine($"Товар {Name}, Стоимость {Price}.");
+            }
+        }
+    }  
+}
