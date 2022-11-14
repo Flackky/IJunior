@@ -1,0 +1,352 @@
+using System;
+using System.Collections.Generic;
+
+namespace Sixth_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            const string StartAction = "1";
+            const string ExitAction = "2";
+            bool isWorking = true;
+
+            while (isWorking)
+            {
+                string redTeamName = "Красной";
+                string blueTeamName = "Синей";
+                Arena arena = new Arena();
+
+                Console.Write($"Симулировать бой?\n{StartAction} - Да\n{ExitAction} - Нет\n-> ");
+                string userInput = Console.ReadLine();
+
+                if (userInput == StartAction)
+                {
+                    bool isCorrectInput = arena.ChooseFighter(out Fighter redFighter, redTeamName);
+
+                    if (isCorrectInput)
+                    {
+                        isCorrectInput = arena.ChooseFighter(out Fighter blueFighter, blueTeamName);
+
+                        if (isCorrectInput)
+                        {
+                            arena.ConductBattle(redFighter, blueFighter);
+                        }
+                    }
+
+                    Console.ReadLine();
+                    Console.Clear();
+                }
+                else if (userInput == ExitAction)
+                {
+                    isWorking = false;
+                }
+            }
+        }
+    }
+
+    class Fighter
+    {
+        protected int ResultDamage;
+        protected Random Random = new Random();
+        protected int SkillСhance;
+        protected int MinChance = 0;
+        protected int MaxChance = 100;
+        protected int DamagePercentDivider = 100;
+
+        public string ClassName { get; protected set; }
+        public int Health { get; protected set; }
+        public int Damage { get; protected set; }
+        public int Resistance { get; protected set; }
+
+        public Fighter(string className, int health, int damage, int resistance, int skillСhance)
+        {
+            ClassName = className;
+            Health = health;
+            Damage = damage;
+            Resistance = resistance;
+            SkillСhance = skillСhance;
+
+        }
+
+        public void ShowBattleIntel()
+        {
+            Console.WriteLine($"|{ClassName}| ОЗ: {Health}, Нанёс: {ResultDamage} урона");
+        }
+
+        public virtual int DealDamage()
+        {
+            ResultDamage = Damage;
+            return ResultDamage;
+        }
+
+        public virtual void TakeDamage(int damage)
+        {
+            Health -= damage - Resistance;
+        }
+
+        public virtual void ShowInfo()
+        {
+            Console.WriteLine($"{ClassName}, ОЗ: {Health}, Атака: {Damage}, Защита: {Resistance};");
+            Console.ForegroundColor = ConsoleColor.Green;
+        }
+    }
+
+    class Paladin : Fighter
+    {
+        private int _shieldResistance;
+
+        public Paladin() : base("Паладин", 1000, 100, 60, 60)
+        {
+            _shieldResistance = 40;
+        }
+
+        public override int DealDamage()
+        {
+            return base.DealDamage();
+        }
+
+        public override void TakeDamage(int damage)
+        {
+            int percent = Random.Next(MinChance, MaxChance);
+
+            if (percent < SkillСhance)
+                Health -= damage - Resistance - _shieldResistance;
+            else
+                Health -= damage - Resistance;
+        }
+
+        public override void ShowInfo()
+        {
+            base.ShowInfo();
+            Console.WriteLine($"Навык - Несломленная крепость: Имеет щит, который с {SkillСhance}% шансом может дополнительно заблокировать некоторый входящий урон.");
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+    }
+
+    class Warrior : Fighter
+    {
+        private bool _isRaged = false;
+
+        public Warrior() : base("Воин", 900, 120, 35, 40) { }
+
+        public override int DealDamage()
+        {
+            int damageMuliplier = 2;
+            int percent = Random.Next(MinChance, MaxChance);
+
+            if (percent < SkillСhance)
+            {
+                _isRaged = true;
+                ResultDamage = Damage * damageMuliplier;
+                return ResultDamage;
+            }
+            else
+            {
+                return base.DealDamage();
+            }
+        }
+
+        public override void TakeDamage(int damage)
+        {
+            if (_isRaged)
+            {
+                _isRaged = false;
+                Health -= damage;
+            }
+            else
+            {
+                Health -= damage - Resistance;
+            }
+        }
+
+        public override void ShowInfo()
+        {
+            base.ShowInfo();
+            Console.WriteLine($"Навык - Ярость воина: С {SkillСhance}% шансом удваивает свой урон, но остаётся без защиты.");
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+    }
+
+    class DarkKnight : Fighter
+    {
+        private int _tempDamage = 0;
+
+        public DarkKnight() : base("Тёмный рыцарь", 850, 110, 40, 35) { }
+
+        public override int DealDamage()
+        {
+            ResultDamage = Damage + _tempDamage;
+            return ResultDamage;
+        }
+
+        public override void TakeDamage(int damage)
+        {
+            int damageMultiplier = 2;
+            int percent = Random.Next(MinChance, MaxChance);
+
+            if (percent < SkillСhance)
+            {
+                _tempDamage = damage / damageMultiplier;
+                Health -= damage / damageMultiplier - Resistance;
+            }
+            else
+            {
+                _tempDamage = 0;
+                Health -= damage - Resistance;
+            }
+        }
+
+        public override void ShowInfo()
+        {
+            base.ShowInfo();
+            Console.WriteLine($"Навык - За собой во тьму: C {SkillСhance}% шансом разделяет полученный урон. Половину принимает, а другую половину отражает во врага на след. ходу.");
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+    }
+
+    class GunBreaker : Fighter
+    {
+        public GunBreaker() : base("Ганбрейкер", 750, 140, 35, 20) { }
+
+        public override int DealDamage()
+        {
+            int damagePercent = 50;
+            int percent = Random.Next(MinChance, MaxChance);
+
+            if (percent < SkillСhance)
+            {
+                Health += Damage * damagePercent / DamagePercentDivider;
+            }
+
+            return base.DealDamage();
+        }
+
+        public override void TakeDamage(int damage)
+        {
+            base.TakeDamage(damage);
+        }
+
+        public override void ShowInfo()
+        {
+            base.ShowInfo();
+            Console.WriteLine($"Навык - Эфирная нить: С {SkillСhance}% шансом поглощает эфир оставленный после своей атаки в виде HP (Количеством равным половине от нанесённого урона).");
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+    }
+
+    class Reaper : Fighter
+    {
+        public Reaper() : base("Жнец", 540, 220, 15, 30) { }
+
+        public override int DealDamage()
+        {
+            return base.DealDamage();
+        }
+
+        public override void TakeDamage(int damage)
+        {
+            int damagePercent = 40;
+            int percent = Random.Next(MinChance, MaxChance);
+
+            Health -= damage - Resistance;
+
+            if (percent < SkillСhance)
+            {
+                Health += damage * damagePercent / DamagePercentDivider;
+            }
+        }
+
+        public override void ShowInfo()
+        {
+            base.ShowInfo();
+            Console.WriteLine($"Навык - Пожиная плоды: C {SkillСhance}% шансом лечит себя при получении урона (количеством HP равным половине от полученного урона).");
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+    }
+
+    class Arena
+    {
+        public void ConductBattle(Fighter redFighter, Fighter blueFighter)
+        {
+            while (redFighter.Health > 0 && blueFighter.Health > 0)
+            {
+                Console.WriteLine();
+                blueFighter.TakeDamage(redFighter.DealDamage());
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Red;
+                redFighter.ShowBattleIntel();
+                redFighter.TakeDamage(blueFighter.DealDamage());
+                Console.ForegroundColor = ConsoleColor.Blue;
+                blueFighter.ShowBattleIntel();
+            }
+
+            ShowWinner(redFighter, blueFighter);
+        }
+
+        public bool ChooseFighter(out Fighter fighter, string teamName)
+        {
+            Console.Clear();
+            int minFighterIndex = 0;
+            Fighter[] fighters = { new Paladin(), new Warrior(), new DarkKnight(), new GunBreaker(), new Reaper() };
+
+            for (int i = 0; i < fighters.Length; i++)
+            {
+                Console.Write("№" + (i + 1) + " - ");
+                fighters[i].ShowInfo();
+                Console.WriteLine();
+            }
+
+            Console.Write($"Введите номер участника, который будет находиться в {teamName} команде -> ");
+
+            bool isCorrect = ReadNumber(Console.ReadLine(), out int fighterIndex);
+            
+            Console.Clear();
+
+            if (isCorrect && fighterIndex <= fighters.Length && fighterIndex > minFighterIndex)
+            {
+                fighter = fighters[fighterIndex - 1];
+                return true;
+            }               
+            else
+            {
+                Console.Write("\nВ выборе участника была совершена ошибка. Повторите попытку.");
+                fighter = null;
+                return false;
+            }               
+        }
+
+        public void ShowWinner(Fighter redFighter, Fighter blueFighter)
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine();
+
+            if (redFighter.Health <= 0 && blueFighter.Health <= 0)
+            {
+                Console.Write("Оба бойца погибли");
+            }
+            else if (redFighter.Health <= 0)
+            {
+                Console.Write($"Победил синий {blueFighter.ClassName}");
+            }
+            else if (blueFighter.Health <= 0)
+            {
+                Console.Write($"Победил красный {redFighter.ClassName}");
+            }
+        }
+
+        public static bool ReadNumber(string unconvertedNumber, out int convertedNumber)
+        {
+            if (Int32.TryParse(unconvertedNumber, out convertedNumber))
+            {
+                return true;
+            }
+            else
+            {
+                Console.WriteLine("Неверный формат записи.");
+            }
+
+            return false;
+        }
+    }
+}
