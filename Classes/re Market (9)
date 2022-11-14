@@ -1,0 +1,195 @@
+using System;
+using System.Collections.Generic;
+
+namespace Sixth_part
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            const string ServeAction = "1";
+            const string ExitAction = "2";
+            bool isWorking = true;
+                
+            while (isWorking)
+            {
+                List<Client> clients = new List<Client>();
+                Market market = new Market(clients);
+
+                market.CreateClients();
+
+                Console.Write($"Обслужить покупателей?\n{ServeAction} - Да\n{ExitAction} - Нет\n-> ");
+
+                switch(Console.ReadLine())
+                {
+                    case ServeAction:
+                        market.ServeClients();
+                        break;
+                    case ExitAction:
+                        isWorking = false;
+                        break;
+                }
+
+                Console.Clear();
+            }
+        }
+    } 
+
+    class Market
+    {
+        private List<Client> _clients;
+        private Random _random = new Random();
+
+        public Market(List<Client> clients)
+        {
+            _clients = clients;
+        }
+
+        public void CreateClients()
+        {
+            List<Product> products = new List<Product>() { new Product("Овощи", 300), new Product("Фрукты", 250), new Product("Сладости", 400), new Product("Рыба", 480), new Product("Мясо", 540) };
+            int minProductsQuantity = 1;
+            int maxProductsQuantity = 5;
+            int minProductId = 0;
+            int minMoney = 500;
+            int maxMoney = 2000;
+            int minClients = 3;
+            int maxClients = 10;
+
+            int clientsCount = _random.Next(minClients, maxClients);
+
+            for (int i = minClients; i <= clientsCount; i++)
+            {
+                List<Product> shoppingCart = new List<Product>();
+
+                int quantity = _random.Next(minProductsQuantity, maxProductsQuantity);
+                int money = _random.Next(minMoney, maxMoney);
+
+                for (int j = 0; j < quantity; j++)
+                {
+                    int productId = _random.Next(minProductId, products.Count);
+                    shoppingCart.Add(products[productId]);
+                }
+
+                Client client = new Client(money, shoppingCart);
+                client.ShowInfo();
+                _clients.Add(client);
+            }         
+        }
+
+        public void ServeClients()
+        {
+            bool isRemovedProduct = false;
+            Console.Clear();
+
+            for (int i = 0; i < _clients.Count; i++)
+            {
+                Console.WriteLine($"Обслуживается покупатель №{i + 1}.");
+                int overall = _clients[i].GetProductsOverallPrice();
+                Console.WriteLine($"Деньги покупателя: {_clients[i].Money}, Итоговая цена: {overall}");
+
+                while (_clients[i].Money - overall < 0)
+                {
+                    _clients[i].RemoveProduct();
+                    overall = _clients[i].GetProductsOverallPrice();
+                    isRemovedProduct = true;
+                }
+
+                if (isRemovedProduct)
+                    Console.WriteLine($"Итоговая цена: {overall}");
+
+                _clients[i].BuyProducts(overall);
+                Console.ReadKey();
+                Console.Clear();
+            }
+        }
+    }
+
+    class Client
+    {
+        private List<Product> _shoppingCart;
+
+        public int Money { get; private set; }
+
+        public Client(int money, List<Product> shoppingCart)
+        {
+            Money = money;
+            _shoppingCart = shoppingCart;
+        }
+
+        public void BuyProducts(int overallPrice)
+        {
+            if (_shoppingCart.Count == 0)
+            {
+                Console.WriteLine("У покупателя нет товаров в корзине.");
+            }
+            else
+            {
+                Money -= overallPrice;
+                _shoppingCart.Clear();
+                Console.WriteLine($"Покупатель оплатил товары. Баланс покупателя {Money}.");
+            }
+        }
+
+        public int GetProductsOverallPrice()
+        {
+            int overallPrice = 0;
+
+            foreach (Product product in _shoppingCart)
+            {
+                overallPrice += product.Price;
+            }
+
+            return overallPrice;
+        }
+
+        public void RemoveProduct()
+        {
+            int maxPrice = 0;
+            int maxPriceIndex = 0;
+
+            for (int i = 0; i < _shoppingCart.Count; i++)
+            {
+                if (_shoppingCart[i].Price > maxPrice)
+                {
+                    maxPrice = _shoppingCart[i].Price;
+                    maxPriceIndex = i;
+                }
+            }
+
+            Console.Write("У покупателя не хватает денег для оплаты. Был убран: ");
+            _shoppingCart[maxPriceIndex].ShowInfo();
+            _shoppingCart.Remove(_shoppingCart[maxPriceIndex]);
+            Console.ReadKey();
+        }
+
+        public void ShowInfo()
+        {
+            Console.WriteLine($"Покупатель: Деньги - {Money}. Корзина - список ниже.");
+
+            foreach (Product product in _shoppingCart)
+            {
+                product.ShowInfo();
+            }
+
+            Console.WriteLine();
+        }
+    }
+
+    class Product
+    {
+        public string Name { get; private set; }
+        public int Price { get; private set; }
+
+        public Product(string name, int price)
+        {
+            Name = name;
+            Price = price;
+        }
+
+        public void ShowInfo()
+        {
+            Console.WriteLine($"Товар {Name}, Стоимость {Price}.");
+        }
+    }
+}
